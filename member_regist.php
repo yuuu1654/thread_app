@@ -1,11 +1,30 @@
 <?php
+	session_start();
 	$mode = "input";
 	if( isset($_POST["back"]) && $_POST["back"] ){
 		//何もしない
 	}else if( isset($_POST["confirm"]) && $_POST["confirm"] ){
+		$_SESSION["name_sei"]  		          = $_POST["name_sei"];
+		$_SESSION["name_mei"]               = $_POST["name_mei"];
+		$_SESSION["gender"]                 = $_POST["gender"];
+		$_SESSION["pref_name"]              = $_POST["pref_name"];
+		$_SESSION["address"]                = $_POST["address"];
+		$_SESSION["password"]               = $_POST["password"];
+		$_SESSION["password_confirmation"]  = $_POST["password_confirmation"];
+		$_SESSION["email"]                  = $_POST["email"];
 		$mode = "confirm";
 	}else if( isset($_POST["signup_done"]) && $_POST["signup_done"] ){
 		$mode = "signup_done";
+	}else{
+		//セッションを初期化
+		$_SESSION["name_sei"]               = "";
+		$_SESSION["name_mei"]               = "";
+		$_SESSION["gender"]                 = "";
+		$_SESSION["pref_name"]              = "";
+		$_SESSION["address"]                = "";
+		$_SESSION["password"]               = "";
+		$_SESSION["password_confirmation"]  = "";
+		$_SESSION["email"]                  = "";
 	}
 ?>
 
@@ -21,6 +40,14 @@
 			background-color: skyblue;
 			font-weight: bold;
 		}
+		.btn{
+			color: skyblue;
+			background-color: white;
+			padding: 8px 24px;
+			display: inline-block;
+			opacity: 0.8;
+			border-radius: 4px;
+		}
 	</style>
 </head>
 <body>
@@ -29,14 +56,14 @@
 			<h1>会員情報登録フォーム</h1>
 			<form action="" method="POST">
 				<!-- 氏名 -->
-				氏名  姓<input type="text" name="name_sei" value="">
-							名<input type="text" name="name_mei" value=""><br>
+				氏名  姓<input type="text" name="name_sei" value="<?php echo $_SESSION["name_sei"] ?>">
+							名<input type="text" name="name_mei" value="<?php echo $_SESSION["name_mei"] ?>"><br>
 				<!-- 性別 -->
-				性別<input type="radio" name="gender" value="男性">男性
+				性別<input type="radio" name="gender" value="男性" checked="checked">男性
 						<input type="radio" name="gender" value="女性">女性<br>
 				<!-- 住所 -->
 				住所　都道府県　
-				<select name="pref_name">
+				<select name="pref_name" value="<?php echo $_SESSION["pref_name"] ?>">
 					<option value="selected">選択して下さい</option>
 					<option value="北海道">北海道</option>
 					<option value="青森県">青森県</option>
@@ -86,26 +113,28 @@
 					<option value="鹿児島県">鹿児島県</option>
 					<option value="沖縄県">沖縄県</option>
 				</select><br>
-				　　　それ以降の住所<input type="text" name="address"><br>
+				　　　それ以降の住所<input type="text" name="address" value="<?php echo $_SESSION["address"] ?>"><br>
 				<!-- パスワード -->
-				パスワード　　　　<input type="password" name="password"><br>
+				パスワード　　　　<input type="password" name="password" value="<?php echo $_SESSION["password"] ?>"><br>
 				<!-- パスワード確認 -->
-				パスワード確認　　<input type="password" name="password_confirmation"><br>
+				パスワード確認　　<input type="password" name="password_confirmation" value="<?php echo $_SESSION["password_confirmation"] ?>"><br>
 				<!-- メールアドレス -->
-				メールアドレス　　<input type="email" name="email"><br><br>
+				メールアドレス　　<input type="email" name="email" value="<?php echo $_SESSION["email"] ?>"><br><br>
 				<input class="confirm" type="submit" name="confirm" value="確認画面へ">
 			</form>
+			<input type="button" onclick="location.href='top.php'" value="トップに戻る">
 		<?php } else if( $mode == "confirm"){ ?>
 			<!-- 確認画面 -->
 			<h1>会員情報確認画面</h1>
 			<!-- 連想配列の中身を表示 -->
 			<?php print_r($_POST); ?>
+
 			<form action="" method="post">
-				氏名　　　　　　<?php echo $_POST["name_sei"] ?>　<?php echo $_POST["name_mei"] ?><br>
-				性別　　　　　　<?php echo $_POST["gender"] ?><br>
-				住所　　　　　　<?php echo $_POST["pref_name"] ?><?php echo $_POST["address"] ?><br>
-				パスワード　　　<?php echo $_POST["password"] ?><br>
-				メールアドレス　<?php echo $_POST["email"] ?><br>
+				氏名　　　　　　<?php echo $_SESSION["name_sei"] ?>　<?php echo $_SESSION["name_mei"] ?><br>
+				性別　　　　　　<?php echo $_SESSION["gender"] ?><br>
+				住所　　　　　　<?php echo $_SESSION["pref_name"] ?><?php echo $_SESSION["address"] ?><br>
+				パスワード　　　<?php echo $_SESSION["password"] ?><br>
+				メールアドレス　<?php echo $_SESSION["email"] ?><br>
 				<input type="submit" name="signup_done" value="登録完了"><br>
 				<input type="submit" name="back" value="前に戻る">
 				<!-- <button type="button" onclick="history.back()">戻る</button> -->
@@ -117,3 +146,4 @@
 		<?php } ?>
 </body>
 </html>
+
