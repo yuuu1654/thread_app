@@ -106,6 +106,13 @@
 		div.button{
 			text-align: center;
 		}
+		.container{
+			text-align: center;
+			padding-top: 150px;
+		}
+		.done{
+			padding-top: 50px;
+		}
 		.btn{
 			margin: 20px 0 20px 0;  
 			padding: 10px 40px 10px 40px;
@@ -129,7 +136,7 @@
 				氏名  姓<input type="text" class="form-control" name="name_sei" value="<?php echo $_SESSION["name_sei"] ?>">
 							名<input type="text" class="form-control" name="name_mei" value="<?php echo $_SESSION["name_mei"] ?>"><br>
 				<!-- 性別 -->
-				性別<input type="radio" name="gender" value="男性" checked="checked">男性
+				性別　<input type="radio" name="gender" value="男性" checked="checked">男性
 						<input type="radio" name="gender" value="女性">女性<br>
 				<!-- 住所 -->
 				住所　都道府県　
@@ -218,8 +225,13 @@
 			</form>
 		<?php } else { ?>
 			<!-- 完了画面 -->
-			<h1>会員登録完了</h1>
-			<p>会員登録が完了しました。</p>
+			<div class="container">
+				<h1>会員登録完了</h1>
+				<p class="done">会員登録が完了しました。</p>
+			</div>
+			<div class="button">
+				<input type="submit" class="btn btn-primary btn-lg" onclick="location.href='top.php'" value="トップに戻る">
+			</div>
 		<?php } ?>
 </body>
 </html>
