@@ -38,7 +38,7 @@
 		}else if( mb_strlen($_POST["password"]) > 20 || mb_strlen($_POST["password"]) < 8 ){
 			$errmessage[] = "パスワードは半角英数字8～20文字以内で入力してください";
 		}
-		$_SESSION["password"] = htmlspecialchars($_POST["password"], NT_QUOTES);  //無害化した文字列を代入
+		$_SESSION["password"] = htmlspecialchars($_POST["password"], ENT_QUOTES);  //無害化した文字列を代入
 
 		//パスワード確認のバリデーション
 		if( !$_POST["password_confirmation"] ){
@@ -94,20 +94,21 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
+	<title>会員登録フォーム</title>
+	<!-- Bootstrapの読み込み -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 	<style>
-		.confirm{
-			color: white;
-			background-color: skyblue;
-			font-weight: bold;
+		body{
+			padding: 10px;
+			max-width: 600px;
+			margin: 0px auto;
+		}
+		div.button{
+			text-align: center;
 		}
 		.btn{
-			color: skyblue;
-			background-color: white;
-			padding: 8px 24px;
-			display: inline-block;
-			opacity: 0.8;
-			border-radius: 4px;
+			margin: 20px 0 20px 0;  
+			padding: 10px 40px 10px 40px;
 		}
 	</style>
 </head>
@@ -116,7 +117,7 @@
 			<!-- 入力フォーム画面 -->
 			<?php
 				if( $errmessage ){
-					echo '<div style="color:red;">';
+					echo '<div class="alert alert-danger" role="alert">';
 					echo implode("<br>", $errmessage);
 					echo "</div>";
 				}
@@ -125,8 +126,8 @@
 			<h1>会員情報登録フォーム</h1>
 			<form action="" method="POST">
 				<!-- 氏名 -->
-				氏名  姓<input type="text" name="name_sei" value="<?php echo $_SESSION["name_sei"] ?>">
-							名<input type="text" name="name_mei" value="<?php echo $_SESSION["name_mei"] ?>"><br>
+				氏名  姓<input type="text" class="form-control" name="name_sei" value="<?php echo $_SESSION["name_sei"] ?>">
+							名<input type="text" class="form-control" name="name_mei" value="<?php echo $_SESSION["name_mei"] ?>"><br>
 				<!-- 性別 -->
 				性別<input type="radio" name="gender" value="男性" checked="checked">男性
 						<input type="radio" name="gender" value="女性">女性<br>
@@ -182,16 +183,21 @@
 					<option value="鹿児島県">鹿児島県</option>
 					<option value="沖縄県">沖縄県</option>
 				</select><br>
-				　　　それ以降の住所<input type="text" name="address" value="<?php echo $_SESSION["address"] ?>"><br>
+				　　　それ以降の住所<input type="text" class="form-control" name="address" value="<?php echo $_SESSION["address"] ?>"><br>
 				<!-- パスワード -->
-				パスワード　　　　<input type="password" name="password" value="<?php echo $_SESSION["password"] ?>"><br>
+				パスワード　　　　<input type="password" class="form-control" name="password" value="<?php echo $_SESSION["password"] ?>"><br>
 				<!-- パスワード確認 -->
-				パスワード確認　　<input type="password" name="password_confirmation" value="<?php echo $_SESSION["password_confirmation"] ?>"><br>
+				パスワード確認　　<input type="password" class="form-control" name="password_confirmation" value="<?php echo $_SESSION["password_confirmation"] ?>"><br>
 				<!-- メールアドレス -->
-				メールアドレス　　<input type="email" name="email" value="<?php echo $_SESSION["email"] ?>"><br><br>
-				<input class="confirm" type="submit" name="confirm" value="確認画面へ">
+				メールアドレス　　<input type="email" class="form-control" name="email" value="<?php echo $_SESSION["email"] ?>"><br><br>
+				<div class="button">
+					<input type="submit" class="btn btn-primary btn-lg" name="confirm" value="確認画面へ"><br>
+				</div>
 			</form>
-			<input type="button" onclick="location.href='top.php'" value="トップに戻る">
+			<div class="button">
+				<input type="submit" class="btn btn-secondary btn-lg" onclick="location.href='top.php'" value="トップに戻る">
+			</div>
+			
 		<?php } else if( $mode == "confirm"){ ?>
 			<!-- 確認画面 -->
 			<h1>会員情報確認画面</h1>
@@ -204,8 +210,10 @@
 				住所　　　　　　<?php echo $_SESSION["pref_name"] ?><?php echo $_SESSION["address"] ?><br>
 				パスワード　　　セキュリティのため非表示<br>
 				メールアドレス　<?php echo $_SESSION["email"] ?><br>
-				<input type="submit" name="signup_done" value="登録完了"><br>
-				<input type="submit" name="back" value="前に戻る">
+				<div class="button">
+					<input type="submit" class="btn btn-primary btn-lg" name="signup_done" value="登録完了"><br>
+					<input type="submit" class="btn btn-secondary btn-lg" name="back" value="前に戻る">
+				</div>
 				<!-- <button type="button" onclick="history.back()">戻る</button> -->
 			</form>
 		<?php } else { ?>
