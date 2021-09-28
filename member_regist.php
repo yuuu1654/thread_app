@@ -1,18 +1,79 @@
 <?php
 	session_start();
 	$mode = "input";
+	$errmessage = array();  //エラーメッセージ用の配列を初期化
+
+
 	if( isset($_POST["back"]) && $_POST["back"] ){
 		//何もしない
 	}else if( isset($_POST["confirm"]) && $_POST["confirm"] ){
-		$_SESSION["name_sei"]  		          = $_POST["name_sei"];
-		$_SESSION["name_mei"]               = $_POST["name_mei"];
+		//確認画面
+		
+		//氏名(姓)のバリデーション
+		if( !$_POST["name_sei"] ){
+			$errmessage[] = "氏名(姓)は入力必須です";
+		}else if( mb_strlen($_POST["name_sei"]) > 20 ){
+			$errmessage[] = "氏名(姓)は20文字以内で入力してください";
+		}
+		$_SESSION["name_sei"] = htmlspecialchars($_POST["name_sei"], ENT_QUOTES);  //無害化した文字列を代入
+
+
+		//氏名(名)のバリデーション
+		if( !$_POST["name_mei"] ){
+			$errmessage[] = "氏名(名)は入力必須です";
+		}else if( mb_strlen($_POST["name_mei"]) > 20 ){
+			$errmessage[] = "氏名(名)は20文字以内で入力してください";
+		}
+		$_SESSION["name_mei"] = htmlspecialchars($_POST["name_mei"], ENT_QUOTES);  //無害化した文字列を代入
+
+		//住所(それ以降の住所)のバリデーション (任意)
+		if( mb_strlen($_POST["address"]) > 100 ){
+			$errmessage[] = "住所(それ以降の住所)は100文字以内で入力してください";
+		}
+		$_SESSION["address"] = htmlspecialchars($_POST["address"], ENT_QUOTES);  //無害化した文字列を代入
+
+		//パスワードのバリデーション
+		if( !$_POST["password"] ){
+			$errmessage[] = "パスワードは入力必須です";
+		}else if( mb_strlen($_POST["password"]) > 20 || mb_strlen($_POST["password"]) < 8 ){
+			$errmessage[] = "パスワードは半角英数字8～20文字以内で入力してください";
+		}
+		$_SESSION["password"] = htmlspecialchars($_POST["password"], NT_QUOTES);  //無害化した文字列を代入
+
+		//パスワード確認のバリデーション
+		if( !$_POST["password_confirmation"] ){
+			$errmessage[] = "パスワード確認は入力必須です";
+		}else if( mb_strlen($_POST["password_confirmation"]) > 20 || mb_strlen($_POST["password_confirmation"]) < 8 ){
+			$errmessage[] = "パスワード確認は半角英数字8～20文字以内で入力してください";
+		}else if( !$_POST["password_confirmation"] === $_POST["password"] ){ //データ型も比較
+			$errmessage[] = "入力した文字がパスワードと一致しません";
+		}
+		$_SESSION["password_confirmation"] = htmlspecialchars($_POST["password_confirmation"], ENT_QUOTES);  //無害化した文字列を代入
+
+		//メールアドレスのバリデーション
+		if ( !$_POST["email"] ){
+			$errmessage[] = "メールアドレスは入力必須です";
+		}else if( mb_strlen($_POST["email"]) > 200 ){
+			$errmessage[] = "メールアドレスは200文字以内で入力してください";
+		}else if( !filter_var($_POST["email"], FILTER_VALIDATE_EMAIL) ){  //メールアドレス形式の文字列かどうかのチェック
+			$errmessage[] = "不正なメールアドレスです";
+		}
+		$_SESSION["email"] = htmlspecialchars($_POST["email"], ENT_QUOTES);  //無害化した文字列を入力
+
+
+		
+		//バリデーションまだ未作成
 		$_SESSION["gender"]                 = $_POST["gender"];
 		$_SESSION["pref_name"]              = $_POST["pref_name"];
-		$_SESSION["address"]                = $_POST["address"];
-		$_SESSION["password"]               = $_POST["password"];
-		$_SESSION["password_confirmation"]  = $_POST["password_confirmation"];
-		$_SESSION["email"]                  = $_POST["email"];
-		$mode = "confirm";
+
+		
+		//エラーメッセージの有無でモード変数の切り替え
+		if( $errmessage ){
+			$mode = "input";
+		}else{
+			$mode = "confirm";
+		}
+		
 	}else if( isset($_POST["signup_done"]) && $_POST["signup_done"] ){
 		$mode = "signup_done";
 	}else{
@@ -53,6 +114,14 @@
 <body>
 		<?php if( $mode == "input"){ ?>
 			<!-- 入力フォーム画面 -->
+			<?php
+				if( $errmessage ){
+					echo '<div style="color:red;">';
+					echo implode("<br>", $errmessage);
+					echo "</div>";
+				}
+			?>
+
 			<h1>会員情報登録フォーム</h1>
 			<form action="" method="POST">
 				<!-- 氏名 -->
@@ -133,7 +202,7 @@
 				氏名　　　　　　<?php echo $_SESSION["name_sei"] ?>　<?php echo $_SESSION["name_mei"] ?><br>
 				性別　　　　　　<?php echo $_SESSION["gender"] ?><br>
 				住所　　　　　　<?php echo $_SESSION["pref_name"] ?><?php echo $_SESSION["address"] ?><br>
-				パスワード　　　<?php echo $_SESSION["password"] ?><br>
+				パスワード　　　セキュリティのため非表示<br>
 				メールアドレス　<?php echo $_SESSION["email"] ?><br>
 				<input type="submit" name="signup_done" value="登録完了"><br>
 				<input type="submit" name="back" value="前に戻る">
