@@ -2,6 +2,7 @@
 	session_start();
 	$mode = "input";
 	$errmessage = array();  //エラーメッセージ用の配列を初期化
+	require_once "MemberLogic.php";  //会員登録の処理を行うクラスの読み込み
 
 
 	if( isset($_POST["back"]) && $_POST["back"] ){
@@ -9,6 +10,7 @@
 	}else if( isset($_POST["confirm"]) && $_POST["confirm"] ){
 		//確認画面
 		
+
 		//氏名(姓)のバリデーション
 		if( !$_POST["name_sei"] ){
 			$errmessage[] = "氏名(姓)は入力必須です";
@@ -26,19 +28,24 @@
 		}
 		$_SESSION["name_mei"] = htmlspecialchars($_POST["name_mei"], ENT_QUOTES);  //無害化した文字列を代入
 
+
 		//住所(それ以降の住所)のバリデーション (任意)
 		if( mb_strlen($_POST["address"]) > 100 ){
 			$errmessage[] = "住所(それ以降の住所)は100文字以内で入力してください";
 		}
 		$_SESSION["address"] = htmlspecialchars($_POST["address"], ENT_QUOTES);  //無害化した文字列を代入
 
+
 		//パスワードのバリデーション
 		if( !$_POST["password"] ){
 			$errmessage[] = "パスワードは入力必須です";
 		}else if( mb_strlen($_POST["password"]) > 20 || mb_strlen($_POST["password"]) < 8 ){
 			$errmessage[] = "パスワードは半角英数字8～20文字以内で入力してください";
-		}
+		}else if(preg_match("/^(?=.*?[a-zA-Z])(?=.*?\d)[a-zA-Z\d]$/", $_POST["password"])){  //正規表現(半角英数字)
+			$errmessage[] = "パスワードは半角英数字8～20文字以内で入力してください";
+		}  
 		$_SESSION["password"] = htmlspecialchars($_POST["password"], ENT_QUOTES);  //無害化した文字列を代入
+
 
 		//パスワード確認のバリデーション
 		if( !$_POST["password_confirmation"] ){
@@ -49,6 +56,7 @@
 			$errmessage[] = "入力した文字がパスワードと一致しません";
 		}
 		$_SESSION["password_confirmation"] = htmlspecialchars($_POST["password_confirmation"], ENT_QUOTES);  //無害化した文字列を代入
+
 
 		//メールアドレスのバリデーション
 		if ( !$_POST["email"] ){
@@ -73,9 +81,16 @@
 		}else{
 			$mode = "confirm";
 		}
-		
+	
+	//確認画面から登録完了ボタンが押されたらDBに登録する
 	}else if( isset($_POST["signup_done"]) && $_POST["signup_done"] ){
 		$mode = "signup_done";
+		$hasCreated = MemberLogic::createMember($_SESSION);  //MemberLogicのメソッドを呼び出す
+
+		if( !$hasCreated ){
+			$errmessage[] = "登録に失敗しました";
+		}
+
 	}else{
 		//セッションを初期化
 		$_SESSION["name_sei"]               = "";
@@ -136,8 +151,8 @@
 				氏名  姓<input type="text" class="form-control" name="name_sei" value="<?php echo $_SESSION["name_sei"] ?>">
 							名<input type="text" class="form-control" name="name_mei" value="<?php echo $_SESSION["name_mei"] ?>"><br>
 				<!-- 性別 -->
-				性別　<input type="radio" name="gender" value="男性" checked="checked">男性
-						<input type="radio" name="gender" value="女性">女性<br>
+				性別　<input type="radio" name="gender" value="1" checked="checked">男性
+						<input type="radio" name="gender" value="2">女性<br>
 				<!-- 住所 -->
 				住所　都道府県　
 				<select name="pref_name" value="<?php echo $_SESSION["pref_name"] ?>">
@@ -213,7 +228,12 @@
 
 			<form action="" method="post">
 				氏名　　　　　　<?php echo $_SESSION["name_sei"] ?>　<?php echo $_SESSION["name_mei"] ?><br>
-				性別　　　　　　<?php echo $_SESSION["gender"] ?><br>
+				性別　　　　　　
+				<?php if($_SESSION["gender"] == 1): ?>
+					<p><?php echo "男性" ?></p>
+				<?php else: ?>
+					<p><?php echo "女性" ?></p>
+				<?php endif; ?><br>
 				住所　　　　　　<?php echo $_SESSION["pref_name"] ?><?php echo $_SESSION["address"] ?><br>
 				パスワード　　　セキュリティのため非表示<br>
 				メールアドレス　<?php echo $_SESSION["email"] ?><br>
