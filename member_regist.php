@@ -37,6 +37,9 @@
 
 
 		//パスワードのバリデーション
+		/**
+		 * 半角英数字8~20のリファクタリング実装
+		 */
 		if( !$_POST["password"] ){
 			$errmessage[] = "パスワードは入力必須です";
 		}else if( mb_strlen($_POST["password"]) > 20 || mb_strlen($_POST["password"]) < 8 ){
@@ -59,6 +62,9 @@
 
 
 		//メールアドレスのバリデーション
+		/**
+		 * 重複するメールアドレスの登録を防ぐバリデーション未実装
+		 */
 		if ( !$_POST["email"] ){
 			$errmessage[] = "メールアドレスは入力必須です";
 		}else if( mb_strlen($_POST["email"]) > 200 ){
@@ -82,14 +88,24 @@
 			$mode = "confirm";
 		}
 	
+
 	//確認画面から登録完了ボタンが押されたらDBに登録する
 	}else if( isset($_POST["signup_done"]) && $_POST["signup_done"] ){
 		$mode = "signup_done";
 		$hasCreated = MemberLogic::createMember($_SESSION);  //MemberLogicのメソッドを呼び出す
 
+		//$resultの結果がfalseで返ってきたらエラーメッセージを追加する
 		if( !$hasCreated ){
-			$errmessage[] = "登録に失敗しました";
+			$errmessage[] = "重複したメールアドレスです";
 		}
+
+		//エラーメッセージの有無でモード変数の切り替え
+		if( $errmessage ){
+			$mode = "confirm";
+		}else{
+			$mode = "signup_done";
+		}
+
 
 	}else{
 		//セッションを初期化
@@ -226,6 +242,14 @@
 			<!-- 連想配列の中身を表示 -->
 			<?php print_r($_POST); ?>
 
+			<?php
+				if( $errmessage ){
+					echo '<div class="alert alert-danger" role="alert">';
+					echo implode("<br>", $errmessage);
+					echo "</div>";
+				}
+			?>
+
 			<form action="" method="post">
 				氏名　　　　　　<?php echo $_SESSION["name_sei"] ?>　<?php echo $_SESSION["name_mei"] ?><br>
 				性別　　　　　　
@@ -233,7 +257,7 @@
 					<p><?php echo "男性" ?></p>
 				<?php else: ?>
 					<p><?php echo "女性" ?></p>
-				<?php endif; ?><br>
+				<?php endif; ?><br>　　　　　　　　　
 				住所　　　　　　<?php echo $_SESSION["pref_name"] ?><?php echo $_SESSION["address"] ?><br>
 				パスワード　　　セキュリティのため非表示<br>
 				メールアドレス　<?php echo $_SESSION["email"] ?><br>

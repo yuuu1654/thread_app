@@ -1,9 +1,13 @@
 <?php
-	if( $_POST ){
-		//post情報がある時の処理
-	}else{
-		//getの時の処理を書く
-	}
+	session_start();
+
+	//var_dump($_SESSION["errmessage"]);  //セッションが入っているかの確認
+
+	$errmessage = $_SESSION["errmessage"];  //エラーメッセージを変数に格納
+
+	$_SESSION = array();  //空の配列でセッションを初期化する
+	session_destroy();
+
 ?>
 
 <!DOCTYPE html>
@@ -33,18 +37,29 @@
 	<!-- ログインボタン・トップに戻るボタンの2つを作成 -->
 	<!-- ログイン成功したらトップ画面に遷移 -->
 	<!-- step2　の画面仕様書・課題詳細 -->
-	
+
 
 	<!-- ログインフォーム画面 -->
 	<h1>ログイン</h1><br>
+	<?php
+		//エラーメッセージがあれば表示する
+		if( $errmessage ){
+			echo '<div class="alert alert-danger" role="alert">';
+			echo implode("<br>", $errmessage);
+			echo "</div>";
+		}
+
+
+		
+	?>
 	<div class="container">
 		<div class="mx-auto" style="width:400px;">
 			<form action="./top.php" method="post">
 				<p>
-					メールアドレス（ID）<input type="email"　class="form-control" name="email" value=""><br>
+					メールアドレス（ID）<input type="email"　class="form-control" name="email" value="<?php echo $_SESSION["email"] ?>"><br>
 				</p>
 				<p>
-					パスワード　　　　　<input type="password"　class="form-control" name="password" value=""><br>
+					パスワード　　　　　<input type="password"　class="form-control" name="password" value="<?php echo $_SESSION["password"] ?>"><br>
 				</p>
 				<div class="button">
 					<input type="submit" class="btn btn-primary btn-lg" name="login" value="ログイン">
