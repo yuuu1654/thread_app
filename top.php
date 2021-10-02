@@ -2,17 +2,20 @@
 	$errmessage = array();  //エラーメッセージ用の配列を初期化
 	session_start();
 
+	require_once "MemberLogic.php";
+
 	//メールアドレス&パスワードのバリデーション
 	/**
 	 * 登録したメールアドレス・パスワードと一致しない場合もエラーを返す処理
 	 */
 	
+	//emailもしくはpasswordが空だった時のエラー
 	if ( !$_POST["email"] || !$_POST["password"] ){
 		$errmessage[] = "IDもしくはパスワードが間違っています";
 	}
 
-	$_SESSION["email"] = htmlspecialchars($_POST["email"], ENT_QUOTES);  //無害化した文字列を入力
-	$_SESSION["password"] = htmlspecialchars($_POST["password"], ENT_QUOTES);  //無害化した文字列を代入
+	//$_SESSION["email"] = htmlspecialchars($_POST["email"], ENT_QUOTES);  //無害化した文字列を入力
+	//$_SESSION["password"] = htmlspecialchars($_POST["password"], ENT_QUOTES);  //無害化した文字列を代入
 
 	if ( count($errmessage) > 0 ){
 		//エラーがあった場合はログイン画面に戻す
@@ -22,8 +25,14 @@
 	}
 
 	//ログイン成功時の処理
-	echo "ログインしました！"
+	$result = MemberLogic::login($_POST["email"], $_POST["password"]);
 
+	//ログイン失敗時の処理
+	if( !$result ){
+		header("Location: login.php");
+		return;
+	}
+	echo "ログイン成功です"
 
 ?>
 

@@ -4,6 +4,8 @@
 	//var_dump($_SESSION["errmessage"]);  //セッションが入っているかの確認
 
 	$errmessage = $_SESSION["errmessage"];  //エラーメッセージを変数に格納
+	//$errmessage = $_SESSION;
+
 
 	$_SESSION = array();  //空の配列でセッションを初期化する
 	session_destroy();

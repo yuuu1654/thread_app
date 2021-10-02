@@ -1,8 +1,6 @@
 <?php
-	//メンバーを登録する処理を行うクラス
-	
+	//メンバーを登録する&検索する処理を行うクラス
 
-	
 	require_once "dbconnect.php";
 
 	class MemberLogic
@@ -35,7 +33,10 @@
 				$array[] = $memberData["gender"];    //gender
 				$array[] = $memberData["pref_name"]; //pref_name
 				$array[] = $memberData["address"];   //address
-				$array[] = $memberData["password"];  //password
+
+				//$array[] = $memberData["password"];  //password
+				$array[] = password_hash($memberData["password"], PASSWORD_DEFAULT);  //ハッシュ化したパスワード
+
 				$array[] = $memberData["email"];     //email
 				try {
 					//データベースに接続する
@@ -48,16 +49,70 @@
 					return $result;
 				}
 			}
-
-
-
-
-			
-
-
-
 		}
 
-		
+		/**
+		 * ログイン処理
+		 * @param string $email
+		 * @param string $password
+		 * @return bool $result
+		 */
+		public static function login($email, $password){
+			//結果
+			$result = false;
+			//メンバーをemailから検索して取得
+			$member = self::getMemberByEmail($email);
+
+			//var_dump($member); //デバッグ表示用
+			//return;
+
+			//メールアドレスで検索をかけてメンバーが見つからなかった時の処理
+			if ( !$member ){  
+				$_SESSION["msg"] = "IDもしくはパスワードが間違っています";
+				return $result;
+			}
+
+			//パスワードの照会
+			if (password_verify($password, $member["password"])){
+				//ログイン成功
+				session_regenerate_id(true);
+				$_SESSION["login_member"] = $member;
+				$result = true;
+				return $result;
+			}
+
+			//パスワードの紹介に失敗した時はエラーを返す
+			$_SESSION["msg"] = "IDもしくはパスワードが間違っています";
+			return $result;
+		}
+
+
+		/**
+		 * emailからメンバーを取得
+		 * @param string $email
+		 * @return array | bool  $member | false (成功したらメンバーの配列データ、失敗したらfalseを返す)
+		 */
+		public static function getMemberByEmail($email){
+			//SQLの準備
+			//SQLの実行
+			//SQLの結果を返す
+
+			$sql = 'SELECT * FROM members WHERE email = ?';
+
+			//emailを配列に入れる
+			$array = [];
+			$array[] = $email;
+
+			try {
+				$stmt = connect()->prepare($sql);
+				$stmt->execute($array);
+				
+				//SQLの結果を返す
+				$member = $stmt->fetch();
+				return $member;
+			} catch(\Exception $e) {
+				return false;
+			}
+		}
 	}
 ?>
