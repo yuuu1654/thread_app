@@ -3,6 +3,9 @@
 	$mode = "input";
 	$errmessage = array();  //エラーメッセージ用の配列を初期化
 	require_once "MemberLogic.php";  //会員登録の処理を行うクラスの読み込み
+	require_once "functions.php";    //XSS・csrf&２重登録防止のセキュリティクラスの読み込み
+
+	
 
 
 	if( isset($_POST["back"]) && $_POST["back"] ){
@@ -98,6 +101,14 @@
 		if( !$hasCreated ){
 			$errmessage[] = "重複したメールアドレスです";
 		}
+
+		//トークンを受け取る
+		$token = filter_input(INPUT_POST, "csrf_token");
+		//トークンがない、もしくは一致しない場合に処理を中止
+		if ( !isset($_SESSION["csrf_token"]) || $token !== $_SESSION["csrf_token"]){
+			exit("不正なリクエスト");
+		}
+		unset($_SESSION["csrf_token"]);  //セッションを削除する
 
 		//エラーメッセージの有無でモード変数の切り替え
 		if( $errmessage ){
@@ -261,6 +272,7 @@
 				住所　　　　　　<?php echo $_SESSION["pref_name"] ?><?php echo $_SESSION["address"] ?><br>
 				パスワード　　　セキュリティのため非表示<br>
 				メールアドレス　<?php echo $_SESSION["email"] ?><br>
+				<input type="hidden" name="csrf_token" value="<?php echo h(setToken()); ?>">
 				<div class="button">
 					<input type="submit" class="btn btn-primary btn-lg" name="signup_done" value="登録完了"><br>
 					<input type="submit" class="btn btn-secondary btn-lg" name="back" value="前に戻る">
