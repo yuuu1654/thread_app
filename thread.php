@@ -16,5 +16,23 @@
 	<!-- ①スレッドタイトルと登録日時を表示 -->
 	<!-- ②スレッド作者名・作成者コメント・登録日時を表示 -->
 	<!-- ログイン時のみコメント投稿フォーム・コメントするボタンを表示 -->
+
+	<header>
+		<div class="header-logo">
+		
+		</div>
+		<div class="header-menus">
+			<!-- 新規スレッド作成 -->
+			<div class="button">
+				<input type="submit" class="btn btn-secondary btn-lg" onclick="location.href='thread_regist.php'" value="新規スレッド作成">
+			</div>
+		</div>
+	</header>
+	
+	<main>
+		<div class="container">
+			<h1>⭕️⭕️掲示板</h1>
+		</div>
+	</main>
 </body>
 </html>
