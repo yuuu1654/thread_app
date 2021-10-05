@@ -6,7 +6,7 @@
 	class MemberLogic
 	{
 		/**
-		 * メンバーを登録する
+		 * [メンバーを登録する]
 		 * @param array $memberData
 		 * @return bool $result
 		 */
@@ -51,8 +51,11 @@
 			}
 		}
 
+
+
 		/**
-		 * ログイン処理
+		 * [ログイン処理]
+		 * すべての条件を満たしたメンバーがいたらセッションに保存して結果をtrueで返す
 		 * @param string $email
 		 * @param string $password
 		 * @return bool $result
@@ -71,24 +74,23 @@
 				$_SESSION["msg"] = "IDもしくはパスワードが間違っています";
 				return $result;
 			}
-
 			//パスワードの照会
 			if (password_verify($password, $member["password"])){
 				//ログイン成功
-				session_regenerate_id(true);
-				$_SESSION["login_member"] = $member;
+				session_regenerate_id(true);          //セッションハイジャック対策
+				$_SESSION["login_member"] = $member;  //emailの照会で見つかり、パスワードも一致したメンバーをセッションに保存
 				$result = true;
 				return $result;
 			}
-
 			//パスワードの照会に失敗した時はエラーを返す
 			$_SESSION["msg"] = "IDもしくはパスワードが間違っています";
 			return $result;
 		}
 
 
+
 		/**
-		 * emailからメンバーを取得
+		 * [emailからメンバーを取得]
 		 * @param string $email
 		 * @return array | bool  $member | false (成功したらメンバーの配列データ、失敗したらfalseを返す)
 		 */
@@ -114,5 +116,34 @@
 				return false;
 			}
 		}
+
+
+
+		/**
+		 * [ログインチェック]
+		 * @param void
+		 * @return bool $result
+		 */
+		public static function checkLogin(){
+			$result = false;
+
+			//セッションにログインユーザーが入っていなかったらfalse
+			if (isset($_SESSION["login_member"]) && $_SESSION["login_member"]["id"] > 0){
+				return $result = true;
+			}
+			return $result;
+		}
+
+
+		/**
+		 * ログアウト処理
+		 */
+		public static function logout(){
+			//セッション変数をすべて解除する
+			$_SESSION = array();  
+
+			session_destroy();
+		}
+		
 	}
 ?>

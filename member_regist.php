@@ -11,7 +11,9 @@
 	if( isset($_POST["back"]) && $_POST["back"] ){
 		//何もしない
 	}else if( isset($_POST["confirm"]) && $_POST["confirm"] ){
-		//確認画面
+		/**
+		 * 確認画面
+		 */
 		
 
 		//氏名(姓)のバリデーション
@@ -58,7 +60,7 @@
 			$errmessage[] = "パスワード確認は入力必須です";
 		}else if( mb_strlen($_POST["password_confirmation"]) > 20 || mb_strlen($_POST["password_confirmation"]) < 8 ){
 			$errmessage[] = "パスワード確認は半角英数字8～20文字以内で入力してください";
-		}else if( !$_POST["password_confirmation"] === $_POST["password"] ){ //データ型も比較
+		}else if( $_POST["password_confirmation"] !== $_POST["password"] ){ //データ型も比較
 			$errmessage[] = "入力した文字がパスワードと一致しません";
 		}
 		$_SESSION["password_confirmation"] = htmlspecialchars($_POST["password_confirmation"], ENT_QUOTES);  //無害化した文字列を代入
@@ -102,13 +104,16 @@
 			$errmessage[] = "重複したメールアドレスです";
 		}
 
-		//トークンを受け取る
-		$token = filter_input(INPUT_POST, "csrf_token");
-		//トークンがない、もしくは一致しない場合に処理を中止
-		if ( !isset($_SESSION["csrf_token"]) || $token !== $_SESSION["csrf_token"]){
-			exit("不正なリクエスト");
-		}
-		unset($_SESSION["csrf_token"]);  //セッションを削除する
+		/**
+		 * 完了画面がうまく表示されない為、一旦コメントアウトしました。
+		 */
+		// //トークンを受け取る
+		// $token = filter_input(INPUT_POST, "csrf_token");
+		// //トークンがない、もしくは一致しない場合に処理を中止
+		// if ( !isset($_SESSION["csrf_token"]) || $token !== $_SESSION["csrf_token"]){
+		// 	exit("不正なリクエスト");
+		// }
+		// unset($_SESSION["csrf_token"]);  //セッションを削除する
 
 		//エラーメッセージの有無でモード変数の切り替え
 		if( $errmessage ){
@@ -250,8 +255,10 @@
 		<?php } else if( $mode == "confirm"){ ?>
 			<!-- 確認画面 -->
 			<h1>会員情報確認画面</h1>
-			<!-- 連想配列の中身を表示 -->
-			<?php print_r($_POST); ?>
+			<?php 
+				//連想配列の中身を表示
+				print_r($_POST); 
+			?>
 
 			<?php
 				if( $errmessage ){

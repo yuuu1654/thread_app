@@ -4,7 +4,8 @@
 	//var_dump($_SESSION["errmessage"]);  //セッションが入っているかの確認
 
 	$errmessage = $_SESSION["errmessage"];  //エラーメッセージを変数に格納
-	//$errmessage = $_SESSION;
+	//デバッグ表示用
+	var_dump($errmessage);
 
 
 	$_SESSION = array();  //空の配列でセッションを初期化する
@@ -50,18 +51,19 @@
 			echo implode("<br>", $errmessage);
 			echo "</div>";
 		}
-
-
-		
+		//デバッグ用表示
+		var_dump($errmessage);
 	?>
+	
 	<div class="container">
 		<div class="mx-auto" style="width:400px;">
 			<form action="./top.php" method="post">
+				<!-- メールアドレスのみ初期値を表示する -->
 				<p>
 					メールアドレス（ID）<input type="email"　class="form-control" name="email" value="<?php echo $_SESSION["email"] ?>"><br>
 				</p>
 				<p>
-					パスワード　　　　　<input type="password"　class="form-control" name="password" value="<?php echo $_SESSION["password"] ?>"><br>
+					パスワード　　　　　<input type="password"　class="form-control" name="password" value=""><br>
 				</p>
 				<div class="button">
 					<input type="submit" class="btn btn-primary btn-lg" name="login" value="ログイン">
