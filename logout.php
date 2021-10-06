@@ -26,22 +26,38 @@
 	<title>トップページ</title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 	<style>
+		body{
+			background-color: #CCFFFF;
+		}
+		header{
+			height: 80px;
+			background-color: #FFCC99; 
+		}
 		.header-logo {
 			float: left;
 		}
 		.header-menus {
 			float: right;
 		}
-		.header-menus div {
+		.header-menus .button {
 			float: left;
-			padding-left: 15px;
+			
+			padding: 20px 20px 0 0;
 		}
 		div.button{
 			text-align: center;
 		}
+		main{
+			background-color: #CCFFFF;
+		}
 		.container{
 			text-align: center;
 			padding-top: 200px;
+		}
+		footer{
+			padding-top: 300px;
+			padding-bottom: 30px;
+			background-color: #CCFFFF;
 		}
 	</style>
 </head>

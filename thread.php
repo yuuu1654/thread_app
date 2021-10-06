@@ -4,6 +4,43 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>スレッド一覧ページ</title>
+	<!-- Bootstrapの読み込み -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+	<style>
+		body{
+			background-color: #CCFFFF;
+		}
+		header{
+			height: 80px;
+			background-color: #FFCC99; 
+		}
+		.header-logo {
+			float: left;
+		}
+		.header-menus {
+			float: right;
+		}
+		.header-menus .button {
+			float: left;
+			
+			padding: 20px 20px 0 0;
+		}
+		div.button{
+			text-align: center;
+		}
+		main{
+			background-color: #CCFFFF;
+		}
+		.container{
+			text-align: center;
+			padding-top: 200px;
+		}
+		footer{
+			padding-top: 300px;
+			padding-bottom: 30px;
+			background-color: #CCFFFF;
+		}
+	</style>
 </head>
 <body>
 	<!-- step4 画面仕様書 -->
@@ -31,8 +68,18 @@
 	
 	<main>
 		<div class="container">
-			<h1>⭕️⭕️掲示板</h1>
+			<form action="">
+				<!-- 検索フォーム -->
+				<input type="text">
+				<!-- 検索ボタン -->
+				<input type="submit">
+			</form>
 		</div>
 	</main>
+	<footer>
+		<div class="button">
+			<input type="submit" class="btn btn-secondary btn-lg" onclick="location.href='top.php'" value="トップに戻る">
+		</div>
+	</footer>
 </body>
 </html>
