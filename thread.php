@@ -1,3 +1,10 @@
+<?php
+	session_start();
+	require_once "ThreadLogic.php";  //スレッド登録の処理を行うクラスの読み込み
+	require_once "functions.php";    //XSS・csrf&２重登録防止のセキュリティクラスの読み込み
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,7 +43,7 @@
 			padding-top: 200px;
 		}
 		footer{
-			padding-top: 300px;
+			padding-top: 150px;
 			padding-bottom: 30px;
 			background-color: #CCFFFF;
 		}
@@ -72,8 +79,13 @@
 				<!-- 検索フォーム -->
 				<input type="text">
 				<!-- 検索ボタン -->
-				<input type="submit">
-			</form>
+				<input type="submit" name="" value="スレッド検索">
+			</form><br>
+		</div>
+		<div class="container">
+			<!-- スレッドテーブルからid/title/created_atを取得して表示する。その際、タイトルをリンクにしてクリックすると詳細ページに遷移する -->
+			ID: <?php  ?>
+			<a href="/thread_detail.php?id=<?php //DBから取得したスレッドのid ?>">スレッドタイトル</a>
 		</div>
 	</main>
 	<footer>

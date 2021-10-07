@@ -2,6 +2,8 @@
 	session_start();
 	$mode = "input";
 	$errmessage = array();  //エラーメッセージ用の配列を初期化
+	require_once "ThreadLogic.php";  //スレッド登録の処理を行うクラスの読み込み
+	require_once "functions.php";    //XSS・csrf&２重登録防止のセキュリティクラスの読み込み
 
 
 	if( isset($_POST["back"]) && $_POST["back"] ){
@@ -41,7 +43,7 @@
 
 	//確認画面からスレッド作成ボタンが押されたらDBに登録してスレッド一覧画面(thread.php)に遷移する
 	}else if( isset($_POST["create_thread"]) && $_POST["create_thread"] ){
-		
+		$_SESSION["member_id"] = 1;  //デバッグ用
 		$hasCreated = ThreadLogic::createThread($_SESSION);  //ThreadLogicのメソッドを呼び出す
 
 		//$resultの結果がfalseで返ってきたらエラーメッセージを追加する
@@ -159,6 +161,7 @@
 				<input type="submit" class="btn btn-primary btn-lg" name="create_thread" value="スレッドを作成する"><br>
 				<input type="submit" class="btn btn-secondary btn-lg" name="back" value="前に戻る">
 			</div>
+			
 			<!-- <button type="button" onclick="history.back()">戻る</button> -->
 		</form>
 	<?php } ?>

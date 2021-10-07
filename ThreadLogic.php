@@ -15,11 +15,13 @@
 			$result = false;
 
 			//member_idも登録する(まだ実装出来ていない)
-			$sql = 'INSERT INTO threads(title, content) VALUES(?, ?)';
+			$sql = 'INSERT INTO threads(member_id, title, content, created_at) VALUES(?, ?, ?, ?)';
 			//スレッドデータを配列に入れる
 			$array = [];
-			$array[] = $threadData["title"];    //title
-			$array[] = $threadData["content"];  //content
+			$array[] = $threadData["member_id"];      //member_id
+			$array[] = $threadData["title"];          //title
+			$array[] = $threadData["content"];        //content
+			$array[] = $threadData["created_at"];     //created_at
 			
 			try {
 				//データベースに接続する

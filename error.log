@@ -10,4 +10,32 @@ Stack trace:
 Stack trace:
 #0 /Applications/MAMP/htdocs/php/MemberLogic.php(44): PDOStatement->execute(Array)
 #1 /Applications/MAMP/htdocs/php/member_regist.php(98): MemberLogic::createMember(Array)
+#2 {main}PDOException: SQLSTATE[HY000]: General error: 1364 Field 'member_id' doesn't have a default value in /Applications/MAMP/htdocs/php/ThreadLogic.php:27
+Stack trace:
+#0 /Applications/MAMP/htdocs/php/ThreadLogic.php(27): PDOStatement->execute(Array)
+#1 /Applications/MAMP/htdocs/php/thread_regist.php(47): ThreadLogic::createThread(Array)
+#2 {main}PDOException: SQLSTATE[HY000]: General error: 1364 Field 'member_id' doesn't have a default value in /Applications/MAMP/htdocs/php/ThreadLogic.php:27
+Stack trace:
+#0 /Applications/MAMP/htdocs/php/ThreadLogic.php(27): PDOStatement->execute(Array)
+#1 /Applications/MAMP/htdocs/php/thread_regist.php(47): ThreadLogic::createThread(Array)
+#2 {main}PDOException: SQLSTATE[HY000]: General error: 1364 Field 'member_id' doesn't have a default value in /Applications/MAMP/htdocs/php/ThreadLogic.php:27
+Stack trace:
+#0 /Applications/MAMP/htdocs/php/ThreadLogic.php(27): PDOStatement->execute(Array)
+#1 /Applications/MAMP/htdocs/php/thread_regist.php(47): ThreadLogic::createThread(Array)
+#2 {main}PDOException: SQLSTATE[HY000]: General error: 1364 Field 'member_id' doesn't have a default value in /Applications/MAMP/htdocs/php/ThreadLogic.php:27
+Stack trace:
+#0 /Applications/MAMP/htdocs/php/ThreadLogic.php(27): PDOStatement->execute(Array)
+#1 /Applications/MAMP/htdocs/php/thread_regist.php(47): ThreadLogic::createThread(Array)
+#2 {main}PDOException: SQLSTATE[HY000]: General error: 1364 Field 'member_id' doesn't have a default value in /Applications/MAMP/htdocs/php/ThreadLogic.php:27
+Stack trace:
+#0 /Applications/MAMP/htdocs/php/ThreadLogic.php(27): PDOStatement->execute(Array)
+#1 /Applications/MAMP/htdocs/php/thread_regist.php(47): ThreadLogic::createThread(Array)
+#2 {main}PDOException: SQLSTATE[HY000]: General error: 1364 Field 'member_id' doesn't have a default value in /Applications/MAMP/htdocs/php/ThreadLogic.php:27
+Stack trace:
+#0 /Applications/MAMP/htdocs/php/ThreadLogic.php(27): PDOStatement->execute(Array)
+#1 /Applications/MAMP/htdocs/php/thread_regist.php(47): ThreadLogic::createThread(Array)
+#2 {main}PDOException: SQLSTATE[HY000]: General error: 1364 Field 'member_id' doesn't have a default value in /Applications/MAMP/htdocs/php/ThreadLogic.php:27
+Stack trace:
+#0 /Applications/MAMP/htdocs/php/ThreadLogic.php(27): PDOStatement->execute(Array)
+#1 /Applications/MAMP/htdocs/php/thread_regist.php(47): ThreadLogic::createThread(Array)
 #2 {main}

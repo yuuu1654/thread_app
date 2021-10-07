@@ -29,6 +29,9 @@
 
 
 
+		/**
+		 * 警告：count（）：パラメーターは、Countableを実装する配列またはオブジェクトである必要があります。
+		 */
 		if ( count($_SESSION["msg"]) > 0 ){
 			//メールアドレスの検索または、パスワードの照会に失敗してエラーがあった場合はログイン画面に戻す(MemberLogic.php)
 			$_SESSION["errmessage"] = $_SESSION["msg"];

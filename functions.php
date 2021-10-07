@@ -20,7 +20,7 @@
 		//フォームからそのトークンを送信
 		//送信後の画面でそのトークンを照会
 		//処理が完了したらトークンを削除
-		session_start();
+		
 		$csrf_token = bin2hex(random_bytes(32));  //暗号を生成
 		$_SESSION["csrf_token"] = $csrf_token;
 

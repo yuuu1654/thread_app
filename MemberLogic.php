@@ -25,7 +25,7 @@
 					return $result;  //処理を止める
 			} else {
 				//登録されていなければinsert (DBに登録する処理)
-				$sql2 = 'INSERT INTO members(name_sei, name_mei, gender, pref_name, address, password, email) VALUES(?, ?, ?, ?, ?, ?, ?)';
+				$sql2 = 'INSERT INTO members(name_sei, name_mei, gender, pref_name, address, password, email, created_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?)';
 				//会員データを配列に入れる
 				$array = [];
 				$array[] = $memberData["name_sei"];  //name_sei
@@ -38,6 +38,7 @@
 				$array[] = password_hash($memberData["password"], PASSWORD_DEFAULT);  //ハッシュ化したパスワード
 
 				$array[] = $memberData["email"];     //email
+				$array[] = $memberData["created_at"];     //created_at
 				try {
 					//データベースに接続する
 					$stmt = connect()->prepare($sql2);
