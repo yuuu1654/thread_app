@@ -12,7 +12,7 @@
 		//何もしない
 	}else if( isset($_POST["login"]) && $_POST["login"] ){
 		/**
-		 * トップ画面
+		 * トップ画面に遷移
 		 */
 
 		//ログインIDのバリデーション
@@ -122,7 +122,7 @@
 			<h1>管理画面</h1>
 			<div class="container">
 			<div class="mx-auto" style="width:400px;">
-				<form action="./top.php" method="post">
+				<form action="" method="post">
 					<!-- メールアドレスのみ初期値を表示する -->
 					<p>
 						メールアドレス（ID）<input type="email"　class="form-control" name="email" value=""><br>
@@ -170,16 +170,6 @@
 					<h1>⭕️⭕️掲示板</h1>
 				</div>
 			</main>
-			
-		<?php } else { ?>
-			<!-- 完了画面 -->
-			<div class="container">
-				<h1>会員登録完了</h1>
-				<p class="done">会員登録が完了しました。</p>
-			</div>
-			<div class="button">
-				<input type="submit" class="btn btn-primary btn-lg" onclick="location.href='top.php'" value="トップに戻る">
-			</div>
 		<?php } ?>
 </body>
 </html>

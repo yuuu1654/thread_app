@@ -21,8 +21,8 @@
 			$member = $stmt->fetch();
 
 			if ($member['email'] === $memberData["email"]) {
-					//$msg = '同じメールアドレスが存在します。';
-					return $result;  //処理を止める
+				//$msg = '同じメールアドレスが存在します。';
+				return $result;  //処理を止める
 			} else {
 				//登録されていなければinsert (DBに登録する処理)
 				$sql2 = 'INSERT INTO members(name_sei, name_mei, gender, pref_name, address, password, email, created_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?)';
@@ -67,8 +67,8 @@
 			//メンバーをemailから検索して取得
 			$member = self::getMemberByEmail($email);
 
-			//var_dump($member); //デバッグ表示用
-			//return;
+			var_dump($member); //デバッグ表示用
+			return;
 
 			//メールアドレスで検索をかけてメンバーが見つからなかった時の処理
 			if ( !$member ){  
@@ -145,6 +145,5 @@
 
 			session_destroy();
 		}
-		
 	}
 ?>

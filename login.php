@@ -1,16 +1,12 @@
 <?php
 	session_start();
+	$errmessage = $_SESSION;  //エラーメッセージを変数に格納
 
-	//var_dump($_SESSION["errmessage"]);  //セッションが入っているかの確認
-
-	$errmessage = $_SESSION["errmessage"];  //エラーメッセージを変数に格納
 	//デバッグ表示用
 	var_dump($errmessage);
 
-
 	$_SESSION = array();  //空の配列でセッションを初期化する
 	session_destroy();
-
 ?>
 
 <!DOCTYPE html>
@@ -46,18 +42,18 @@
 	<h1>ログイン</h1><br>
 	<?php
 		//エラーメッセージがあれば表示する
-		if( $errmessage ){
+		if( $errmessage["msg"] ){
 			echo '<div class="alert alert-danger" role="alert">';
-			echo implode("<br>", $errmessage);
+			echo implode("<br>", $errmessage["msg"]);
 			echo "</div>";
 		}
 		//デバッグ用表示
-		var_dump($errmessage);
+		var_dump($errmessage["msg"]);
 	?>
 	
 	<div class="container">
 		<div class="mx-auto" style="width:400px;">
-			<form action="./top.php" method="post">
+			<form action="top.php" method="post">
 				<!-- メールアドレスのみ初期値を表示する -->
 				<p>
 					メールアドレス（ID）<input type="email"　class="form-control" name="email" value="<?php echo $_SESSION["email"] ?>"><br>

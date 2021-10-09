@@ -1,44 +1,28 @@
 <?php
-	$errmessage = array();  //エラーメッセージ用の配列を初期化
 	session_start();
-
+	$errmessage = array();  //エラーメッセージ用の配列を初期化
+	
 	require_once "MemberLogic.php";
 	require_once "functions.php";    //XSS・csrf&２重登録防止のセキュリティクラスの読み込み
-
-	//メールアドレス&パスワードのバリデーション
-	/**
-	 * 登録したメールアドレス・パスワードと一致しない場合もエラーを返す処理
-	 */
-
 
 	
 	// 「ログイン」ボタンが押されて、POST通信のとき
 	if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === 'POST') {
 		//emailもしくはpasswordが空だった時のエラー
 		if ( !$_POST["email"] || !$_POST["password"] ){
-			$_SESSION["errmessage"] = "IDもしくはパスワードが空です";
-			header("Location: login.php");
-			return;
+			$errmessage["msg"] = "IDもしくはパスワードが空です";
 		}
-		
-
-		/**
-		 * この一文の位置は本当にここで正しいの？？？？？？？？
-		 */
-		$login_member = $_SESSION["login_member"];
-
 
 
 		/**
 		 * 警告：count（）：パラメーターは、Countableを実装する配列またはオブジェクトである必要があります。
 		 */
-		if ( count($_SESSION["msg"]) > 0 ){
+		if ( count($errmessage) > 0 ){
 			//メールアドレスの検索または、パスワードの照会に失敗してエラーがあった場合はログイン画面に戻す(MemberLogic.php)
-			$_SESSION["errmessage"] = $_SESSION["msg"];
+			$_SESSION = $errmessage;  //セッションにエラーメッセージを保存
 			header("Location: login.php");
 			return;
 		}
-
 
 
 		//ログイン成功時の処理
@@ -49,15 +33,11 @@
 			return;
 		}
 		echo "ログイン成功です";
+		$login_member = $_SESSION["login_member"];  //セッションにあるログインユーザーのデータを変数に格納
 		//デバッグ用表示
 		var_dump($login_member);
-		//var_dump($errmessage);
-
-
 
 	}else{  //GETリクエストだった場合の処理
-
-
 
 		//ログインしているか判定して、していなかったらlogout.phpに遷移する
 		$result = MemberLogic::checkLogin();
@@ -66,6 +46,8 @@
 			header("Location: logout.php");
 			return;
 		}
+
+		$login_member = $_SESSION["login_member"];  //セッションにあるログインユーザーのデータを変数に格納
 
 	}
 

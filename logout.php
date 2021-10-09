@@ -2,7 +2,7 @@
 	session_start();
 	require_once "MemberLogic.php";
 
-	$login_err = isset($_SESSION["login_err"]) ? $_SESSION["login_err"] : null;  //三項演算子での条件分岐
+	$login_err = isset($_SESSION["login_err"]) ? $_SESSION["login_err"] : null;  //三項演算子での条件分岐 top.php 45
 	unset($_SESSION["login_err"]);
 
 	// 「ログアウト」ボタンが押されて、POST通信のとき
@@ -94,6 +94,11 @@
 		}
 		var_dump($login_err);
 	?>
+
+	<?php if (isset($login_err)) : ?>
+    <p><?php echo $login_err; ?></p>
+	<?php endif; ?>
+
 	<main>
 		<div class="container">
 			<h1>⭕️⭕️掲示板</h1>
