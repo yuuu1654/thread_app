@@ -67,9 +67,6 @@
 			//メンバーをemailから検索して取得
 			$member = self::getMemberByEmail($email);
 
-			var_dump($member); //デバッグ表示用
-			return;
-
 			//メールアドレスで検索をかけてメンバーが見つからなかった時の処理
 			if ( !$member ){  
 				$_SESSION["msg"] = "IDもしくはパスワードが間違っています";

@@ -34,5 +34,37 @@
 				return $result;
 			}
 		}
+
+
+		/**
+		 * [キーワードからスレッド検索して取得]
+		 * @param string $word(セッションデータ)
+		 * @return array | bool  $result | false (成功したら検索したスレッドの配列データ、失敗したらfalseを返す)
+		 */
+		public static function searchThreads($word){
+			$result = false;
+
+			//SQLの準備
+			//SQLの実行
+			//SQLの結果を返す
+
+			//$sql = 'SELECT * FROM threads WHERE title = ? OR content LIKE "%?%" ORDER BY created_at DESC';
+			$sql = 'SELECT * FROM threads WHERE title = ?';
+
+			//emailを配列に入れる
+			$array = [];
+			$array[] = $word["search_word"];
+
+			try {
+				$stmt = connect()->prepare($sql);
+				$stmt->execute($array);
+				
+				//SQLの結果を返す
+				$result = $stmt->fetchAll();
+				return $result;
+			} catch(\Exception $e) {
+				return false;
+			}
+		}
 	}
 ?>

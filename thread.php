@@ -1,7 +1,18 @@
 <?php
 	session_start();
+	$errmessage = array();  //エラーメッセージ用の配列を初期化
 	require_once "ThreadLogic.php";  //スレッド登録の処理を行うクラスの読み込み
 	require_once "functions.php";    //XSS・csrf&２重登録防止のセキュリティクラスの読み込み
+
+	//空でスレッド検索ボタンを押したらエラーを返す
+	// if( !$_POST["word"] ){
+	// 	$errmessage[] = "キーワードを入力して下さい";
+	// }
+
+	if( isset($_POST["word"]) && $_POST["word"] ){
+		$_SESSION["search_word"]= $_POST["word"];
+	}
+
 ?>
 
 
@@ -29,7 +40,6 @@
 		}
 		.header-menus .button {
 			float: left;
-			
 			padding: 20px 20px 0 0;
 		}
 		div.button{
@@ -63,7 +73,7 @@
 
 	<header>
 		<div class="header-logo">
-		
+
 		</div>
 		<div class="header-menus">
 			<!-- 新規スレッド作成 -->
@@ -75,17 +85,35 @@
 	
 	<main>
 		<div class="container">
-			<form action="">
+			<form action="thread.php"　method="POST">
 				<!-- 検索フォーム -->
-				<input type="text">
+				<input type="text" name="word">
 				<!-- 検索ボタン -->
-				<input type="submit" name="" value="スレッド検索">
+				<input type="submit" name="search" value="スレッド検索">
 			</form><br>
 		</div>
 		<div class="container">
 			<!-- スレッドテーブルからid/title/created_atを取得して表示する。その際、タイトルをリンクにしてクリックすると詳細ページに遷移する -->
-			ID: <?php  ?>
-			<a href="/thread_detail.php?id=<?php //DBから取得したスレッドのid ?>">スレッドタイトル</a>
+			<?php if( $_POST["search"] ){ ?>
+				<?php 
+					//連想配列の中身を表示
+					print_r($_POST); 
+					//ThreadLogicのsearchThreadsメソッドを呼び出す
+					$result = ThreadLogic::searchThreads($_SESSION);  
+					var_dump($result);
+				?>
+				<!-- 検索結果をidの小順でforeach文で一覧表示する -->
+				<table>
+					<?php foreach($result as $column): ?>
+						<tr>
+							<td>ID: <?php echo $column["id"] ?></td>
+							<td><?php echo $column["title"] ?></td>
+							<td><?php echo $column["cteated_at"] ?></td>
+						</tr>
+					<?php endforeach; ?>
+				</table>
+			<?php } ?>
+
 		</div>
 	</main>
 	<footer>
