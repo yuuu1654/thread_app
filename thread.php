@@ -100,13 +100,13 @@
 					$result = ThreadLogic::searchThreads($_SESSION);  
 					var_dump($result);
 				?>
-				<!-- 検索結果をidの小順でforeach文で一覧表示する -->
+				<!-- 検索結果を登録した日付の降順でforeach文で一覧表示する -->
 				<table>
 					<?php foreach($result as $column): ?>
 						<tr>
 							<td>ID: <?php echo h($column["id"]) ?></td>
-							<td><?php echo h($column["title"]) ?></td>
-							<td><?php echo h($column["created_at"]) ?>></td>
+							<td><a href="thread_detail.php?id=<?php echo h($column["id"]) ?>"><?php echo h($column["title"]) ?></a></td>
+							<td><?php echo h($column["created_at"]) ?></td>
 						</tr>
 					<?php endforeach; ?>
 				</table>

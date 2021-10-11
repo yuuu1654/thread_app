@@ -66,5 +66,35 @@
 				return false;
 			}
 		}
+
+
+		/**
+		 * [idからスレッド詳細を取得]
+		 * @param string $id
+		 * @return array | bool  $thread | false (成功したらメンバーの配列データ、失敗したらfalseを返す)
+		 */
+		public static function getThreadById($id){
+			//SQLの準備
+			//SQLの実行
+			//SQLの結果を返す
+
+			//$sql = 'SELECT * FROM threads INNER JOIN members ON threads.member_id = members.id WHERE id = ?';
+			$sql = 'SELECT * FROM threads WHERE id = ?';
+
+			//idを配列に入れる
+			$array = [];
+			$array[] = (int)$id;
+
+			try {
+				$stmt = connect()->prepare($sql);
+				$stmt->execute($array);
+				
+				//SQLの結果を返す
+				$thread = $stmt->fetch();
+				return $thread;
+			} catch(\Exception $e) {
+				return false;
+			}
+		}
 	}
 ?>
