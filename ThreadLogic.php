@@ -48,8 +48,8 @@
 			//SQLの実行
 			//SQLの結果を返す
 
-			//$sql = 'SELECT * FROM threads WHERE title = ? OR content LIKE "%?%" ORDER BY created_at DESC';
-			$sql = 'SELECT * FROM threads WHERE title = ?';
+			$sql = 'SELECT * FROM threads WHERE title = ? OR content LIKE "%?%" ORDER BY created_at DESC';
+			//$sql = 'SELECT * FROM threads WHERE title = ?';
 
 			//emailを配列に入れる
 			$array = [];

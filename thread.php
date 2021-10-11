@@ -85,16 +85,14 @@
 	
 	<main>
 		<div class="container">
-			<form action="thread.php"　method="POST">
-				<!-- 検索フォーム -->
+			<form action="" method="post">
 				<input type="text" name="word">
-				<!-- 検索ボタン -->
 				<input type="submit" name="search" value="スレッド検索">
-			</form><br>
+			</form>
 		</div>
 		<div class="container">
 			<!-- スレッドテーブルからid/title/created_atを取得して表示する。その際、タイトルをリンクにしてクリックすると詳細ページに遷移する -->
-			<?php if( $_POST["search"] ){ ?>
+			<?php if( isset($_POST["search"]) && $_POST["search"] ){ ?>
 				<?php 
 					//連想配列の中身を表示
 					print_r($_POST); 
@@ -106,9 +104,9 @@
 				<table>
 					<?php foreach($result as $column): ?>
 						<tr>
-							<td>ID: <?php echo $column["id"] ?></td>
-							<td><?php echo $column["title"] ?></td>
-							<td><?php echo $column["cteated_at"] ?></td>
+							<td>ID: <?php echo h($column["id"]) ?></td>
+							<td><?php echo h($column["title"]) ?></td>
+							<td><?php echo h($column["created_at"]) ?>></td>
 						</tr>
 					<?php endforeach; ?>
 				</table>
