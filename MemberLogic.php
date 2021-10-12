@@ -2,6 +2,8 @@
 	//メンバーを登録する&検索する処理を行うクラス
 
 	require_once "dbconnect.php";
+	require_once "functions.php";    //XSS・csrf&２重登録防止のセキュリティクラスの読み込み
+
 
 	class MemberLogic
 	{
@@ -76,7 +78,7 @@
 			if (password_verify($password, $member["password"])){
 				//ログイン成功
 				session_regenerate_id(true);          //セッションハイジャック対策
-				$_SESSION["login_member"] = $member;  //emailの照会で見つかり、パスワードも一致したメンバーをセッションに保存
+				$_SESSION["login_member"] = h($member);  //emailの照会で見つかり、パスワードも一致したメンバーをセッションに保存
 				$result = true;
 				return $result;
 			}

@@ -3,18 +3,35 @@
 	$errmessage = array();  //エラーメッセージ用の配列を初期化
 	require_once "MemberLogic.php";
 	require_once "ThreadLogic.php";  //スレッド登録の処理を行うクラスの読み込み
+	require_once "CommentLogic.php";  //コメント登録の処理を行うクラスの読み込み
 	require_once "functions.php";    //XSS・csrf&２重登録防止のセキュリティクラスの読み込み
+
+	
+	$login_member = $_SESSION["login_member"];  //セッションにあるログインユーザーのデータを変数に格納
+	var_dump("$login_member");
+	echo $login_member["id"];
+	//コメントのmember_idがログインしているメンバーのidになるようにする
+	$_SESSION["member_id"] = $login_member["id"];
 
 	$id = $_GET["id"];
 	echo $id;
-	$_SESSION["id"] = $id;  //スレッドのidをセッションに保存
-
-	$login_member = h($_SESSION["login_member"]);  //セッションにあるログインユーザーのデータを変数に格納
-	var_dump("$login_member");
-	echo $login_member["name_sei"];
+	$_SESSION["thread_id"] = $id;  //スレッドのidをセッションに保存(コメント作成に利用)
 
 	$thread = ThreadLogic::getThreadById($id);
 	var_dump($thread);
+
+
+	//コメントするボタンが押されたらバリデーションにかけて、OKならDBにコメントを登録する
+	if( isset($_POST["create_comment"]) && $_POST["create_comment"] ){
+		if( !$_POST["comment"] ){
+			$errmessage[] = "コメントを入力して下さい";
+		}else if( mb_strlen($_POST["comment"]) > 500 ){
+			$errmessage[] = "コメントは500文字以内で入力してください";
+		}
+		$_SESSION["comment"] = htmlspecialchars($_POST["comment"], ENT_QUOTES);  //無害化した文字列を代入
+		//コメントを登録
+		CommentLogic::createComment($_SESSION);
+	}
 
 ?>
 
@@ -86,13 +103,27 @@
 		</div>
 	</main>
 	<footer>
+		<?php
+			//バリデーションに引っ掛かったらエラーを表示する
+			if( $errmessage ){
+				echo '<div class="alert alert-danger" role="alert">';
+				echo implode("<br>", $errmessage);
+				echo "</div>";
+			}
+		?>
+		<?php 
+			//ログインしているかどうかチェックする
+			$loginResult = MemberLogic::checkLogin();
+		?>
 		<!-- ログインしていたらフォームからコメントを投稿できるようにする -->
-		<form action="" method="post">
-			<textarea class="form-control" name="comment" id="" cols="40" rows="8" value="<?php echo $_SESSION["comment"] ?>"></textarea><br>
-			<div class="button">
-				<input type="submit" class="btn btn-primary btn-lg" name="create_comment" value="コメントする"><br>
-			</div>
-		</form>
+		<?php if($loginResult): ?>
+			<form action="" method="post">
+				<textarea class="form-control" name="comment" id="" cols="40" rows="8" value="<?php echo $_SESSION["comment"] ?>"></textarea><br>
+				<div class="button">
+					<input type="submit" class="btn btn-primary btn-lg" name="create_comment" value="コメントする"><br>
+				</div>
+			</form>
+		<?php endif; ?>
 	</footer>
 </body>
 </html>
