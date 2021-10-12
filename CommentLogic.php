@@ -3,15 +3,15 @@
 
 	require_once "dbconnect.php";
 
-	class ThreadLogic
+	class CommentLogic
 	{
 		/**
-		 * [スレッドを登録する]
-		 * @param array $threadData
+		 * [コメントを登録する]
+		 * @param array $commentData
 		 * @return bool $result
 		 * member_idとの紐付け
 		 */
-		public static function createThread($threadData){
+		public static function createComment($commentData){
 			$result = false;
 
 			//member_idも登録する(まだ実装出来ていない)
@@ -79,8 +79,7 @@
 			//SQLの実行
 			//SQLの結果を返す
 
-			//$sql = 'SELECT * FROM threads INNER JOIN comments ON threads.id = comments.thread_id WHERE id = ?';
-			$sql = 'SELECT * FROM threads WHERE id = ?';
+			$sql = 'SELECT * FROM threads INNER JOIN comments ON threads.id = comments.thread_id WHERE id = ?';
 			
 			//idを配列に入れる
 			$array = [];

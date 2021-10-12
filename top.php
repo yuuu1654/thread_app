@@ -71,6 +71,9 @@
 		.header-logo {
 			float: left;
 		}
+		.header-logo h2 {
+			line-height: 80px;
+		}
 		.header-menus {
 			float: right;
 		}
@@ -84,20 +87,28 @@
 		}
 		main{
 			background-color: #CCFFFF;
+			padding-bottom: 300px;
+			padding-top: 200px;
 		}
 		.container{
 			text-align: center;
 			padding-top: 200px;
 		}
 		footer{
-			padding-top: 300px;
-			padding-bottom: 30px;
-			background-color: #CCFFFF;
+			height: 80px;
+			margin-bottom: 0px;
+			background-color: #FFCC99;
+		}
+		.footer-menus {
+			float: right;
+		}
+		.footer-menus .button {
+			float: left;
+			padding: 20px 20px 0 0;
 		}
 	</style>
 </head>
 <body>
-	<h1>トップページ（ログイン状態時）</h1>
 	<!-- ログイン状態によって画面を切り替えるd -->
 	<!-- ログイン状態でのトップページ（デフォルト） -->
 	<!-- ヘッダー左に会員氏名を表示、(step2 画面仕様書) -->
@@ -105,7 +116,7 @@
 
 	<header>
 		<div class="header-logo">
-			<p>ようこそ<?php echo h($login_member["name_sei"]) ?><?php echo h($login_member["name_mei"]) ?>さん</p>
+			<h2>ようこそ<?php echo h($login_member["name_sei"]) ?><?php echo h($login_member["name_mei"]) ?>さん</h2>
 		</div>
 		<div class="header-menus">
 			<!-- スレッド一覧ボタン -->
@@ -127,5 +138,13 @@
 			<h1>⭕️⭕️掲示板</h1>
 		</div>
 	</main>
+	<footer>
+		<div class="footer-menus">
+			<!-- 退会ボタン -->
+			<div class="button">
+				<input type="submit" class="btn btn-secondary btn-lg" onclick="location.href='member_withdrawal.php'" value="退会">
+			</div>
+		</div>
+	</footer>
 </body>
 </html>

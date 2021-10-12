@@ -12,7 +12,6 @@
 	if( isset($_POST["word"]) && $_POST["word"] ){
 		$_SESSION["search_word"]= $_POST["word"];
 	}
-
 ?>
 
 
