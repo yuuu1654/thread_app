@@ -26,6 +26,13 @@
 			exit();
 		}
 
+		// //例外処理
+		// try{
+		// 		$db=new PDO('mysql:dbname=④データベース名;host=③ホスト名;charset=utf8','①ユーザー名','②パスワード');
+		// }catch(PDOException $e){
+		// 		print('DB接続エラー:'.$e->getMessage());
+		// }
+
 		
 	}
 
