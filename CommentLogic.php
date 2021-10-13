@@ -3,6 +3,7 @@
 
 	require_once "dbconnect.php";
 
+	//変更しました
 	class CommentLogic
 	{
 		/**
