@@ -114,6 +114,7 @@
 		<?php 
 			//ログインしているかどうかチェックする
 			$loginResult = MemberLogic::checkLogin();
+			var_dump($loginResult);
 		?>
 		<!-- ログインしていたらフォームからコメントを投稿できるようにする -->
 		<?php if($loginResult): ?>

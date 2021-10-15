@@ -32,10 +32,8 @@
 			header("Location: login.php");
 			return;
 		}
-		echo "ログイン成功です";
+		//echo "ログイン成功です";
 		$login_member = $_SESSION["login_member"];  //セッションにあるログインユーザーのデータを変数に格納
-		//デバッグ用表示
-		var_dump($login_member);
 
 	}else{  //GETリクエストだった場合の処理
 

@@ -2,9 +2,6 @@
 	session_start();
 	$errmessage = $_SESSION;  //エラーメッセージを変数に格納
 
-	//デバッグ表示用
-	var_dump($errmessage);
-
 	$_SESSION = array();  //空の配列でセッションを初期化する
 	session_destroy();
 ?>
@@ -47,8 +44,6 @@
 			echo implode("<br>", $errmessage["msg"]);
 			echo "</div>";
 		}
-		//デバッグ用表示
-		var_dump($errmessage["msg"]);
 	?>
 	
 	<div class="container">
