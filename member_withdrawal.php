@@ -1,9 +1,11 @@
 <?php
-	
-
+	session_start();
+	require_once "MemberLogic.php";
+	require_once "functions.php";    //XSS・csrf&２重登録防止のセキュリティクラスの読み込み
 
 	if( isset($_POST["withdrawal"]) && $_POST["withdrawal"] ){
 		//退会した際はDBからその会員をソフトデリートしてトップに戻る
+		MemberLogic::memberWithdrawal($_SESSION);
 		header("Location: top.php");
 		return;
 	}

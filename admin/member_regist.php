@@ -117,7 +117,7 @@
 		if( $errmessage ){
 			$mode = "confirm";
 		}else{
-			header("Location: member.php");  //スレッド一覧ページに遷移する
+			header("Location: member.php");  //会員一覧ページに遷移する
 		}
 
 
@@ -144,7 +144,28 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 	<style>
 		body{
-			padding: 10px;
+
+		}
+		header{
+			height: 80px;
+			background-color: #FFCC99; 
+		}
+		.header-logo {
+			float: left;
+		}
+		.header-logo h1 {
+			line-height: 80px;
+			padding-left: 40px;
+		}
+		.header-menus {
+			float: right;
+		}
+		.header-menus .button {
+			float: left;
+			padding-right: 40px;
+		}
+		main{
+			padding: 50px 10px 10px 10px;
 			max-width: 600px;
 			margin: 0px auto;
 		}
@@ -262,17 +283,11 @@
 
 	<?php } else if( $mode == "confirm"){ ?>
 		<!-- 会員登録確認画面 -->
-		
-		<?php 
-			//連想配列の中身を表示
-			print_r($_POST); 
-		?>
-
 		<?php
-			if( $errmessage ){
-				echo '<div class="alert alert-danger" role="alert">';
-				echo implode("<br>", $errmessage);
-				echo "</div>";
+			if($_SESSION["gender"] == 1){
+				$gender = "男性";
+			}else{
+				$gender = "女性";
 			}
 		?>
 
@@ -290,14 +305,17 @@
 			</div>
 		</header>
 		<main>
+			<?php
+				if( $errmessage ){
+					echo '<div class="alert alert-danger" role="alert">';
+					echo implode("<br>", $errmessage);
+					echo "</div>";
+				}
+			?>
 			<form action="" method="post">
+				ID　　　　　　　登録後に自動採番<br>
 				氏名　　　　　　<?php echo $_SESSION["name_sei"] ?>　<?php echo $_SESSION["name_mei"] ?><br>
-				性別　　　　　　
-				<?php if($_SESSION["gender"] == 1): ?>
-					<p><?php echo "男性" ?></p>
-				<?php else: ?>
-					<p><?php echo "女性" ?></p>
-				<?php endif; ?><br>　　　　　　　　　
+				性別　　　　　　<?php echo $gender ?><br>
 				住所　　　　　　<?php echo $_SESSION["pref_name"] ?><?php echo $_SESSION["address"] ?><br>
 				パスワード　　　セキュリティのため非表示<br>
 				メールアドレス　<?php echo $_SESSION["email"] ?><br>

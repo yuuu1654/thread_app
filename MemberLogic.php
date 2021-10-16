@@ -99,8 +99,8 @@
 			//SQLの実行
 			//SQLの結果を返す
 
-			$sql = 'SELECT * FROM members WHERE email = ?';
-
+			//$sql = 'SELECT * FROM members WHERE email = ?';
+			$sql = 'SELECT * FROM members WHERE email = ? AND deleted_at = NULL';  //退会した会員はログイン出来ないようにする
 			//emailを配列に入れる
 			$array = [];
 			$array[] = $email;
@@ -143,6 +143,63 @@
 			$_SESSION = array();  
 
 			session_destroy();
+		}
+
+
+		/**
+		 * 会員退会処理[ソフトデリート]
+		 * 以下のコードで動かなければbindValueを使う
+		 */
+		public static function memberWithdrawal($memberData){
+			$result = false;
+
+			//deleted_atに現在時刻を記入
+			$sql = 'UPDATE members SET deleted_at = "?" WHERE id = "?"';
+			//UPDATE members SET deleted_at = "?" WHERE id = "?";
+			//スレッドデータを配列に入れる
+			$array = [];
+			$array[] = $memberData["deleted_at"];  //deleted_at
+			$array[] = $memberData["id"];          //id
+			
+			try {
+				//データベースに接続する
+				$stmt = connect()->prepare($sql);
+				$result = $stmt->execute($array);
+				return $result;
+			} catch(\Exception $e) {
+				echo $e;  //エラーを出力
+				error_log($e, 3, "error.log");  //ログを出力する
+				return $result;
+			}
+		}
+
+
+		/**
+		 * [idからメンバー詳細を取得]
+		 * @param string $id
+		 * @return array | bool  $member | false (成功したらメンバーの配列データ、失敗したらfalseを返す)
+		 */
+		public static function getMemberById($id){
+			//SQLの準備
+			//SQLの実行
+			//SQLの結果を返す
+
+			$sql = 'SELECT * FROM members WHERE id = ?';
+			
+			//idを配列に入れる
+			$array = [];
+			$array[] = (int)$id;
+
+			try {
+				$stmt = connect()->prepare($sql);
+				$stmt->execute($array);
+				
+				//SQLの結果を返す
+				$memberDetail = $stmt->fetch();
+				return $memberDetail;
+			} catch(\Exception $e) {
+				return false;
+			}
 		}
 	}
 ?>

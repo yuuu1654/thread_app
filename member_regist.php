@@ -266,16 +266,16 @@
 					echo implode("<br>", $errmessage);
 					echo "</div>";
 				}
+				if($_SESSION["gender"] == 1){
+					$gender = "男性";
+				}else{
+					$gender = "女性";
+				}
 			?>
 
 			<form action="" method="post">
 				氏名　　　　　　<?php echo $_SESSION["name_sei"] ?>　<?php echo $_SESSION["name_mei"] ?><br>
-				性別　　　　　　
-				<?php if($_SESSION["gender"] == 1): ?>
-					<p><?php echo "男性" ?></p>
-				<?php else: ?>
-					<p><?php echo "女性" ?></p>
-				<?php endif; ?><br>　　　　　　　　　
+				性別　　　　　　<?php echo $gender ?><br>　　　　　　　
 				住所　　　　　　<?php echo $_SESSION["pref_name"] ?><?php echo $_SESSION["address"] ?><br>
 				パスワード　　　セキュリティのため非表示<br>
 				メールアドレス　<?php echo $_SESSION["email"] ?><br>

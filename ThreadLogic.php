@@ -91,8 +91,8 @@
 				$stmt->execute($array);
 				
 				//SQLの結果を返す
-				$thread = $stmt->fetch();
-				return $thread;
+				$threadDetail = $stmt->fetch();
+				return $threadDetail;
 			} catch(\Exception $e) {
 				return false;
 			}

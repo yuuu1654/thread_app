@@ -1,7 +1,7 @@
 <?php
 	session_start();
 	$errmessage = $_SESSION;  //エラーメッセージを変数に格納
-
+	$err = array();           //エラーを表示するようの配列
 	$_SESSION = array();  //空の配列でセッションを初期化する
 	session_destroy();
 ?>
@@ -40,8 +40,9 @@
 	<?php
 		//エラーメッセージがあれば表示する
 		if( $errmessage["msg"] ){
+			$err[] = $errmessage["msg"];
 			echo '<div class="alert alert-danger" role="alert">';
-			echo implode("<br>", $errmessage["msg"]);
+			echo implode("<br>", $err);
 			echo "</div>";
 		}
 	?>

@@ -17,8 +17,8 @@
 	echo $id;
 	$_SESSION["thread_id"] = $id;  //スレッドのidをセッションに保存(コメント作成に利用)
 
-	$thread = ThreadLogic::getThreadById($id);
-	var_dump($thread);
+	$threadDetail = ThreadLogic::getThreadById($id);  //idからスレッドの詳細を検索
+	var_dump($threadDetail);
 
 
 	//コメントするボタンが押されたらバリデーションにかけて、OKならDBにコメントを登録する
@@ -95,8 +95,8 @@
 	
 	<main>
 		<div class="container">
-			<h2><?php echo h($thread["title"]) ?></h2><br>
-			<p><?php echo h($thread["created_at"]) ?></p>
+			<h2><?php echo h($threadDetail["title"]) ?></h2><br>
+			<p><?php echo h($threadDetail["created_at"]) ?></p>
 		</div>
 		<div class="container">
 			
