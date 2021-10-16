@@ -9,6 +9,9 @@
 	 * ③getMemberById($id)で返ってきた$memberDetailを以下のフォームの初期値にセットする
 	 */
 
+	$id = $_GET["id"];
+	$memberDetail = MemberLogic::getMemberById($id);  //idからメンバーの詳細を検索して取得
+
 	if( isset($_POST["delete"]) && $_POST["delete"] ){
 		//削除ボタンを押したら、DBからその会員をソフトデリートして会員一覧ページに戻る
 		MemberLogic::memberWithdrawal($_SESSION);
@@ -88,12 +91,12 @@
 	<main>
 		
 		<form action="" method="post">
-			ID　　　　　　　登録後に自動採番<br>
-			氏名　　　　　　<?php echo $_SESSION["name_sei"] ?>　<?php echo $_SESSION["name_mei"] ?><br>
+			ID　　　　　　　<?php echo $memberDetail["id"] ?><br>
+			氏名　　　　　　<?php echo $memberDetail["name_sei"] ?>　<?php echo $_SESSION["name_mei"] ?><br>
 			性別　　　　　　<?php echo $gender ?><br>
-			住所　　　　　　<?php echo $_SESSION["pref_name"] ?><?php echo $_SESSION["address"] ?><br>
+			住所　　　　　　<?php echo $memberDetail["pref_name"] ?><?php echo $memberDetail["address"] ?><br>
 			パスワード　　　セキュリティのため非表示<br>
-			メールアドレス　<?php echo $_SESSION["email"] ?><br>
+			メールアドレス　<?php echo $memberDetail["email"] ?><br>
 			<input type="hidden" name="csrf_token" value="<?php echo h(setToken()); ?>">
 			<!-- 編集ボタン -->
 			<div class="button">

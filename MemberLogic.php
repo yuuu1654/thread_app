@@ -201,5 +201,66 @@
 				return false;
 			}
 		}
+
+
+
+		/**
+		 * [全てのメンバー情報を取得]
+		 * @param 
+		 * @return array | bool  $allMembers | false (成功したらメンバーの配列データ、失敗したらfalseを返す)
+		 */
+		public static function getAllMembers(){
+			//SQLの準備
+			//SQLの実行
+			//SQLの結果を返す
+
+			$sql = 'SELECT * FROM members';
+
+			try {
+				$stmt = connect()->prepare($sql);
+				$stmt->execute();
+				
+				//SQLの結果を返す
+				$allMembers = $stmt->fetchAll();
+				return $allMembers;
+			} catch(\Exception $e) {
+				return false;
+			}
+		}
+
+
+
+
+		/**
+		 * [キーワードからメンバー検索して一覧データを取得]
+		 * @param string $searchData(複数検索条件のセッションデータ)
+		 * @return array | bool  $result | false (成功したら検索したメンバーの配列データ、失敗したらfalseを返す)
+		 */
+		public static function searchMembers($searchData){
+			$result = false;
+			//SQLの準備
+			//SQLの実行
+			//SQLの結果を返す
+
+			$sql = "SELECT * FROM members WHERE title = ? OR content LIKE '%?%' ORDER BY created_at DESC";
+			//'%".?."%'
+			
+			//emailを配列に入れる
+			$array = [];
+			$array[] = (int)$searchData["id"];
+			$array[] = (int)$searchData["gender"];
+			$array[] = $searchData["pref_name"];
+			$array[] = $searchData[""];  //name_sei, name_mei, email
+
+			try {
+				$stmt = connect()->prepare($sql);
+				$stmt->execute($array);
+				//SQLの結果を返す
+				$result = $stmt->fetchAll();
+				return $result;
+			} catch(\Exception $e) {
+				return false;
+			}
+		}
 	}
 ?>

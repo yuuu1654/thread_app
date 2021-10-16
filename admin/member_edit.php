@@ -5,6 +5,9 @@
 	require_once "../MemberLogic.php";  //会員登録の処理を行うクラスの読み込み
 	require_once "../functions.php";    //XSS・csrf&２重登録防止のセキュリティクラスの読み込み
 
+	$id = $_GET["id"];
+	$memberDetail = MemberLogic::getMemberById($id);  //idからメンバーの詳細を検索して取得
+
 	
 	if( isset($_POST["back"]) && $_POST["back"] ){
 		//何もしない
@@ -178,14 +181,6 @@
 <body>
 	<?php if( $mode == "input"){ ?>
 		<!-- 入力フォーム画面 -->
-		<?php
-			if( $errmessage ){
-				echo '<div class="alert alert-danger" role="alert">';
-				echo implode("<br>", $errmessage);
-				echo "</div>";
-			}
-		?>
-
 		<header>
 			<div class="header-logo">
 				<h1>会員編集</h1>
@@ -198,16 +193,23 @@
 			</div>
 		</header>
 		<main>
+			<?php
+				if( $errmessage ){
+					echo '<div class="alert alert-danger" role="alert">';
+					echo implode("<br>", $errmessage);
+					echo "</div>";
+				}
+			?>
 			<form action="" method="POST">
 				<!-- 氏名 -->
-				氏名  姓<input type="text" class="form-control" name="name_sei" value="<?php echo $_SESSION["name_sei"] ?>">
-							名<input type="text" class="form-control" name="name_mei" value="<?php echo $_SESSION["name_mei"] ?>"><br>
+				氏名  姓<input type="text" class="form-control" name="name_sei" value="<?php echo $memberDetail["name_sei"] ?>">
+							名<input type="text" class="form-control" name="name_mei" value="<?php echo $memberDetail["name_mei"] ?>"><br>
 				<!-- 性別 -->
 				性別　<input type="radio" name="gender" value="1" checked="checked">男性
 						<input type="radio" name="gender" value="2">女性<br>
 				<!-- 住所 -->
 				住所　都道府県　
-				<select name="pref_name" value="<?php echo $_SESSION["pref_name"] ?>">
+				<select name="pref_name" value="<?php echo $memberDetail["pref_name"] ?>">
 					<option value="selected">選択して下さい</option>
 					<option value="北海道">北海道</option>
 					<option value="青森県">青森県</option>
@@ -257,13 +259,13 @@
 					<option value="鹿児島県">鹿児島県</option>
 					<option value="沖縄県">沖縄県</option>
 				</select><br>
-				　　　それ以降の住所<input type="text" class="form-control" name="address" value="<?php echo $_SESSION["address"] ?>"><br>
+				　　　それ以降の住所<input type="text" class="form-control" name="address" value="<?php echo $memberDetail["address"] ?>"><br>
 				<!-- パスワード -->
-				パスワード　　　　<input type="password" class="form-control" name="password" value="<?php echo $_SESSION["password"] ?>"><br>
+				パスワード　　　　<input type="password" class="form-control" name="password" value="<?php echo $memberDetail["password"] ?>"><br>
 				<!-- パスワード確認 -->
-				パスワード確認　　<input type="password" class="form-control" name="password_confirmation" value="<?php echo $_SESSION["password_confirmation"] ?>"><br>
+				パスワード確認　　<input type="password" class="form-control" name="password_confirmation" value="<?php echo $memberDetail["password"] ?>"><br>
 				<!-- メールアドレス -->
-				メールアドレス　　<input type="email" class="form-control" name="email" value="<?php echo $_SESSION["email"] ?>"><br><br>
+				メールアドレス　　<input type="email" class="form-control" name="email" value="<?php echo $memberDetail["email"] ?>"><br><br>
 				<div class="button">
 					<input type="submit" class="btn btn-primary btn-lg" name="confirm" value="確認画面へ"><br>
 				</div>
@@ -302,7 +304,7 @@
 				}
 			?>
 			<form action="" method="post">
-				ID　　　　　　　登録後に自動採番<br>
+				ID　　　　　　　<?php echo $memberDetail["id"] ?><br>
 				氏名　　　　　　<?php echo $_SESSION["name_sei"] ?>　<?php echo $_SESSION["name_mei"] ?><br>
 				性別　　　　　　<?php echo $gender ?><br>
 				住所　　　　　　<?php echo $_SESSION["pref_name"] ?><?php echo $_SESSION["address"] ?><br>
