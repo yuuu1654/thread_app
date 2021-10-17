@@ -43,8 +43,11 @@
 
 	//確認画面からスレッド作成ボタンが押されたらDBに登録してスレッド一覧画面(thread.php)に遷移する
 	}else if( isset($_POST["create_thread"]) && $_POST["create_thread"] ){
-		$_SESSION["member_id"] = 1;  //デバッグ用
-		$hasCreated = ThreadLogic::createThread($_SESSION);  //ThreadLogicのメソッドを呼び出す
+		//セッションにあるログインユーザーの連想配列データを変数に格納
+		$login_member = $_SESSION["login_member"];
+
+		$_SESSION["member_id"] = $login_member["id"];        //スレッドの投稿者のidをセッションに保存
+		$hasCreated = ThreadLogic::createThread($_SESSION);  //ThreadLogicのスレッド作成メソッドを呼び出す
 
 		//$resultの結果がfalseで返ってきたらエラーメッセージを追加する
 		if( !$hasCreated ){

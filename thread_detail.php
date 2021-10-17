@@ -8,17 +8,17 @@
 
 	
 	$login_member = $_SESSION["login_member"];  //セッションにあるログインユーザーのデータを変数に格納
-	var_dump("$login_member");
+	//var_dump("$login_member");
+
 	echo $login_member["id"];
 	//コメントのmember_idがログインしているメンバーのidになるようにする
 	$_SESSION["member_id"] = $login_member["id"];
 
 	$id = $_GET["id"];
-	echo $id;
 	$_SESSION["thread_id"] = $id;  //スレッドのidをセッションに保存(コメント作成に利用)
 
 	$threadDetail = ThreadLogic::getThreadById($id);  //idからスレッドの詳細を検索
-	var_dump($threadDetail);
+	//var_dump($threadDetail);
 
 
 	//コメントするボタンが押されたらバリデーションにかけて、OKならDBにコメントを登録する
@@ -43,6 +43,8 @@
 	<title>スレッド詳細ページ</title>
 	<!-- Bootstrapの読み込み -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+	<!-- font-awesomeの読み込み -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	<style>
 		body{
 			background-color: #CCFFFF;
@@ -69,7 +71,48 @@
 		}
 		.container{
 			text-align: center;
-			padding-top: 200px;
+			padding: 50px 0 100px 0;
+		}
+
+		nav{
+			height: 40px;
+			background-color: #FFCC99; 
+		}
+		.nav-logo {
+			float: left;
+			text-align: center;
+			vertical-align: middle;
+		}
+		.nav-menus {
+			float: right;
+			text-align: center;
+		}
+		.nav-logo a{
+			line-height: 40px;
+			padding: 0 25px 0 25px;
+			display: block;
+		}
+		.nav-menus a{
+			line-height: 40px;
+			padding: 0 25px 0 25px;
+			display: block;
+		}
+
+		.thread{
+			color: blue;
+			max-width: 500px;
+			margin: 0px auto;
+		}
+		.comment{
+			max-width: 500px;
+			margin: 0px auto;
+		}
+
+		.like-btn{
+			color: #8899a6;
+		}
+		.like-btn-unlike{
+			color: #ff2581;
 		}
 		footer{
 			padding-top: 150px;
@@ -94,14 +137,79 @@
 	</header>
 	
 	<main>
+		<?php
+			//総コメント数を取得する
+			$thread_id = $threadDetail["id"];
+			$commentCount = CommentLogic::countCommentsById($thread_id);
+			//var_dump($commentCount);
+		?>
 		<div class="container">
 			<h2><?php echo h($threadDetail["title"]) ?></h2><br>
-			<p><?php echo h($threadDetail["created_at"]) ?></p>
+			<p><?php echo $commentCount ?>コメント　<?php echo h($threadDetail["created_at"]) ?></p>
+			<!-- いいねアイコン -->
+			<span class="fa fa-heart like-btn-unlike"></span><br>
+			<span class="fa fa-heart like-btn"></span>
 		</div>
-		<div class="container">
-			
+
+		<nav>
+			<div class="nav-logo">
+				<!-- 前へリンク -->
+				<a class="link" href="#">前へ></a>
+			</div>
+			<div class="nav-menus">
+				<!-- 次へリンク -->
+				<a href="#">次へ></a>
+			</div>
+		</nav>
+
+		<div class="container thread">
+			<!-- スレッド表示 -->
+			<?php
+				//スレッドの投稿者のメンバー詳細を検索
+				$member_id = $threadDetail["member_id"];
+				$memberDetail = MemberLogic::getMemberById($member_id);
+			?>
+			投稿者：<?php echo h($memberDetail["name_sei"]) ?><?php echo h($memberDetail["name_mei"]) ?>
+			<?php echo h($threadDetail["created_at"]) ?>
+			<p cols=40 rows=5><?php echo h($threadDetail["content"]) ?></p>
 		</div>
+
+		<div class="container comment">
+			<!-- コメント表示 -->
+			<?php
+				//thread_idが共通のコメントを全てコメントidの昇順で表示する
+				$comments = CommentLogic::getCommentsById($thread_id);
+			?>
+			<table class="table">
+				<?php foreach($comments as $comment): ?>	
+					<tr>
+						<td>
+							<?php echo h($comment["id"]) ?>
+							<?php //echo h($member["name_sei"]) ?><?php //echo h($member["name_mei"]) ?>
+							<?php echo h($comment["created_at"]) ?>
+						</td><br><br>
+						<td>
+							<?php echo h($comment["comment"]) ?>
+							<span class="fa fa-heart like-btn"></span>
+						</td>
+					</tr>
+				<?php endforeach; ?>
+			</table>
+		</div>
+
+		<nav>
+			<div class="nav-logo">
+				<!-- 前へリンク -->
+				<a class="link" href="#">前へ></a>
+			</div>
+			<div class="nav-menus">
+				<!-- 次へリンク -->
+				<a href="#">次へ></a>
+			</div>
+		</nav>
 	</main>
+
+
 	<footer>
 		<?php
 			//バリデーションに引っ掛かったらエラーを表示する

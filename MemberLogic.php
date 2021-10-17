@@ -193,7 +193,6 @@
 			try {
 				$stmt = connect()->prepare($sql);
 				$stmt->execute($array);
-				
 				//SQLの結果を返す
 				$memberDetail = $stmt->fetch();
 				return $memberDetail;
@@ -219,7 +218,6 @@
 			try {
 				$stmt = connect()->prepare($sql);
 				$stmt->execute();
-				
 				//SQLの結果を返す
 				$allMembers = $stmt->fetchAll();
 				return $allMembers;

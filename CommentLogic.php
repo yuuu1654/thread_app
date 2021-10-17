@@ -36,5 +36,75 @@
 				return $result;
 			}
 		}
+
+
+
+		/**
+		 * [thread_idを指定して、総コメント数を取得]
+		 * @param string $thread_id
+		 * @return array | bool  $thread | false (成功したらメンバーの配列データ、失敗したらfalseを返す)
+		 */
+		public static function countCommentsById($thread_id){
+			//SQLの準備
+			//SQLの実行
+			//SQLの結果を返す
+
+			//$sql = 'SELECT * FROM threads INNER JOIN comments ON threads.id = comments.thread_id WHERE id = ?';
+			$sql = 'SELECT * FROM comments WHERE thread_id = ?';
+			//idを配列に入れる
+			$array = [];
+			$array[] = (int)$thread_id;
+			try {
+				$stmt = connect()->prepare($sql);
+				$stmt->execute($array);
+				//SQLの結果を返す
+				$commentCount = $stmt->rowCount();
+				return $commentCount;
+			} catch(\Exception $e) {
+				return false;
+			}
+		}
+
+
+
+		/**
+		 * [thread_idを指定して、全てのコメントデータをコメントのidを昇順にして取得]
+		 * @param string $thread_id
+		 * @return array | bool  $thread | false (成功したらメンバーの配列データ、失敗したらfalseを返す)
+		 */
+		public static function getCommentsById($thread_id){
+			//SQLの準備
+			//SQLの実行
+			//SQLの結果を返す
+
+			//$sql = 'SELECT * FROM comments WHERE thread_id = ? ORDER BY id ASC';
+
+			$sql = "SELECT
+				comments.id AS id,
+				members.name_sei AS name_sei,
+				members.name_mei AS name_mei,
+				comments.created_at AS created_at,
+				comments.comment AS comment,
+				likes.Count() AS likeCount,
+				FROM comments
+				INNER JOIN members 
+				ON comments.member_id = members.id
+				INNER JOIN options 
+				ON comments.id = likes.comment_id
+				WHERE thread_id = ?";
+
+			//idを配列に入れる
+			$array = [];
+			$array[] = (int)$thread_id;
+			try {
+				$stmt = connect()->prepare($sql);
+				$stmt->execute($array);
+				//SQLの結果を返す
+				$comments = $stmt->fetchAll();
+				return $comments;
+			} catch(\Exception $e) {
+				return false;
+			}
+		}
 	}
 ?>
