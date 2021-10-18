@@ -100,7 +100,7 @@
 			//SQLの結果を返す
 
 			//$sql = 'SELECT * FROM members WHERE email = ?';
-			$sql = 'SELECT * FROM members WHERE email = ? AND deleted_at = NULL';  //退会した会員はログイン出来ないようにする
+			$sql = 'SELECT * FROM members WHERE email = ? AND deleted_at IS NULL';  //退会した会員はログイン出来ないようにする
 			//emailを配列に入れる
 			$array = [];
 			$array[] = $email;
@@ -108,7 +108,6 @@
 			try {
 				$stmt = connect()->prepare($sql);
 				$stmt->execute($array);
-				
 				//SQLの結果を返す
 				$member = $stmt->fetch();
 				return $member;
@@ -150,21 +149,17 @@
 		 * 会員退会処理[ソフトデリート]
 		 * 以下のコードで動かなければbindValueを使う
 		 */
-		public static function memberWithdrawal($memberData){
+		public static function memberWithdrawal($member_id){
 			$result = false;
 
 			//deleted_atに現在時刻を記入
-			$sql = 'UPDATE members SET deleted_at = "?" WHERE id = "?"';
-			//UPDATE members SET deleted_at = "?" WHERE id = "?";
-			//スレッドデータを配列に入れる
-			$array = [];
-			$array[] = $memberData["deleted_at"];  //deleted_at
-			$array[] = $memberData["id"];          //id
+			$sql = 'UPDATE members SET deleted_at = now() WHERE id = :member_id';
 			
 			try {
 				//データベースに接続する
 				$stmt = connect()->prepare($sql);
-				$result = $stmt->execute($array);
+				$stmt->bindValue(':member_id', $member_id, PDO::PARAM_INT);
+				$result = $stmt->execute();
 				return $result;
 			} catch(\Exception $e) {
 				echo $e;  //エラーを出力

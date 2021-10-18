@@ -53,6 +53,8 @@
 			$errmessage[] = "パスワードは半角英数字8～20文字以内で入力してください";
 		}  
 		$_SESSION["password"] = htmlspecialchars($_POST["password"], ENT_QUOTES);  //無害化した文字列を代入
+		$_SESSION["password_1"] = htmlspecialchars($_POST["password"], ENT_QUOTES);  //無害化した文字列を代入
+
 
 
 		//パスワード確認のバリデーション
@@ -64,6 +66,7 @@
 			$errmessage[] = "入力した文字がパスワードと一致しません";
 		}
 		$_SESSION["password_confirmation"] = htmlspecialchars($_POST["password_confirmation"], ENT_QUOTES);  //無害化した文字列を代入
+		$_SESSION["password_confirmation_1"] = htmlspecialchars($_POST["password_confirmation"], ENT_QUOTES);  //無害化した文字列を代入
 
 
 		//メールアドレスのバリデーション
@@ -164,6 +167,12 @@
 			margin: 20px 0 20px 0;  
 			padding: 10px 40px 10px 40px;
 		}
+		h1{
+			padding-bottom: 50px;
+		}
+		.conf_form{
+			padding-left: 130px;
+		}
 	</style>
 </head>
 <body>
@@ -239,9 +248,9 @@
 				</select><br>
 				　　　それ以降の住所<input type="text" class="form-control" name="address" value="<?php echo $_SESSION["address"] ?>"><br>
 				<!-- パスワード -->
-				パスワード　　　　<input type="password" class="form-control" name="password" value="<?php echo $_SESSION["password"] ?>"><br>
+				パスワード　　　　<input type="password" class="form-control" name="password" value="<?php echo $_SESSION["password_1"] ?>"><br>
 				<!-- パスワード確認 -->
-				パスワード確認　　<input type="password" class="form-control" name="password_confirmation" value="<?php echo $_SESSION["password_confirmation"] ?>"><br>
+				パスワード確認　　<input type="password" class="form-control" name="password_confirmation" value="<?php echo $_SESSION["password_confirmation_1"] ?>"><br>
 				<!-- メールアドレス -->
 				メールアドレス　　<input type="email" class="form-control" name="email" value="<?php echo $_SESSION["email"] ?>"><br><br>
 				<div class="button">
@@ -254,12 +263,6 @@
 			
 		<?php } else if( $mode == "confirm"){ ?>
 			<!-- 確認画面 -->
-			<h1>会員情報確認画面</h1>
-			<?php 
-				//連想配列の中身を表示
-				print_r($_POST); 
-			?>
-
 			<?php
 				if( $errmessage ){
 					echo '<div class="alert alert-danger" role="alert">';
@@ -272,13 +275,15 @@
 					$gender = "女性";
 				}
 			?>
-
-			<form action="" method="post">
+			<div class="container">
+				<h1>会員情報確認画面</h1>
+			</div>
+			<form action="" class="conf_form" method="post">
 				氏名　　　　　　<?php echo $_SESSION["name_sei"] ?>　<?php echo $_SESSION["name_mei"] ?><br>
-				性別　　　　　　<?php echo $gender ?><br>　　　　　　　
+				性別　　　　　　<?php echo $gender ?><br>
 				住所　　　　　　<?php echo $_SESSION["pref_name"] ?><?php echo $_SESSION["address"] ?><br>
 				パスワード　　　セキュリティのため非表示<br>
-				メールアドレス　<?php echo $_SESSION["email"] ?><br>
+				メールアドレス　<?php echo $_SESSION["email"] ?><br><br>
 				<input type="hidden" name="csrf_token" value="<?php echo h(setToken()); ?>">
 				<div class="button">
 					<input type="submit" class="btn btn-primary btn-lg" name="signup_done" value="登録完了"><br>

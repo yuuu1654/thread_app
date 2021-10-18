@@ -4,8 +4,13 @@
 	require_once "functions.php";    //XSS・csrf&２重登録防止のセキュリティクラスの読み込み
 
 	if( isset($_POST["withdrawal"]) && $_POST["withdrawal"] ){
+		
+		//現在ログインしているメンバーのidを取得する
+		$current_member = $_SESSION["login_member"];
+		$member_id = $current_member["id"];
+
 		//退会した際はDBからその会員をソフトデリートしてトップに戻る
-		MemberLogic::memberWithdrawal($_SESSION);
+		MemberLogic::memberWithdrawal($member_id);
 		header("Location: top.php");
 		return;
 	}
@@ -63,7 +68,7 @@
 			<h1>退会</h1><br>
 			<h2>退会しますか？</h2>
 		</div>
-		<!-- ログアウトボタン -->
+		<!-- 退会ボタン -->
 		<div class="container">
 			<form action="" class="button" method="POST">
 				<input type="submit" class="btn btn-primary btn-lg" name="withdrawal" value="退会する">

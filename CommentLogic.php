@@ -79,19 +79,18 @@
 
 			//$sql = 'SELECT * FROM comments WHERE thread_id = ? ORDER BY id ASC';
 
-			$sql = "SELECT
-				comments.id AS id,
-				members.name_sei AS name_sei,
-				members.name_mei AS name_mei,
-				comments.created_at AS created_at,
-				comments.comment AS comment,
-				likes.Count() AS likeCount,
-				FROM comments
-				INNER JOIN members 
-				ON comments.member_id = members.id
-				INNER JOIN options 
-				ON comments.id = likes.comment_id
-				WHERE thread_id = ?";
+			// $sql = "SELECT
+			// 	comments.id AS id,
+			// 	members.name_sei AS name_sei,
+			// 	members.name_mei AS name_mei,
+			// 	comments.created_at AS created_at,
+			// 	comments.comment AS comment,
+			// 	FROM comments
+			// 	INNER JOIN members 
+			// 	ON comments.member_id = members.id
+			// 	WHERE comments.thread_id = ?";
+
+			$sql = "SELECT comments.id AS id, members.name_sei AS name_sei, members.name_mei AS name_mei, comments.created_at AS created_at, comments.comment AS comment, FROM comments INNER JOIN members ON comments.member_id = members.id WHERE comments.thread_id = ?";
 
 			//idを配列に入れる
 			$array = [];
@@ -100,7 +99,18 @@
 				$stmt = connect()->prepare($sql);
 				$stmt->execute($array);
 				//SQLの結果を返す
-				$comments = $stmt->fetchAll();
+				//$comments = $stmt->fetchAll();
+
+				$comments = array();
+				while($row = $stmt->fetchAll()){
+					$comments[]=array(
+						"id" =>$row["id"],
+						"name_sei" =>$row["name_sei"],
+						"name_mei" =>$row["name_mei"],
+						"created_at" =>$row["created_at"],
+						"comment" =>$row["comment"]
+					);
+				}
 				return $comments;
 			} catch(\Exception $e) {
 				return false;

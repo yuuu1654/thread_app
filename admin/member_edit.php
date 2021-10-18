@@ -261,9 +261,9 @@
 				</select><br>
 				　　　それ以降の住所<input type="text" class="form-control" name="address" value="<?php echo $memberDetail["address"] ?>"><br>
 				<!-- パスワード -->
-				パスワード　　　　<input type="password" class="form-control" name="password" value="<?php echo $memberDetail["password"] ?>"><br>
+				パスワード　　　　<input type="password" class="form-control" name="password" value="<?php echo $_SESSION["password_1"] ?>"><br>
 				<!-- パスワード確認 -->
-				パスワード確認　　<input type="password" class="form-control" name="password_confirmation" value="<?php echo $memberDetail["password"] ?>"><br>
+				パスワード確認　　<input type="password" class="form-control" name="password_confirmation" value="<?php echo $_SESSION["password_confirmation_1"] ?>"><br>
 				<!-- メールアドレス -->
 				メールアドレス　　<input type="email" class="form-control" name="email" value="<?php echo $memberDetail["email"] ?>"><br><br>
 				<div class="button">
