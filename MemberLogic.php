@@ -266,19 +266,17 @@
 			//SQLの実行
 			//SQLの結果を返す
 
-			$sql = "SELECT * FROM members WHERE title = ? OR content LIKE '%?%' ORDER BY created_at DESC";
-			//'%".?."%'
-			
-			//emailを配列に入れる
-			$array = [];
-			$array[] = (int)$searchData["id"];
-			$array[] = (int)$searchData["gender"];
-			$array[] = $searchData["pref_name"];
-			$array[] = $searchData[""];  //name_sei, name_mei, email
+			$sql = "SELECT * FROM members WHERE id = :id AND gender = :gender AND pref_name = :pref_name AND name_sei = :word OR name_mei = :word OR email = :word ORDER BY id ASC";
 
 			try {
 				$stmt = connect()->prepare($sql);
-				$stmt->execute($array);
+				$stmt->bindValue(':id', $searchData["id"], PDO::PARAM_INT);
+				$stmt->bindValue(':gender', $searchData["gender"], PDO::PARAM_INT);
+				$stmt->bindValue(':pref_name', $searchData["pref_name"]);
+				$stmt->bindValue(':name_sei', $memberData["word"]);
+				$stmt->bindValue(':name_mei', $memberData["word"]);
+				$stmt->bindValue(':email', $memberData["word"]);
+				$stmt->execute();
 				//SQLの結果を返す
 				$result = $stmt->fetchAll();
 				return $result;

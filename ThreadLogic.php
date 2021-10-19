@@ -49,7 +49,6 @@
 			//SQLの結果を返す
 
 			$sql = "SELECT * FROM threads WHERE title = :title OR content LIKE :content ORDER BY created_at DESC";
-			//'%".?."%'
 			//$sql = 'SELECT * FROM threads WHERE title = ?';
 			$content = '%'.$word.'%';
 

@@ -154,7 +154,7 @@
 					</tr>
 					<tr>
 						<th>フリーワード</th>
-						<td><input type="text" class="form-control" name="id" value=""></td>
+						<td><input type="text" class="form-control" name="word" value=""></td>
 					</tr>
 					
 				</table>

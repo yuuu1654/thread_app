@@ -9,10 +9,12 @@
 	// 	$errmessage[] = "キーワードを入力して下さい";
 	// }
 
-	if( isset($_POST["word"]) && $_POST["word"] ){
-		//$_SESSION["search_word"]= $_POST["word"];
-		$word = $_POST["word"];
-	}
+	
+	// //検索ワードのバリデーション
+	// if( !$_POST["word"] ){
+	// 	$errmessage[] = "検索ワードを入力して下さい";
+	// }
+	
 ?>
 
 
@@ -85,6 +87,14 @@
 	
 	<main>
 		<div class="container">
+			<?php
+				if( $errmessage ){
+					echo '<div class="alert alert-danger" role="alert">';
+					echo implode("<br>", $errmessage);
+					echo "</div>";
+				}
+			?>
+			<!-- スレッド検索フォーム -->
 			<form action="" method="post">
 				<input type="text" name="word">
 				<input type="submit" name="search" value="スレッド検索">
@@ -93,10 +103,15 @@
 		<div class="container">
 			<!-- スレッドテーブルからid/title/created_atを取得して表示する。その際、タイトルをリンクにしてクリックすると詳細ページに遷移する -->
 			<?php if( isset($_POST["search"]) && $_POST["search"] ){ ?>
+				
 				<?php 
-					//ThreadLogicのsearchThreadsメソッドであいまい検索をかけて結果を取得する
-					$result = ThreadLogic::searchThreads($word);  
-					var_dump($result);
+					if( isset($_POST["word"]) && $_POST["word"] ){
+						//$_SESSION["search_word"]= $_POST["word"];
+						$word = $_POST["word"];
+						//ThreadLogicのsearchThreadsメソッドであいまい検索をかけて結果を取得する
+						$result = ThreadLogic::searchThreads($word);  
+					}
+					
 				?>
 				<!-- 検索結果を登録した日付の降順でforeach文で一覧表示する -->
 				<table>
