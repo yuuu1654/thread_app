@@ -98,7 +98,7 @@
 	//確認画面から編集完了ボタンが押されたらDBのデータを更新して会員一覧画面(/admin/member.php)に遷移する
 	}else if( isset($_POST["update"]) && $_POST["update"] ){
 		$mode = "";
-		$hasUpdated = MemberLogic::createMember($_SESSION);  //MemberLogicの編集メソッドを呼び出す
+		$hasUpdated = MemberLogic::updateMember($_SESSION, $id);  //MemberLogicの編集メソッドを呼び出す
 		header("Location: member.php");  //会員一覧ページに遷移する
 		
 
@@ -314,7 +314,6 @@
 				<div class="button">
 					<input type="submit" class="btn btn-primary btn-lg" name="update" value="編集完了"><br>
 				</div>
-				<!-- <button type="button" onclick="history.back()">戻る</button> -->
 			</form>
 		</main>
 	<?php } else { ?>

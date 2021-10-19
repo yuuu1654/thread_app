@@ -57,6 +57,37 @@
 
 
 		/**
+		 * 会員編集処理
+		 */
+		public static function updateMember($memberData, $id){
+			$result = false;
+
+			//deleted_atに現在時刻を記入
+			$sql = 'UPDATE members SET name_sei = :name_sei, name_mei = :name_mei, gender = :gender, pref_name = :pref_name, address = :address, password = :password, email = :email, updated_at = now()  WHERE id = :id';
+			
+			try {
+				//データベースに接続する
+				$stmt = connect()->prepare($sql);
+				$stmt->bindValue(':name_sei', $memberData["name_sei"]);
+				$stmt->bindValue(':name_mei', $memberData["name_mei"]);
+				$stmt->bindValue(':gender', $memberData["gender"], PDO::PARAM_INT);
+				$stmt->bindValue(':pref_name', $memberData["pref_name"]);
+				$stmt->bindValue(':address', $memberData["address"]);
+				$stmt->bindValue(':password', $memberData["password"]);
+				$stmt->bindValue(':email', $memberData["email"]);
+				$stmt->bindValue(':id', $id, PDO::PARAM_INT);
+				$result = $stmt->execute();
+				return $result;
+			} catch(\Exception $e) {
+				echo $e;  //エラーを出力
+				error_log($e, 3, "error.log");  //ログを出力する
+				return $result;
+			}
+		}
+
+
+
+		/**
 		 * [ログイン処理]
 		 * すべての条件を満たしたメンバーがいたらセッションに保存して結果をtrueで返す
 		 * @param string $email

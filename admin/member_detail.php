@@ -14,7 +14,7 @@
 
 	if( isset($_POST["delete"]) && $_POST["delete"] ){
 		//削除ボタンを押したら、DBからその会員をソフトデリートして会員一覧ページに戻る
-		MemberLogic::memberWithdrawal($_SESSION);
+		MemberLogic::memberWithdrawal($id);
 		header("Location: member.php");
 		return;
 	}
@@ -92,21 +92,23 @@
 		
 		<form action="" method="post">
 			ID　　　　　　　<?php echo $memberDetail["id"] ?><br>
-			氏名　　　　　　<?php echo $memberDetail["name_sei"] ?>　<?php echo $_SESSION["name_mei"] ?><br>
+			氏名　　　　　　<?php echo $memberDetail["name_sei"] ?>　<?php echo $memberDetail["name_mei"] ?><br>
 			性別　　　　　　<?php echo $gender ?><br>
 			住所　　　　　　<?php echo $memberDetail["pref_name"] ?><?php echo $memberDetail["address"] ?><br>
 			パスワード　　　セキュリティのため非表示<br>
 			メールアドレス　<?php echo $memberDetail["email"] ?><br>
 			<input type="hidden" name="csrf_token" value="<?php echo h(setToken()); ?>">
-			<!-- 編集ボタン -->
-			<div class="button">
-				<input type="submit" class="btn btn-secondary btn-lg" onclick="location.href='member_edit.php?id=<?php //echo h($column['id']) ?>'" value="編集">
-			</div>
+			
 			<!-- 会員削除ボタン -->
 			<div class="button">
 				<input type="submit" class="btn btn-primary btn-lg" name="delete" value="削除"><br>
 			</div>
 		</form>
+
+		<!-- 編集ボタン -->
+		<div class="button">
+			<input type="submit" class="btn btn-secondary btn-lg" onclick="location.href='member_edit.php?id=<?php echo $memberDetail['id'] ?>'" value="編集">
+		</div>
 	</main>
 </body>
 </html>

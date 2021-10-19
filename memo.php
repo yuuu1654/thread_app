@@ -42,7 +42,7 @@
 　　　　　　<?php echo $value['question'] ?> 
 　　　</td>
         <td>
-         　<?php echo $value['answer'] ?>
+          <?php echo $value['answer'] ?>
         </td>
         <td>
          　<?php echo $value['option_name'] ?>
@@ -50,3 +50,13 @@
       </tr>
       <?php endforeach ?>
  </table>
+
+ /* SQL */
+		$sql = SELECT * FROM hogetable WHERE name like :name;
+		$stmt = $dbh->prepare($sql);
+		
+		/* nameのLIKE検索 */
+		$name = '検索する名前';
+		$name = '%'.$name.'%';
+		$stmt->bindParam(':name', $name, PDO::PARAM_STR);
+		$stmt->execute();

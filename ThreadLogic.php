@@ -48,18 +48,16 @@
 			//SQLの実行
 			//SQLの結果を返す
 
-			$sql = "SELECT * FROM threads WHERE title = ? OR content LIKE '%?%' ORDER BY created_at DESC";
+			$sql = "SELECT * FROM threads WHERE title = :title OR content LIKE :content ORDER BY created_at DESC";
 			//'%".?."%'
 			//$sql = 'SELECT * FROM threads WHERE title = ?';
-
-			//emailを配列に入れる
-			$array = [];
-			$array[] = $word["search_word"];
+			$content = '%'.$word.'%';
 
 			try {
 				$stmt = connect()->prepare($sql);
-				$stmt->execute($array);
-				
+				$stmt->bindValue(':title',$word );
+				$stmt->bindValue(':content',$content );
+				$stmt->execute();
 				//SQLの結果を返す
 				$result = $stmt->fetchAll();
 				return $result;

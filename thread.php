@@ -10,7 +10,8 @@
 	// }
 
 	if( isset($_POST["word"]) && $_POST["word"] ){
-		$_SESSION["search_word"]= $_POST["word"];
+		//$_SESSION["search_word"]= $_POST["word"];
+		$word = $_POST["word"];
 	}
 ?>
 
@@ -93,10 +94,8 @@
 			<!-- スレッドテーブルからid/title/created_atを取得して表示する。その際、タイトルをリンクにしてクリックすると詳細ページに遷移する -->
 			<?php if( isset($_POST["search"]) && $_POST["search"] ){ ?>
 				<?php 
-					//連想配列の中身を表示
-					print_r($_POST); 
-					//ThreadLogicのsearchThreadsメソッドを呼び出す
-					$result = ThreadLogic::searchThreads($_SESSION);  
+					//ThreadLogicのsearchThreadsメソッドであいまい検索をかけて結果を取得する
+					$result = ThreadLogic::searchThreads($word);  
 					var_dump($result);
 				?>
 				<!-- 検索結果を登録した日付の降順でforeach文で一覧表示する -->
