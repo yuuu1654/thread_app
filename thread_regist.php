@@ -2,6 +2,7 @@
 	session_start();
 	$mode = "input";
 	$errmessage = array();  //エラーメッセージ用の配列を初期化
+	require_once "MemberLogic.php";
 	require_once "ThreadLogic.php";  //スレッド登録の処理を行うクラスの読み込み
 	require_once "functions.php";    //XSS・csrf&２重登録防止のセキュリティクラスの読み込み
 
@@ -74,6 +75,13 @@
 
 
 	}else{
+		//ログインしているか判定して、していなかったらlogout.phpに遷移する
+		$result = MemberLogic::checkLogin();
+		if ( !$result ){
+			$_SESSION["login_err"] = "会員登録してログインしてください！";
+			header("Location: logout.php");
+			return;
+		}
 		//セッションを初期化
 		$_SESSION["title"]               = "";
 		$_SESSION["content"]             = "";
@@ -102,7 +110,9 @@
 			text-align: center;
 			padding-top: 150px;
 		}
-		
+		h1{
+			padding-bottom: 50px;
+		}
 		.btn{
 			margin: 20px 0 20px 0;  
 			padding: 10px 40px 10px 40px;
@@ -130,7 +140,7 @@
 		<form action="" method="POST">
 			<!-- スレッドタイトル・コメント欄作成 -->
 			スレッドタイトル　<input type="text" class="form-control" name="title" value="<?php echo $_SESSION["title"] ?>"><br>
-			コメント　　　　　<textarea class="form-control" name="content" id="" cols="" rows="" value="<?php echo $_SESSION["content"] ?>"></textarea>
+			コメント　　　　　<textarea class="form-control" name="content" value=""><?php echo $_SESSION["content"] ?></textarea>
 
 			<div class="button">
 				<input type="submit" class="btn btn-primary btn-lg" name="confirm" value="確認画面へ"><br>
@@ -142,12 +152,10 @@
 		
 	<?php } else if( $mode == "confirm"){ ?>
 		<!-- 確認画面 -->
-		<h1>スレッド作成確認画面</h1>
-		<?php 
-			//連想配列の中身を表示
-			print_r($_POST); 
-		?>
-
+		<div class="container">
+			<h1>スレッド作成確認画面</h1>
+		</div>
+		
 		<?php
 			if( $errmessage ){
 				echo '<div class="alert alert-danger" role="alert">';
@@ -157,15 +165,15 @@
 		?>
 
 		<form action="" method="post">
-			<?php echo $_SESSION["title"] ?><br>　<?php echo $_SESSION["content"] ?><br>
-			
+			<!-- 　　　　　　　　　スレッドタイトル：　<?php echo $_SESSION["title"] ?><br>
+			　　　　　　　　　コメント：　　　　　<?php echo $_SESSION["content"] ?><br> -->
+			スレッドタイトル：　<?php echo $_SESSION["title"] ?><br><br>
+			コメント：　　　　　<?php echo $_SESSION["content"] ?><br>
 			<input type="hidden" name="csrf_token" value="<?php echo h(setToken()); ?>">
 			<div class="button">
 				<input type="submit" class="btn btn-primary btn-lg" name="create_thread" value="スレッドを作成する"><br>
 				<input type="submit" class="btn btn-secondary btn-lg" name="back" value="前に戻る">
 			</div>
-			
-			<!-- <button type="button" onclick="history.back()">戻る</button> -->
 		</form>
 	<?php } ?>
 </body>

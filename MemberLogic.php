@@ -36,8 +36,8 @@
 				$array[] = $memberData["pref_name"]; //pref_name
 				$array[] = $memberData["address"];   //address
 
-				//$array[] = $memberData["password"];  //password
-				$array[] = password_hash($memberData["password"], PASSWORD_DEFAULT);  //ハッシュ化したパスワード
+				$array[] = $memberData["password"];  //password
+				//$array[] = password_hash($memberData["password"], PASSWORD_DEFAULT);  //ハッシュ化したパスワード
 
 				$array[] = $memberData["email"];     //email
 				$array[] = $memberData["created_at"];     //created_at
@@ -105,8 +105,8 @@
 				$_SESSION["msg"] = "IDもしくはパスワードが間違っています";
 				return $result;
 			}
-			//パスワードの照会
-			if (password_verify($password, $member["password"])){
+			//パスワードの照会 //password_verify($password, $member["password"])
+			if ($password == $member["password"]){
 				//ログイン成功
 				session_regenerate_id(true);          //セッションハイジャック対策
 				$_SESSION["login_member"] = h($member);  //emailの照会で見つかり、パスワードも一致したメンバーをセッションに保存
@@ -273,9 +273,9 @@
 				$stmt->bindValue(':id', $searchData["id"], PDO::PARAM_INT);
 				$stmt->bindValue(':gender', $searchData["gender"], PDO::PARAM_INT);
 				$stmt->bindValue(':pref_name', $searchData["pref_name"]);
-				$stmt->bindValue(':name_sei', $memberData["word"]);
-				$stmt->bindValue(':name_mei', $memberData["word"]);
-				$stmt->bindValue(':email', $memberData["word"]);
+				$stmt->bindValue(':name_sei', $searchData["word"]);
+				$stmt->bindValue(':name_mei', $searchData["word"]);
+				$stmt->bindValue(':email', $searchData["word"]);
 				$stmt->execute();
 				//SQLの結果を返す
 				$result = $stmt->fetchAll();
