@@ -57,7 +57,7 @@
 		
 		//デフォルトでは全てのメンバーを表示する
 		$allMembers = MemberLogic::getAllMembers();
-		var_dump($allMembers);
+		
 	}
 ?>
 
