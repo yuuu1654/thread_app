@@ -257,7 +257,7 @@
 			<form action="" method="POST">
 				<!-- 氏名 -->
 				氏名  姓<input type="text" class="form-control" name="name_sei" value="<?php echo $_SESSION["name_sei"] ?>">
-							名<input type="text" class="form-control" name="name_mei" value="<?php echo $_SESSION["name_mei"] ?>"><br>
+							　　 名<input type="text" class="form-control" name="name_mei" value="<?php echo $_SESSION["name_mei"] ?>"><br>
 				<!-- 性別 -->
 				性別
 				<?php foreach( $gender as $i => $v ){ ?>
