@@ -1,4 +1,59 @@
 <?php
+	$kind     = array();
+	$kind[1] = "選択して下さい";
+	$kind[2] = "北海道";
+	$kind[3] = "青森県";
+	$kind[4] = "岩手県";
+	$kind[5] = "宮城県";
+	$kind[6] = "秋田県";
+	$kind[7] = "山形県";
+	$kind[8] = "福島県";
+	$kind[9] = "茨城県";
+	$kind[10] = "栃木県";
+	$kind[11] = "群馬県";
+	$kind[12] = "埼玉県";
+	$kind[13] = "千葉県";
+	$kind[14] = "東京都";
+	$kind[15] = "神奈川県";
+	$kind[16] = "新潟県";
+	$kind[17] = "富山県";
+	$kind[18] = "石川県";
+	$kind[19] = "福井県";
+	$kind[20] = "山梨県";
+	$kind[21] = "長野県";
+	$kind[22] = "岐阜県";
+	$kind[23] = "静岡県";
+	$kind[24] = "愛知県";
+	$kind[25] = "三重県";
+	$kind[26] = "滋賀県";
+	$kind[27] = "京都府";
+	$kind[28] = "大阪府";
+	$kind[29] = "兵庫県";
+	$kind[30] = "奈良県";
+	$kind[31] = "和歌山県";
+	$kind[32] = "鳥取県";
+	$kind[33] = "島根県";
+	$kind[34] = "岡山県";
+	$kind[35] = "広島県";
+	$kind[36] = "山口県";
+	$kind[37] = "徳島県";
+	$kind[38] = "香川県";
+	$kind[39] = "愛媛県";
+	$kind[40] = "高知県";
+	$kind[41] = "福岡県";
+	$kind[42] = "佐賀県";
+	$kind[43] = "長崎県";
+	$kind[44] = "熊本県";
+	$kind[45] = "大分県";
+	$kind[46] = "宮崎県";
+	$kind[47] = "鹿児島県";
+	$kind[48] = "沖縄県";
+
+	//性別のラジオボタン
+	$gender = array();
+	$gender[1] = "男性";
+	$gender[2] = "女性";
+
 	session_start();
 	$mode = "input";
 	$errmessage = array();  //エラーメッセージ用の配列を初期化
@@ -33,6 +88,23 @@
 			$errmessage[] = "氏名(名)は20文字以内で入力してください";
 		}
 		$_SESSION["name_mei"] = htmlspecialchars($_POST["name_mei"], ENT_QUOTES);  //無害化した文字列を代入
+
+
+		//性別のバリデーション
+		if( !$_POST["gender"] ){
+			$errmessage[] = "性別は入力必須です";
+		}
+		$_SESSION["gender"] = htmlspecialchars($_POST["gender"], ENT_QUOTES);  //無害化した文字列を代入
+		var_dump($_SESSION["gender"]);
+
+		
+		//都道府県のバリデーション
+		if( !$_POST["pref_name"] || $_POST["pref_name"] == 1 ){
+			$errmessage[] = "都道府県は入力必須です";
+		}
+		$_SESSION["pref_num"]	= htmlspecialchars($_POST["pref_name"], ENT_QUOTES);
+		$_SESSION["pref_name"] = htmlspecialchars($kind[ $_POST["pref_name"] ], ENT_QUOTES);  //無害化した文字列を代入
+		
 
 
 		//住所(それ以降の住所)のバリデーション (任意)
@@ -80,12 +152,6 @@
 		}
 		$_SESSION["email"] = htmlspecialchars($_POST["email"], ENT_QUOTES);  //無害化した文字列を入力
 
-
-		
-		//バリデーションまだ未作成
-		$_SESSION["gender"]                 = $_POST["gender"];
-		$_SESSION["pref_name"]              = $_POST["pref_name"];
-
 		
 		//エラーメッセージの有無でモード変数の切り替え
 		if( $errmessage ){
@@ -97,7 +163,7 @@
 
 	//確認画面から編集完了ボタンが押されたらDBのデータを更新して会員一覧画面(/admin/member.php)に遷移する
 	}else if( isset($_POST["update"]) && $_POST["update"] ){
-		$mode = "";
+		//$mode = "";
 		$hasUpdated = MemberLogic::updateMember($_SESSION, $id);  //MemberLogicの編集メソッドを呼び出す
 		header("Location: member.php");  //会員一覧ページに遷移する
 		
@@ -118,6 +184,7 @@
 		$_SESSION["name_sei"]               = "";
 		$_SESSION["name_mei"]               = "";
 		$_SESSION["gender"]                 = "";
+		$_SESSION["pref_num"]								= "";
 		$_SESSION["pref_name"]              = "";
 		$_SESSION["address"]                = "";
 		$_SESSION["password"]               = "";
@@ -205,65 +272,42 @@
 				氏名  姓<input type="text" class="form-control" name="name_sei" value="<?php echo $memberDetail["name_sei"] ?>">
 							名<input type="text" class="form-control" name="name_mei" value="<?php echo $memberDetail["name_mei"] ?>"><br>
 				<!-- 性別 -->
-				性別　<input type="radio" name="gender" value="1" checked="checked">男性
-						<input type="radio" name="gender" value="2">女性<br>
+				性別
+				<?php if( isset($_POST["back"]) && $_POST["back"] ){ ?>
+					<!-- 前に戻るボタンを押された時 -->
+					<?php foreach( $gender as $i => $v ){ ?>
+						<?php if( $_SESSION["gender"] == $i ){ ?>
+							<label><input type="radio" name="gender" value="<?php echo $i ?>" checked><?php echo $v ?></label><br>
+						<?php } else { ?>
+							<label><input type="radio" name="gender" value="<?php echo $i ?>" ><?php echo $v ?></label><br>
+						<?php } ?>
+					<?php } ?>
+				<?php } else { ?>
+					<!-- それ以外の時はデフォルトのメンバー詳細の性別を表示する -->
+					<?php foreach( $gender as $i => $v ){ ?>
+						<?php if( $memberDetail["gender"] == $i ){ ?>
+							<label><input type="radio" name="gender" value="<?php echo $i ?>" checked><?php echo $v ?></label><br>
+						<?php } else { ?>
+							<label><input type="radio" name="gender" value="<?php echo $i ?>" ><?php echo $v ?></label><br>
+						<?php } ?>
+					<?php } ?>
+				<?php } ?>
 				<!-- 住所 -->
 				住所　都道府県　
-				<select name="pref_name" value="<?php echo $memberDetail["pref_name"] ?>">
-					<option value="selected">選択して下さい</option>
-					<option value="北海道">北海道</option>
-					<option value="青森県">青森県</option>
-					<option value="岩手県">岩手県</option>
-					<option value="宮城県">宮城県</option>
-					<option value="秋田県">秋田県</option>
-					<option value="山形県">山形県</option>
-					<option value="福島県">福島県</option>
-					<option value="茨城県">茨城県</option>
-					<option value="栃木県">栃木県</option>
-					<option value="群馬県">群馬県</option>
-					<option value="埼玉県">埼玉県</option>
-					<option value="千葉県">千葉県</option>
-					<option value="東京都">東京都</option>
-					<option value="神奈川県">神奈川県</option>
-					<option value="新潟県">新潟県</option>
-					<option value="富山県">富山県</option>
-					<option value="石川県">石川県</option>
-					<option value="福井県">福井県</option>
-					<option value="山梨県">山梨県</option>
-					<option value="長野県">長野県</option>
-					<option value="岐阜県">岐阜県</option>
-					<option value="静岡県">静岡県</option>
-					<option value="愛知県">愛知県</option>
-					<option value="三重県">三重県</option>
-					<option value="滋賀県">滋賀県</option>
-					<option value="京都府">京都府</option>
-					<option value="大阪府">大阪府</option>
-					<option value="兵庫県">兵庫県</option>
-					<option value="奈良県">奈良県</option>
-					<option value="和歌山県">和歌山県</option>
-					<option value="鳥取県">鳥取県</option>
-					<option value="島根県">島根県</option>
-					<option value="岡山県">岡山県</option>
-					<option value="広島県">広島県</option>
-					<option value="山口県">山口県</option>
-					<option value="徳島県">徳島県</option>
-					<option value="香川県">香川県</option>
-					<option value="愛媛県">愛媛県</option>
-					<option value="高知県">高知県</option>
-					<option value="福岡県">福岡県</option>
-					<option value="佐賀県">佐賀県</option>
-					<option value="長崎県">長崎県</option>
-					<option value="熊本県">熊本県</option>
-					<option value="大分県">大分県</option>
-					<option value="宮崎県">宮崎県</option>
-					<option value="鹿児島県">鹿児島県</option>
-					<option value="沖縄県">沖縄県</option>
+				<select name="pref_name" class="form-control">
+					<?php foreach( $kind as $i => $v ){ ?>
+						<?php if( $_SESSION["pref_num"] == $i ) { ?>
+							<option value="<?php echo $i ?>" selected><?php echo $v ?></option>
+						<?php } else { ?>
+							<option value="<?php echo $i ?>" ><?php echo $v ?></option>
+						<?php } ?>
+					<?php } ?>
 				</select><br>
 				　　　それ以降の住所<input type="text" class="form-control" name="address" value="<?php echo $memberDetail["address"] ?>"><br>
 				<!-- パスワード -->
-				パスワード　　　　<input type="password" class="form-control" name="password" value="<?php echo $_SESSION["password_1"] ?>"><br>
+				パスワード　　　　<input type="password" class="form-control" name="password" value="<?php echo $memberDetail["password"] ?>"><br>
 				<!-- パスワード確認 -->
-				パスワード確認　　<input type="password" class="form-control" name="password_confirmation" value="<?php echo $_SESSION["password_confirmation_1"] ?>"><br>
+				パスワード確認　　<input type="password" class="form-control" name="password_confirmation" value="<?php echo $memberDetail["password"] ?>"><br>
 				<!-- メールアドレス -->
 				メールアドレス　　<input type="email" class="form-control" name="email" value="<?php echo $memberDetail["email"] ?>"><br><br>
 				<div class="button">

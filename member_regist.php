@@ -97,7 +97,7 @@
 
 		
 		//都道府県のバリデーション
-		if( !$_POST["pref_name"] ){
+		if( !$_POST["pref_name"] || $_POST["pref_name"] == 1 ){
 			$errmessage[] = "都道府県は入力必須です";
 		}
 		$_SESSION["pref_num"]	= htmlspecialchars($_POST["pref_name"], ENT_QUOTES);

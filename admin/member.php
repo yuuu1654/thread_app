@@ -239,7 +239,7 @@
 					</tr>
 					<?php foreach($allMembers as $member): ?>	
 						<?php
-							if(h($member["id"]) == "1"){
+							if(h($member["gender"]) == "1"){
 								$gender = "男性";
 							}else{
 								$gender = "女性";
