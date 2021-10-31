@@ -121,7 +121,7 @@
 			$errmessage[] = "パスワードは入力必須です";
 		}else if( mb_strlen($_POST["password"]) > 20 || mb_strlen($_POST["password"]) < 8 ){
 			$errmessage[] = "パスワードは半角英数字8～20文字以内で入力してください";
-		}else if(preg_match("/^(?=.*?[a-zA-Z])(?=.*?\d)[a-zA-Z\d]$/", $_POST["password"])){  //正規表現(半角英数字)
+		}else if(preg_match("^[0-9a-zA-Z]{8,20}$", $_POST["password"])){  //正規表現(半角英数字8~20以内)
 			$errmessage[] = "パスワードは半角英数字8～20文字以内で入力してください";
 		}  
 		$_SESSION["password"] = htmlspecialchars($_POST["password"], ENT_QUOTES);  //無害化した文字列を代入

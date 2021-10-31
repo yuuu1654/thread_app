@@ -34,6 +34,7 @@
 		}
 		//echo "ログイン成功です";
 		$login_member = $_SESSION["login_member"];  //セッションにあるログインユーザーのデータを変数に格納
+		//var_dump($login_member);  //デバッグ用
 
 	}else{  //GETリクエストだった場合の処理
 

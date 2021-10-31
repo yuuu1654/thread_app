@@ -109,7 +109,7 @@
 			if ($password == $member["password"]){
 				//ログイン成功
 				session_regenerate_id(true);          //セッションハイジャック対策
-				$_SESSION["login_member"] = h($member);  //emailの照会で見つかり、パスワードも一致したメンバーをセッションに保存
+				$_SESSION["login_member"] = $member;  //emailの照会で見つかり、パスワードも一致したメンバーをセッションに保存
 				$result = true;
 				return $result;
 			}
