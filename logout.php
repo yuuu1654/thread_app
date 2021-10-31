@@ -11,7 +11,7 @@
 		MemberLogic::logout();
 		
 		//連想配列の中身を表示(デバッグ)
-		var_dump($_SESSION["login_member"]);
+		//var_dump($_SESSION["login_member"]);
 			
 	}else{  //GETリクエストだった場合の処理
 
@@ -62,7 +62,7 @@
 	</style>
 </head>
 <body>
-	<p>ログアウト状態でのトップページ</p>
+	
 	<!--  -->
 	<!-- ヘッダーにスレッド一覧ボタン・新規会員登録フォーム・ログインフォームに遷移するボタン3つを作成する -->
 
@@ -92,7 +92,7 @@
 			echo implode("<br>", $login_err);
 			echo "</div>";
 		}
-		var_dump($login_err);
+		//var_dump($login_err);
 	?>
 
 	<?php if (isset($login_err)) : ?>
