@@ -268,13 +268,13 @@
 				}
 			?>
 			<form action="" method="POST">
-				<!-- 氏名 -->
-				氏名  姓<input type="text" class="form-control" name="name_sei" value="<?php echo $memberDetail["name_sei"] ?>">
-							名<input type="text" class="form-control" name="name_mei" value="<?php echo $memberDetail["name_mei"] ?>"><br>
-				<!-- 性別 -->
-				性別
 				<?php if( isset($_POST["back"]) && $_POST["back"] ){ ?>
 					<!-- 前に戻るボタンを押された時 -->
+					<!-- 氏名 -->
+					氏名  姓<input type="text" class="form-control" name="name_sei" value="<?php echo $_SESSION["name_sei"] ?>">
+								名<input type="text" class="form-control" name="name_mei" value="<?php echo $_SESSION["name_mei"] ?>"><br>
+					<!-- 性別 -->
+					性別
 					<?php foreach( $gender as $i => $v ){ ?>
 						<?php if( $_SESSION["gender"] == $i ){ ?>
 							<label><input type="radio" name="gender" value="<?php echo $i ?>" checked><?php echo $v ?></label><br>
@@ -282,8 +282,33 @@
 							<label><input type="radio" name="gender" value="<?php echo $i ?>" ><?php echo $v ?></label><br>
 						<?php } ?>
 					<?php } ?>
-				<?php } else { ?>
+					<!-- 住所 -->
+					住所　都道府県　
+					<select name="pref_name" class="form-control">
+						<?php foreach( $kind as $i => $v ){ ?>
+							<?php if( $_SESSION["pref_num"] == $i ) { ?>
+								<option value="<?php echo $i ?>" selected><?php echo $v ?></option>
+							<?php } else { ?>
+								<option value="<?php echo $i ?>" ><?php echo $v ?></option>
+							<?php } ?>
+						<?php } ?>
+					</select><br>
+					　　　それ以降の住所<input type="text" class="form-control" name="address" value="<?php echo $_SESSION["address"] ?>"><br>
+					<!-- パスワード -->
+					パスワード　　　　<input type="password" class="form-control" name="password" value="<?php echo $_SESSION["password"] ?>"><br>
+					<!-- パスワード確認 -->
+					パスワード確認　　<input type="password" class="form-control" name="password_confirmation" value="<?php echo $_SESSION["password"] ?>"><br>
+					<!-- メールアドレス -->
+					メールアドレス　　<input type="email" class="form-control" name="email" value="<?php echo $_SESSION["email"] ?>"><br><br>
+					<div class="button">
+						<input type="submit" class="btn btn-primary btn-lg" name="confirm" value="確認画面へ"><br>
+					</div>
+				<?php }else{ ?>
 					<!-- それ以外の時はデフォルトのメンバー詳細の性別を表示する -->
+					氏名  姓<input type="text" class="form-control" name="name_sei" value="<?php echo $memberDetail["name_sei"] ?>">
+								名<input type="text" class="form-control" name="name_mei" value="<?php echo $memberDetail["name_mei"] ?>"><br>
+					<!-- 性別 -->
+					性別
 					<?php foreach( $gender as $i => $v ){ ?>
 						<?php if( $memberDetail["gender"] == $i ){ ?>
 							<label><input type="radio" name="gender" value="<?php echo $i ?>" checked><?php echo $v ?></label><br>
@@ -291,28 +316,28 @@
 							<label><input type="radio" name="gender" value="<?php echo $i ?>" ><?php echo $v ?></label><br>
 						<?php } ?>
 					<?php } ?>
-				<?php } ?>
-				<!-- 住所 -->
-				住所　都道府県　
-				<select name="pref_name" class="form-control">
-					<?php foreach( $kind as $i => $v ){ ?>
-						<?php if( $_SESSION["pref_num"] == $i ) { ?>
-							<option value="<?php echo $i ?>" selected><?php echo $v ?></option>
-						<?php } else { ?>
-							<option value="<?php echo $i ?>" ><?php echo $v ?></option>
+					<!-- 住所 -->
+					住所　都道府県　
+					<select name="pref_name" class="form-control">
+						<?php foreach( $kind as $i => $v ){ ?>
+							<?php if( $memberDetail["pref_name"] == $v ) { ?>
+								<option value="<?php echo $i ?>" selected><?php echo $v ?></option>
+							<?php } else { ?>
+								<option value="<?php echo $i ?>" ><?php echo $v ?></option>
+							<?php } ?>
 						<?php } ?>
-					<?php } ?>
-				</select><br>
-				　　　それ以降の住所<input type="text" class="form-control" name="address" value="<?php echo $memberDetail["address"] ?>"><br>
-				<!-- パスワード -->
-				パスワード　　　　<input type="password" class="form-control" name="password" value="<?php echo $memberDetail["password"] ?>"><br>
-				<!-- パスワード確認 -->
-				パスワード確認　　<input type="password" class="form-control" name="password_confirmation" value="<?php echo $memberDetail["password"] ?>"><br>
-				<!-- メールアドレス -->
-				メールアドレス　　<input type="email" class="form-control" name="email" value="<?php echo $memberDetail["email"] ?>"><br><br>
-				<div class="button">
-					<input type="submit" class="btn btn-primary btn-lg" name="confirm" value="確認画面へ"><br>
-				</div>
+					</select><br>
+					　　　それ以降の住所<input type="text" class="form-control" name="address" value="<?php echo $memberDetail["address"] ?>"><br>
+					<!-- パスワード -->
+					パスワード　　　　<input type="password" class="form-control" name="password" value="<?php echo $memberDetail["password"] ?>"><br>
+					<!-- パスワード確認 -->
+					パスワード確認　　<input type="password" class="form-control" name="password_confirmation" value="<?php echo $memberDetail["password"] ?>"><br>
+					<!-- メールアドレス -->
+					メールアドレス　　<input type="email" class="form-control" name="email" value="<?php echo $memberDetail["email"] ?>"><br><br>
+					<div class="button">
+						<input type="submit" class="btn btn-primary btn-lg" name="confirm" value="確認画面へ"><br>
+					</div>
+				<?php } ?>
 			</form>
 		</main>
 
