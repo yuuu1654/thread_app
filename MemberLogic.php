@@ -63,7 +63,16 @@
 			$result = false;
 
 			//deleted_atに現在時刻を記入
-			$sql = 'UPDATE members SET name_sei = :name_sei, name_mei = :name_mei, gender = :gender, pref_name = :pref_name, address = :address, password = :password, email = :email, updated_at = now()  WHERE id = :id';
+			$sql = 'UPDATE members 
+							SET name_sei = :name_sei, 
+									name_mei = :name_mei, 
+									gender = :gender, 
+									pref_name = :pref_name, 
+									address = :address, 
+									password = :password, 
+									email = :email, 
+									updated_at = now()  
+									WHERE id = :id';
 			
 			try {
 				//データベースに接続する

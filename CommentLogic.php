@@ -77,40 +77,60 @@
 			//SQLの実行
 			//SQLの結果を返す
 
-			//$sql = 'SELECT * FROM comments WHERE thread_id = ? ORDER BY id ASC';
+			$sql = "SELECT comments.id AS id, 
+											members.name_sei AS name_sei, 
+											members.name_mei AS name_mei, 
+											comments.created_at AS created_at, 
+											comments.comment AS comment, 
+											FROM comments 
+											INNER JOIN members ON comments.member_id = members.id 
+											WHERE comments.thread_id = :thread_id";
 
-			// $sql = "SELECT
-			// 	comments.id AS id,
-			// 	members.name_sei AS name_sei,
-			// 	members.name_mei AS name_mei,
-			// 	comments.created_at AS created_at,
-			// 	comments.comment AS comment,
-			// 	FROM comments
-			// 	INNER JOIN members 
-			// 	ON comments.member_id = members.id
-			// 	WHERE comments.thread_id = ?";
-
-			$sql = "SELECT comments.id AS id, members.name_sei AS name_sei, members.name_mei AS name_mei, comments.created_at AS created_at, comments.comment AS comment, FROM comments INNER JOIN members ON comments.member_id = members.id WHERE comments.thread_id = ?";
-
-			//idを配列に入れる
-			$array = [];
-			$array[] = (int)$thread_id;
 			try {
 				$stmt = connect()->prepare($sql);
-				$stmt->execute($array);
+				$stmt->bindValue(':thread_id', $thread_id, PDO::PARAM_INT);
+				$stmt->execute();
 				//SQLの結果を返す
-				//$comments = $stmt->fetchAll();
+				$comments = $stmt->fetchAll();
 
-				$comments = array();
-				while($row = $stmt->fetchAll()){
-					$comments[]=array(
-						"id" =>$row["id"],
-						"name_sei" =>$row["name_sei"],
-						"name_mei" =>$row["name_mei"],
-						"created_at" =>$row["created_at"],
-						"comment" =>$row["comment"]
-					);
-				}
+				// $comments = array();
+				// while($comment = $stmt->fetchAll()){
+				// 	$comments[]=array(
+				// 		"id" =>$comment["id"],
+				// 		"name_sei" =>$comment["name_sei"],
+				// 		"name_mei" =>$comment["name_mei"],
+				// 		"created_at" =>$comment["created_at"],
+				// 		"comment" =>$comment["comment"]
+				// 	);
+				// }
+				return $comments;
+			} catch(\Exception $e) {
+				return false;
+			}
+		}
+
+
+
+
+
+		/**
+		 * 取り敢えずコメント一覧を取得するサンプルメソッド
+		 * @param string $thread_id
+		 * @return array | bool  $thread | false (成功したらメンバーの配列データ、失敗したらfalseを返す)
+		 */
+		public static function getCommentsById2($thread_id){
+			//SQLの準備
+			//SQLの実行
+			//SQLの結果を返す
+
+			$sql = "SELECT * FROM comments WHERE thread_id = :thread_id";
+
+			try {
+				$stmt = connect()->prepare($sql);
+				$stmt->bindValue(':thread_id', $thread_id, PDO::PARAM_INT);
+				$stmt->execute();
+				//SQLの結果を返す
+				$comments = $stmt->fetchAll();
 				return $comments;
 			} catch(\Exception $e) {
 				return false;

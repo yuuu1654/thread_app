@@ -9,9 +9,7 @@
 
 	
 	$login_member = $_SESSION["login_member"];  //セッションにあるログインユーザーのデータを変数に格納
-	//var_dump("$login_member");
 
-	echo $login_member["id"];
 	//コメントのmember_idがログインしているメンバーのidになるようにする
 	$_SESSION["member_id"] = $login_member["id"];
 
@@ -22,6 +20,18 @@
 	//var_dump($threadDetail);
 
 
+
+
+
+	//いいね取り消しハートを押した時の処理
+	if( isset($_POST["destroy_like"]) && $_POST["destroy_like"] ){
+		
+	}
+
+
+
+
+	
 	//コメントするボタンが押されたらバリデーションにかけて、OKならDBにコメントを登録する
 	if( isset($_POST["create_comment"]) && $_POST["create_comment"] ){
 		if( !$_POST["comment"] ){
@@ -30,8 +40,14 @@
 			$errmessage[] = "コメントは500文字以内で入力してください";
 		}
 		$_SESSION["comment"] = htmlspecialchars($_POST["comment"], ENT_QUOTES);  //無害化した文字列を代入
-		//コメントを登録
-		CommentLogic::createComment($_SESSION);
+		
+
+		if( $errmessage ){
+			//エラーのみを表示して、コメントのDB登録はしない
+		}else{
+			//コメントを登録
+			CommentLogic::createComment($_SESSION);
+		}
 	}
 
 ?>
@@ -105,7 +121,7 @@
 			margin: 0px auto;
 		}
 		.comment{
-			max-width: 500px;
+			max-width: 400px;
 			margin: 0px auto;
 		}
 
@@ -171,8 +187,11 @@
 				$memberDetail = MemberLogic::getMemberById($member_id);
 			?>
 			投稿者：<?php echo h($memberDetail["name_sei"]) ?><?php echo h($memberDetail["name_mei"]) ?>
-			<?php echo h($threadDetail["created_at"]) ?>
+			　　　　　　　　　　<?php echo h($threadDetail["created_at"]) ?><br><br>
 			<p cols=40 rows=5><?php echo h($threadDetail["content"]) ?></p>
+
+
+			ログインID:<?php var_dump($_SESSION["member_id"]); ?>
 		</div>
 
 
@@ -188,19 +207,19 @@
 			<!-- コメント表示 -->
 			<?php
 				//thread_idが共通のコメントを全てコメントidの昇順で表示する
-				$comments = CommentLogic::getCommentsById($thread_id);
-				var_dump($comments);
-				var_dump($thread_id);
+				//$comments = CommentLogic::getCommentsById($thread_id);
+				$comments = CommentLogic::getCommentsById2($thread_id);
+
+				//var_dump($comments);
+				//var_dump($thread_id);
 			?>
 			<table class="table">
 				<?php foreach($comments as $comment): ?>	
 					<tr>
 						<td>
-							<?php echo h($comment["id"]) ?>
-							<?php echo h($comment["name_sei"]) ?><?php echo h($comment["name_mei"]) ?>
-							<?php echo h($comment["created_at"]) ?>
-						</td><br><br>
-						<td>
+							<?php echo h($comment["id"]) ?>.
+							<?php //echo h($comment["name_sei"]) ?><?php //echo h($comment["name_mei"]) ?>
+							　　　<?php echo h($comment["created_at"]) ?><br><br>
 							<?php echo h($comment["comment"]) ?>
 
 							<?php
@@ -214,8 +233,14 @@
 							?>
 							
 							<?php if($likeResult): ?>
-								<span class="fa fa-heart like-btn-unlike"></span><br>
+								<!-- ピンクのハート -->
+								<!-- ハートをクリックしたらポストで送信してnameがある時にdestroyメソッドを実行する -->
+								<form method="post" name="destroy_like" action="">
+									<input type="hidden" name="destroy" value="">
+									<a href="javascript: destroy_like.submit()"><span class="fa fa-heart like-btn-unlike"></span></a>
+								</form>
 							<?php else: ?>
+								<!-- グレーのハート -->
 								<span class="fa fa-heart like-btn"></span>
 							<?php endif; ?>
 						</td>
