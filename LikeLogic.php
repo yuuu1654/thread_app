@@ -8,24 +8,51 @@
 	{
 		/**
 		 * [いいねを作成する]
-		 * @param array $likeData
+		 * @param array $member_id, $comment_id
 		 * @return bool $result
 		 * member_idとの紐付け
 		 * comment_idとの紐付け
 		 */
-		public static function createLike($likeData){
+		public static function createLike($member_id, $comment_id){
 			$result = false;
 
-			$sql = 'INSERT INTO likes(member_id, comment_id) VALUES(?, ?)';
-			//スレッドデータを配列に入れる
-			$array = [];
-			$array[] = $likeData["member_id"];       //member_id
-			$array[] = $likeData["comment_id"];      //comment_id
-			
+			$sql = 'INSERT INTO likes(member_id, comment_id) VALUES(:member_id, :comment_id)';
+
 			try {
 				//データベースに接続する
 				$stmt = connect()->prepare($sql);
-				$result = $stmt->execute($array);
+				$stmt->bindValue(':member_id', $member_id, PDO::PARAM_INT);
+				$stmt->bindValue(':comment_id', $comment_id, PDO::PARAM_INT);
+				$result = $stmt->execute();
+				return $result;
+			} catch(\Exception $e) {
+				echo $e;  //エラーを出力
+				error_log($e, 3, "error.log");  //ログを出力する
+				return $result;
+			}
+		}
+
+
+
+
+		/**
+		 * [いいねを取り消す]
+		 * @param array $member_id, $comment_id
+		 * @return bool $result
+		 * member_idとの紐付け
+		 * comment_idとの紐付け
+		 */
+		public static function destroyLike($member_id, $comment_id){
+			$result = false;
+
+			$sql = 'DELETE FROM likes WHERE member_id = :member_id AND comment_id = :comment_id';
+
+			try {
+				//データベースに接続する
+				$stmt = connect()->prepare($sql);
+				$stmt->bindValue(':member_id', $member_id, PDO::PARAM_INT);
+				$stmt->bindValue(':comment_id', $comment_id, PDO::PARAM_INT);
+				$result = $stmt->execute();
 				return $result;
 			} catch(\Exception $e) {
 				echo $e;  //エラーを出力

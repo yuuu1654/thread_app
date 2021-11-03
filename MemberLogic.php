@@ -275,8 +275,15 @@
 			//SQLの実行
 			//SQLの結果を返す
 
-			$sql = "SELECT * FROM members WHERE id = :id AND gender = :gender AND pref_name = :pref_name AND name_sei = :word OR name_mei = :word OR email = :word ORDER BY id ASC";
-
+			$sql = "SELECT * FROM members 
+											WHERE id = :id 
+											AND gender = :gender 
+											AND pref_name = :pref_name 
+											AND name_sei = :word 
+											OR name_mei = :word 
+											OR email = :word 
+											ORDER BY id ASC";
+											
 			try {
 				$stmt = connect()->prepare($sql);
 				$stmt->bindValue(':id', $searchData["id"], PDO::PARAM_INT);

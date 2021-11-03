@@ -36,18 +36,41 @@
 			$mode = "input";
 		}else{
 			$mode = "top";
+
+			//ログイン成功時の処理
+			$result = MemberLogic::login($_POST["email"], $_POST["password"]);
+			$login_member = $_SESSION["login_member"];
+
+			//ログインに失敗したらモードを切り替える
+			if( !$result ){ 
+				$mode = "input";
+				//ログイン失敗時のエラーメッセージがあれば表示する
+				$err = array();
+				$err[] = $_SESSION["msg"];
+				if( $err ){
+					echo '<div class="alert alert-danger" role="alert">';
+					echo implode("<br>", $err);
+					echo "</div>";
+				}
+			}
+			//$login_member = $_SESSION["login_member"];
 		}
 	
 
 	//トップ画面からログアウトボタンが押されたらログアウトしてinputモードに切り替える
 	}else if( isset($_POST["logout"]) && $_POST["logout"] ){
-		
+
 		MemberLogic::logout();  //MemberLogicのlogoutメソッドを呼び出す
 		$mode = "input";
-		
 
-	}else{
-		
+	}else{  //GETリクエストの時の処理
+
+		//ログインしているか判定して、している場合はトップモードに切り替える
+		$result = MemberLogic::checkLogin();
+		if ( $result ){
+			$mode = "top";
+			$login_member = $_SESSION["login_member"];
+		}
 	}
 ?>
 
@@ -62,23 +85,17 @@
 	<style>
 		h1{
 			text-align: center;
+			font-weight: bold;
+		}
+		h2{
+			font-weight: bold;
 		}
 		div.button{
 			text-align: center;
 			padding-top: 50px;
 		}
 		body{
-			padding: 10px;
-			max-width: 600px;
-			margin: 0px auto;
-		}
-		.container{
-			text-align: center;
-			padding-top: 150px;
-		}
-		.btn{
-			margin: 20px 0 20px 0;  
-			padding: 10px 40px 10px 40px;
+			background-color: #CCFFFF;
 		}
 		header{
 			height: 80px;
@@ -90,38 +107,43 @@
 		.header-menus {
 			float: right;
 		}
-		.header-menus .button {
+		.header-menus .logo {
 			float: left;
-			
 			padding: 20px 20px 0 0;
-		}
-		div.button{
-			text-align: center;
 		}
 		main{
 			background-color: #CCFFFF;
+			padding-bottom: 300px;
+			padding-top: 200px;
 		}
-		footer{
-			padding-top: 300px;
-			padding-bottom: 30px;
-			background-color: #CCFFFF;
+		.container{
+			text-align: center;
+			padding-top: 200px;
 		}
 	</style>
 </head>
 <body>
 		<?php if( $mode == "input"){ ?>
 			<!-- 入力フォーム画面 -->
-			<?php
-				if( $errmessage ){
-					echo '<div class="alert alert-danger" role="alert">';
-					echo implode("<br>", $errmessage);
-					echo "</div>";
-				}
-			?>
 
 			<h1>管理画面</h1>
 			<div class="container">
 			<div class="mx-auto" style="width:400px;">
+				<?php
+					//バリデーションに引っ掛かった時のエラーメッセージ
+					if( $errmessage ){
+						echo '<div class="alert alert-danger" role="alert">';
+						echo implode("<br>", $errmessage);
+						echo "</div>";
+					}
+					// //ログイン失敗した時のエラーメッセージ
+					// $err[] = $_SESSION["msg"];
+					// if( $err ){
+					// 	echo '<div class="alert alert-danger" role="alert">';
+					// 	echo implode("<br>", $err);
+					// 	echo "</div>";
+					// }
+				?>
 				<form action="" method="post">
 					<!-- メールアドレスのみ初期値を表示する -->
 					<p>
@@ -140,12 +162,6 @@
 			
 		<?php } else if( $mode == "top"){ ?>
 			<!-- 管理トップ画面 -->
-			
-			<?php 
-				//連想配列の中身を表示
-				print_r($_POST); 
-			?>
-
 			<?php
 				if( $errmessage ){
 					echo '<div class="alert alert-danger" role="alert">';
@@ -156,18 +172,22 @@
 
 			<header>
 				<div class="header-logo">
-					<p>ようこそ<?php echo h($login_member["name_sei"]) ?><?php echo h($login_member["name_mei"]) ?>さん</p>
+					<h2>掲示板管理画面メインメニュー</h2>
 				</div>
 				<div class="header-menus">
+					<h3 class="logo">ようこそ<?php echo h($login_member["name_sei"]) ?><?php echo h($login_member["name_mei"]) ?>さん</h3>
 					<!-- ログアウトボタン -->
-					<form action="" class="button" method="POST">
+					<form action="" class="logo" method="POST">
 						<input type="submit" name="logout" class="btn btn-secondary btn-lg" name="logout" value="ログアウト">
 					</form>
 				</div>
 			</header>
 			<main>
 				<div class="container">
-					<h1>⭕️⭕️掲示板</h1>
+					<!-- 会員一覧ボタン -->
+					<div class="button">
+						<input type="submit" class="btn btn-primary btn-lg" onclick="location.href='member.php'" value="会員一覧">
+					</div>
 				</div>
 			</main>
 		<?php } ?>

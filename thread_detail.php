@@ -20,18 +20,6 @@
 	//var_dump($threadDetail);
 
 
-
-
-
-	//いいね取り消しハートを押した時の処理
-	if( isset($_POST["destroy_like"]) && $_POST["destroy_like"] ){
-		
-	}
-
-
-
-
-	
 	//コメントするボタンが押されたらバリデーションにかけて、OKならDBにコメントを登録する
 	if( isset($_POST["create_comment"]) && $_POST["create_comment"] ){
 		if( !$_POST["comment"] ){
@@ -212,15 +200,23 @@
 
 				//var_dump($comments);
 				//var_dump($thread_id);
+				
 			?>
 			<table class="table">
 				<?php foreach($comments as $comment): ?>	
 					<tr>
 						<td>
 							<?php echo h($comment["id"]) ?>.
-							<?php //echo h($comment["name_sei"]) ?><?php //echo h($comment["name_mei"]) ?>
+							<?php 
+								$id = $comment["member_id"];
+								//$idを引数にしてメンバーを検索して、そのメンバーの名前を表示する
+								$memberDetail = MemberLogic::getMemberById($id);
+							?>
+							<?php echo h($memberDetail["name_sei"]) ?><?php echo h($memberDetail["name_mei"]) ?>
 							　　　<?php echo h($comment["created_at"]) ?><br><br>
 							<?php echo h($comment["comment"]) ?>
+
+
 
 							<?php
 								//指定したcomment_idに対する総いいね数を取得する
@@ -229,19 +225,36 @@
 								//いいねしたかどうか検索して、なければいいね出来るようにする
 								$current_member = $_SESSION["login_member"];
 								$member_id = $current_member["id"];  //ログインしているメンバーのid
-								$likeResult = LikeLogic::searchLikeRelation($member_id, $comment_id)
+								$likeResult = LikeLogic::searchLikeRelation($member_id, $comment_id);
+
+								//いいね取り消しハートを押した時の処理(ピンクハートを押した時)
+								if( isset($_POST["destroy_like"]) && $_POST["destroy_like"] ){
+									LikeLogic::destroyLike($member_id, $comment_id);
+									// var_dump($result);
+									// header("Location: thread_detail.php");
+									// return;
+								}
+								//いいね作成ハートを押した時の処理(グレーハートを押した時)
+								if( isset($_POST["create_like"]) && $_POST["create_like"] ){
+									LikeLogic::destroyLike($member_id, $comment_id);
+								}
 							?>
 							
 							<?php if($likeResult): ?>
 								<!-- ピンクのハート -->
 								<!-- ハートをクリックしたらポストで送信してnameがある時にdestroyメソッドを実行する -->
 								<form method="post" name="destroy_like" action="">
-									<input type="hidden" name="destroy" value="">
+									<input type="hidden" name="destroy_like" value="いいね取り消し">
 									<a href="javascript: destroy_like.submit()"><span class="fa fa-heart like-btn-unlike"></span></a>
 								</form>
+								<?php echo $likeCount ?>
 							<?php else: ?>
 								<!-- グレーのハート -->
-								<span class="fa fa-heart like-btn"></span>
+								<form method="post" name="create_like" action="">
+									<input type="hidden" name="likes" value="いいね作成">
+									<a href="javascript: create_like.submit()"><span class="fa fa-heart like-btn"></span></span></a>
+								</form>
+								<?php echo $likeCount ?>
 							<?php endif; ?>
 						</td>
 					</tr>
