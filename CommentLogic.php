@@ -17,18 +17,15 @@
 			$result = false;
 
 			//member_idも登録する(まだ実装出来ていない)
-			$sql = 'INSERT INTO comments(member_id, thread_id, comment, created_at) VALUES(?, ?, ?, ?)';
-			//スレッドデータを配列に入れる
-			$array = [];
-			$array[] = $commentData["member_id"];      //member_id
-			$array[] = $commentData["thread_id"];      //thread_id
-			$array[] = $commentData["comment"];        //comment
-			$array[] = $commentData["created_at"];     //created_at
-			
+			$sql = 'INSERT INTO comments(member_id, thread_id, comment, created_at) 
+											VALUES(:member_id, :thread_id, :comment, now())';
 			try {
 				//データベースに接続する
 				$stmt = connect()->prepare($sql);
-				$result = $stmt->execute($array);
+				$stmt->bindValue(':member_id', $commentData["member_id"], PDO::PARAM_INT);
+				$stmt->bindValue(':thread_id', $commentData["thread_id"], PDO::PARAM_INT);
+				$stmt->bindValue(':comment', $commentData["comment"]);
+				$result = $stmt->execute();
 				return $result;
 			} catch(\Exception $e) {
 				echo $e;  //エラーを出力

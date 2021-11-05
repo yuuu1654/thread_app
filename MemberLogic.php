@@ -248,7 +248,7 @@
 			//SQLの実行
 			//SQLの結果を返す
 
-			$sql = 'SELECT * FROM members';
+			$sql = 'SELECT * FROM members WHERE deleted_at IS NULL';
 
 			try {
 				$stmt = connect()->prepare($sql);

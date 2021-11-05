@@ -1,6 +1,10 @@
 <?php
 	session_start();
 	$errmessage = $_SESSION;  //エラーメッセージを変数に格納
+
+	//$email = $_SESSION["input_email"];
+	//var_dump($errmessage["input_email"]);
+
 	$err = array();           //エラーを表示するようの配列
 	$_SESSION = array();  //空の配列でセッションを初期化する
 	session_destroy();
@@ -52,7 +56,7 @@
 			<form action="top.php" method="post">
 				<!-- メールアドレスのみ初期値を表示する -->
 				<p>
-					メールアドレス（ID）<input type="email"　class="form-control" name="email" value="<?php echo $_SESSION["email"] ?>"><br>
+					メールアドレス（ID）<input type="email"　class="form-control" name="email" value="<?php echo $errmessage["input_email"] ?>"><br>
 				</p>
 				<p>
 					パスワード　　　　　<input type="password"　class="form-control" name="password" value=""><br>

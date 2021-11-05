@@ -20,6 +20,7 @@
 		if ( count($errmessage) > 0 ){
 			//メールアドレスの検索または、パスワードの照会に失敗してエラーがあった場合はログイン画面に戻す(MemberLogic.php)
 			$_SESSION = $errmessage;  //セッションにエラーメッセージを保存
+			$_SESSION["input_email"] = $_POST["email"];
 			header("Location: login.php");
 			return;
 		}
@@ -29,6 +30,7 @@
 		$result = MemberLogic::login($_POST["email"], $_POST["password"]);
 		//ログイン失敗時の処理
 		if( !$result ){
+			$_SESSION["input_email"] = $_POST["email"];
 			header("Location: login.php");
 			return;
 		}

@@ -35,8 +35,12 @@
 		}else{
 			//コメントを登録
 			CommentLogic::createComment($_SESSION);
+			$_SESSION["comment"] = "";
 		}
+	}else{
+		
 	}
+	$_SESSION["comment"] = "";
 
 ?>
 
@@ -139,9 +143,17 @@
 				<input type="submit" class="btn btn-secondary btn-lg" onclick="location.href='thread.php'" value="スレッド一覧に戻る">
 			</div>
 		</div>
-	</header>
+	</header><br>
 	
 	<main>
+		<?php
+			//バリデーションに引っ掛かったらエラーを表示する
+			if( $errmessage ){
+				echo '<div class="alert alert-danger" role="alert">';
+				echo implode("<br>", $errmessage);
+				echo "</div>";
+			}
+		?>
 		<?php
 			//総コメント数を取得する
 			$thread_id = $threadDetail["id"];
@@ -151,9 +163,6 @@
 		<div class="container">
 			<h2><?php echo h($threadDetail["title"]) ?></h2><br>
 			<p><?php echo $commentCount ?>コメント　<?php echo h($threadDetail["created_at"]) ?></p>
-			<!-- いいねアイコン -->
-			<span class="fa fa-heart like-btn-unlike"></span><br>
-			<span class="fa fa-heart like-btn"></span>
 		</div>
 
 		<nav>
@@ -200,7 +209,7 @@
 
 				//var_dump($comments);
 				//var_dump($thread_id);
-				
+				//var_dump($id);
 			?>
 			<table class="table">
 				<?php foreach($comments as $comment): ?>	
@@ -228,31 +237,37 @@
 								$likeResult = LikeLogic::searchLikeRelation($member_id, $comment_id);
 
 								//いいね取り消しハートを押した時の処理(ピンクハートを押した時)
-								if( isset($_POST["destroy_like"]) && $_POST["destroy_like"] ){
-									LikeLogic::destroyLike($member_id, $comment_id);
-									// var_dump($result);
-									// header("Location: thread_detail.php");
-									// return;
+								if( isset($_POST["destroy"]) && $_POST["destroy"] ){
+									$result = LikeLogic::destroyLike($member_id, $comment_id);
+									//var_dump($result);
+									
 								}
 								//いいね作成ハートを押した時の処理(グレーハートを押した時)
-								if( isset($_POST["create_like"]) && $_POST["create_like"] ){
-									LikeLogic::destroyLike($member_id, $comment_id);
+								if( isset($_POST["create"]) && $_POST["create"] ){
+									$result = LikeLogic::destroyLike($member_id, $comment_id);
+									//var_dump($result);
 								}
+
+								$id = $_SESSION["thread_id"]; 
 							?>
 							
 							<?php if($likeResult): ?>
 								<!-- ピンクのハート -->
 								<!-- ハートをクリックしたらポストで送信してnameがある時にdestroyメソッドを実行する -->
-								<form method="post" name="destroy_like" action="">
-									<input type="hidden" name="destroy_like" value="いいね取り消し">
-									<a href="javascript: destroy_like.submit()"><span class="fa fa-heart like-btn-unlike"></span></a>
+
+								<form method="POST" name="destroy_like" action="thread_detail.php?id=<?php echo $id ?>">
+									<input type="hidden" name="destroy" value="いいね取り消し">
+									<a href="#" onclick="document.forms.destroy_like.submit();"><span class="fa fa-heart like-btn-unlike"></span></a>
 								</form>
+
 								<?php echo $likeCount ?>
 							<?php else: ?>
 								<!-- グレーのハート -->
-								<form method="post" name="create_like" action="">
-									<input type="hidden" name="likes" value="いいね作成">
-									<a href="javascript: create_like.submit()"><span class="fa fa-heart like-btn"></span></span></a>
+								
+
+								<form method="POST" name="create_like" action="thread_detail.php?id=<?php echo $id ?>">
+									<input type="hidden" name="create" value="いいね作成">
+									<a href="#" onclick="document.forms.create_like.submit();"><span class="fa fa-heart like-btn"></span></a>
 								</form>
 								<?php echo $likeCount ?>
 							<?php endif; ?>
@@ -285,14 +300,7 @@
 
 
 	<footer>
-		<?php
-			//バリデーションに引っ掛かったらエラーを表示する
-			if( $errmessage ){
-				echo '<div class="alert alert-danger" role="alert">';
-				echo implode("<br>", $errmessage);
-				echo "</div>";
-			}
-		?>
+		
 		<?php 
 			//ログインしているかどうかチェックする
 			$loginResult = MemberLogic::checkLogin();
