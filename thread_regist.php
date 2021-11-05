@@ -103,6 +103,11 @@
 			max-width: 600px;
 			margin: 0px auto;
 		}
+		.test{
+			white-space: pre-wrap;
+			border: 1px solid;
+			width: 220px;
+		}
 		div.button{
 			text-align: center;
 		}
@@ -141,10 +146,12 @@
 			<!-- スレッドタイトル・コメント欄作成 -->
 			スレッドタイトル　<input type="text" class="form-control" name="title" value="<?php echo $_SESSION["title"] ?>"><br>
 			コメント　　　　　<textarea class="form-control" name="content" value=""><?php echo $_SESSION["content"] ?></textarea>
-
+			
+			
 			<div class="button">
 				<input type="submit" class="btn btn-primary btn-lg" name="confirm" value="確認画面へ"><br>
 			</div>
+			
 		</form>
 		<div class="button">
 			<input type="submit" class="btn btn-secondary btn-lg" onclick="location.href='top.php'" value="トップに戻る">
@@ -165,10 +172,10 @@
 		?>
 
 		<form action="" method="post">
-			<!-- 　　　　　　　　　スレッドタイトル：　<?php echo $_SESSION["title"] ?><br>
-			　　　　　　　　　コメント：　　　　　<?php echo $_SESSION["content"] ?><br> -->
-			スレッドタイトル：　<?php echo $_SESSION["title"] ?><br><br>
-			コメント：　　　　　<?php echo $_SESSION["content"] ?><br>
+			スレッドタイトル： <br>
+			<?php echo $_SESSION["title"] ?><br><br>
+			コメント： <br>
+			<?php echo nl2br($_SESSION["content"]) ?><br>
 			<input type="hidden" name="csrf_token" value="<?php echo h(setToken()); ?>">
 			<div class="button">
 				<input type="submit" class="btn btn-primary btn-lg" name="create_thread" value="スレッドを作成する"><br>
