@@ -15,19 +15,9 @@
 		public static function createMember($memberData){
 			$result = false;
 
-			//フォームに入力されたmailがすでに登録されていないかチェック
-			$sql1 = "SELECT * FROM members WHERE email = :email";
-			$stmt = connect()->prepare($sql1);
-			$stmt->bindValue(':email', $memberData["email"]);
-			$stmt->execute();
-			$member = $stmt->fetch();
-
-			if ($member['email'] === $memberData["email"]) {
-				//$msg = '同じメールアドレスが存在します。';
-				return $result;  //処理を止める
-			} else {
-				//登録されていなければinsert (DBに登録する処理)
-				$sql2 = 'INSERT INTO members(name_sei, name_mei, gender, pref_name, address, password, email, created_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?)';
+			$sql = 'INSERT INTO 
+							members(name_sei, name_mei, gender, pref_name, address, password, email, created_at) 
+							VALUES(?, ?, ?, ?, ?, ?, ?, now())';
 				//会員データを配列に入れる
 				$array = [];
 				$array[] = $memberData["name_sei"];  //name_sei
@@ -35,15 +25,13 @@
 				$array[] = $memberData["gender"];    //gender
 				$array[] = $memberData["pref_name"]; //pref_name
 				$array[] = $memberData["address"];   //address
-
 				$array[] = $memberData["password"];  //password
 				//$array[] = password_hash($memberData["password"], PASSWORD_DEFAULT);  //ハッシュ化したパスワード
-
 				$array[] = $memberData["email"];     //email
-				$array[] = $memberData["created_at"];     //created_at
+				
 				try {
 					//データベースに接続する
-					$stmt = connect()->prepare($sql2);
+					$stmt = connect()->prepare($sql);
 					$result = $stmt->execute($array);
 					return $result;
 				} catch(\Exception $e) {
@@ -51,8 +39,34 @@
 					error_log($e, 3, "error.log");  //ログを出力する
 					return $result;
 				}
+		}
+
+
+
+		/**
+		 * [メールアドレスの重複を検索する]
+		 * @param array $memberData
+		 * @return bool $result
+		 */
+		public static function searchDupEmail($memberData){
+			$result = false;
+
+			//フォームに入力されたmailがすでに登録されていないかチェック
+			$sql = "SELECT * FROM members WHERE email = :email";
+			$stmt = connect()->prepare($sql);
+			$stmt->bindValue(':email', $memberData["email"]);
+			$stmt->execute();
+			$member = $stmt->fetch();
+
+			if ($member['email'] === $memberData["email"]) {
+				//$msg = '同じメールアドレスが存在します。';
+				return $result;  //処理を止める
+			}else{
+				$result = true;
+				return $result;
 			}
 		}
+
 
 
 

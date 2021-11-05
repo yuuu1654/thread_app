@@ -119,7 +119,7 @@
 			$errmessage[] = "パスワードは入力必須です";
 		}else if( mb_strlen($_POST["password"]) > 20 || mb_strlen($_POST["password"]) < 8 ){
 			$errmessage[] = "パスワードは半角英数字8～20文字以内で入力してください";
-		}else if(preg_match("/^(?=.*?[a-zA-Z])(?=.*?\d)[a-zA-Z\d]$/", $_POST["password"])){  //正規表現(半角英数字)
+		}else if( !preg_match("/^[a-zA-Z0-9]+$/", $_POST["password"]) ){  //正規表現(半角英数字)
 			$errmessage[] = "パスワードは半角英数字8～20文字以内で入力してください";
 		}  
 		$_SESSION["password"] = htmlspecialchars($_POST["password"], ENT_QUOTES);  //無害化した文字列を代入
@@ -150,6 +150,14 @@
 		$_SESSION["email"] = htmlspecialchars($_POST["email"], ENT_QUOTES);  //無害化した文字列を入力
 
 
+		$result = MemberLogic::searchDupEmail($_SESSION);
+		//var_dump($result);
+
+		if ( !$result ){
+			$errmessage[] = "すでに登録されているメールアドレスです";
+		}
+
+
 		//エラーメッセージの有無でモード変数の切り替え
 		if( $errmessage ){
 			$mode = "input";
@@ -161,12 +169,7 @@
 	//確認画面から登録完了ボタンが押されたらDBに登録して会員一覧画面(/admin/member.php)に遷移する
 	}else if( isset($_POST["members"]) && $_POST["members"] ){
 		$mode = "";
-		$hasCreated = MemberLogic::createMember($_SESSION);  //MemberLogicのメソッドを呼び出す
-
-		//$resultの結果がfalseで返ってきたらエラーメッセージを追加する
-		if( !$hasCreated ){
-			$errmessage[] = "重複したメールアドレスです";
-		}
+		MemberLogic::createMember($_SESSION);  //MemberLogicのメソッドを呼び出す
 
 		/**
 		 * 完了画面がうまく表示されない為、一旦コメントアウトしました。

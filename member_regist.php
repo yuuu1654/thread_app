@@ -120,8 +120,8 @@
 		if( !$_POST["password"] ){
 			$errmessage[] = "パスワードは入力必須です";
 		}else if( mb_strlen($_POST["password"]) > 20 || mb_strlen($_POST["password"]) < 8 ){
-			$errmessage[] = "パスワードは半角英数字8～20文字以内で入力してください";
-		}else if(preg_match("^[0-9a-zA-Z]{8,20}$", $_POST["password"])){  //正規表現(半角英数字8~20以内)
+			$errmessage[] = "パスワードは半角英数字8～20文字以内";
+		}else if( !preg_match("/^[a-zA-Z0-9]+$/", $_POST["password"]) ){  //正規表現(半角英数字8~20以内)
 			$errmessage[] = "パスワードは半角英数字8～20文字以内で入力してください";
 		}  
 		$_SESSION["password"] = htmlspecialchars($_POST["password"], ENT_QUOTES);  //無害化した文字列を代入
@@ -133,7 +133,7 @@
 		if( !$_POST["password_confirmation"] ){
 			$errmessage[] = "パスワード確認は入力必須です";
 		}else if( mb_strlen($_POST["password_confirmation"]) > 20 || mb_strlen($_POST["password_confirmation"]) < 8 ){
-			$errmessage[] = "パスワード確認は半角英数字8～20文字以内で入力してください";
+			$errmessage[] = "パスワード確認は半角英数字8～20文字以内";
 		}else if( $_POST["password_confirmation"] !== $_POST["password"] ){ //データ型も比較
 			$errmessage[] = "入力した文字がパスワードと一致しません";
 		}
@@ -155,6 +155,14 @@
 		$_SESSION["email"] = htmlspecialchars($_POST["email"], ENT_QUOTES);  //無害化した文字列を入力
 
 
+		$result = MemberLogic::searchDupEmail($_SESSION);
+		//var_dump($result);
+
+		if ( !$result ){
+			$errmessage[] = "すでに登録されているメールアドレスです";
+		}
+
+
 		//エラーメッセージの有無でモード変数の切り替え
 		if( $errmessage ){
 			$mode = "input";
@@ -166,12 +174,7 @@
 	//確認画面から登録完了ボタンが押されたらDBに登録する
 	}else if( isset($_POST["signup_done"]) && $_POST["signup_done"] ){
 		$mode = "signup_done";
-		$hasCreated = MemberLogic::createMember($_SESSION);  //MemberLogicのメソッドを呼び出す
-
-		//$resultの結果がfalseで返ってきたらエラーメッセージを追加する
-		if( !$hasCreated ){
-			$errmessage[] = "重複したメールアドレスです";
-		}
+		MemberLogic::createMember($_SESSION);  //MemberLogicのメソッドを呼び出す
 
 		/**
 		 * 完了画面がうまく表示されない為、一旦コメントアウトしました。
