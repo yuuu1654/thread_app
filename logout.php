@@ -87,7 +87,7 @@
 	</header>
 	<?php
 		//エラーメッセージがあれば表示する
-		if( isset($login_err) ){
+		if( $login_err ){
 			echo '<div class="alert alert-danger" role="alert">';
 			echo implode("<br>", $login_err);
 			echo "</div>";

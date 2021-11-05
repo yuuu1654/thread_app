@@ -3,6 +3,21 @@
 	require_once "MemberLogic.php";
 	require_once "functions.php";    //XSS・csrf&２重登録防止のセキュリティクラスの読み込み
 
+
+	if($_SERVER["REQUEST_METHOD"] != "POST"){
+		//GETによる要求
+		//ログインしているか判定して、していなかったらlogout.phpに遷移する
+		$result = MemberLogic::checkLogin();
+		if ( !$result ){
+			$_SESSION["login_err"] = "会員登録してログインしてください！";
+			header("Location: logout.php");
+			return;
+		}
+	}else{
+		//POSTによる要求
+	}
+
+
 	if( isset($_POST["withdrawal"]) && $_POST["withdrawal"] ){
 		
 		//現在ログインしているメンバーのidを取得する
@@ -11,6 +26,8 @@
 
 		//退会した際はDBからその会員をソフトデリートしてトップに戻る
 		MemberLogic::memberWithdrawal($member_id);
+		//ログアウトする
+		MemberLogic::logout();
 		header("Location: top.php");
 		return;
 	}
