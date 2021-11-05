@@ -37,6 +37,30 @@
 
 
 		/**
+		 * [全てのスレッド情報を取得]
+		 * @param 
+		 * @return array | bool  $allThreads | false (成功したら全スレッドの配列データ、失敗したらfalseを返す)
+		 */
+		public static function getAllThreads(){
+			//SQLの準備
+			//SQLの実行
+			//SQLの結果を返す
+
+			$sql = 'SELECT * FROM threads';
+
+			try {
+				$stmt = connect()->prepare($sql);
+				$stmt->execute();
+				//SQLの結果を返す
+				$allThreads = $stmt->fetchAll();
+				return $allThreads;
+			} catch(\Exception $e) {
+				return false;
+			}
+		}
+
+
+		/**
 		 * [キーワードからスレッド検索して取得]
 		 * @param string $word(セッションデータ)
 		 * @return array | bool  $result | false (成功したら検索したスレッドの配列データ、失敗したらfalseを返す)

@@ -1,6 +1,7 @@
 <?php
 	session_start();
 	$errmessage = array();  //エラーメッセージ用の配列を初期化
+	require_once "MemberLogic.php";
 	require_once "ThreadLogic.php";  //スレッド登録の処理を行うクラスの読み込み
 	require_once "functions.php";    //XSS・csrf&２重登録防止のセキュリティクラスの読み込み
 
@@ -78,10 +79,16 @@
 
 		</div>
 		<div class="header-menus">
-			<!-- 新規スレッド作成 -->
-			<div class="button">
-				<input type="submit" class="btn btn-secondary btn-lg" onclick="location.href='thread_regist.php'" value="新規スレッド作成">
-			</div>
+			<?php
+				//ログインしているか判定して、している場合のみ新規スレッド作成のボタンを表示する
+				$result = MemberLogic::checkLogin();
+			?>
+			<?php if( $result ){ ?>
+				<!-- 新規スレッド作成 -->
+				<div class="button">
+					<input type="submit" class="btn btn-secondary btn-lg" onclick="location.href='thread_regist.php'" value="新規スレッド作成">
+				</div>
+			<?php } ?>
 		</div>
 	</header>
 	
@@ -103,19 +110,30 @@
 		<div class="container">
 			<!-- スレッドテーブルからid/title/created_atを取得して表示する。その際、タイトルをリンクにしてクリックすると詳細ページに遷移する -->
 			<?php if( isset($_POST["search"]) && $_POST["search"] ){ ?>
-				
 				<?php 
 					if( isset($_POST["word"]) && $_POST["word"] ){
-						//$_SESSION["search_word"]= $_POST["word"];
 						$word = $_POST["word"];
 						//ThreadLogicのsearchThreadsメソッドであいまい検索をかけて結果を取得する
 						$result = ThreadLogic::searchThreads($word);  
 					}
-					
 				?>
 				<!-- 検索結果を登録した日付の降順でforeach文で一覧表示する -->
 				<table>
 					<?php foreach($result as $column): ?>
+						<tr>
+							<td>ID: <?php echo h($column["id"]) ?></td>
+							<td><a href="thread_detail.php?id=<?php echo h($column["id"]) ?>"><?php echo h($column["title"]) ?></a></td>
+							<td><?php echo h($column["created_at"]) ?></td>
+						</tr>
+					<?php endforeach; ?>
+				</table>
+			<?php }else{ ?>
+				<?php
+					//デフォルトでは全てのスレッドを表示
+					$allThreads = ThreadLogic::getAllThreads();
+				?>
+				<table>
+					<?php foreach($allThreads as $column): ?>
 						<tr>
 							<td>ID: <?php echo h($column["id"]) ?></td>
 							<td><a href="thread_detail.php?id=<?php echo h($column["id"]) ?>"><?php echo h($column["title"]) ?></a></td>

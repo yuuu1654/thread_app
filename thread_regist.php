@@ -70,7 +70,7 @@
 		if( $errmessage ){
 			$mode = "confirm";
 		}else{
-			header("Location: thread.php");  //スレッド一覧ページに遷移する
+			header("Location: top.php");  //スレッド一覧ページに遷移する
 		}
 
 
@@ -102,11 +102,6 @@
 			padding: 10px;
 			max-width: 600px;
 			margin: 0px auto;
-		}
-		.test{
-			white-space: pre-wrap;
-			border: 1px solid;
-			width: 220px;
 		}
 		div.button{
 			text-align: center;
