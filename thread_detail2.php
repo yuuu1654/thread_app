@@ -37,10 +37,12 @@
 			CommentLogic::createComment($_SESSION);
 			$_SESSION["comment"] = "";
 		}
-	}else{
-		
+	}else{  //GETリクエストの時の処理
+		//セッションを初期化
+		$_SESSION["member_id"] = "";
+		$_SESSION["comment_id"] = "";
 	}
-	$_SESSION["comment"] = "";
+	
 
 ?>
 
@@ -49,7 +51,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>スレッド詳細ページ</title>
+	<title>スレッド詳細2ページ</title>
 	<!-- Bootstrapの読み込み -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 	<!-- font-awesomeの読み込み -->
@@ -209,6 +211,16 @@
 			?>
 			
 			<table class="table">
+				<?php
+					//いいね取り消しハートを押した時の処理(ピンクハートを押した時)
+					if( isset($_POST["destroy"]) && $_POST["destroy"] ){
+						header("Location: comment_dislike_logic.php");
+					}
+					//いいね作成ハートを押した時の処理(グレーハートを押した時)
+					if( isset($_POST["create"]) && $_POST["create"] ){
+						header("Location: comment_like_logic.php");
+					}
+				?>
 				<?php foreach($comments as $comment): ?>	
 					<tr>
 						<td>
@@ -228,42 +240,33 @@
 								//指定したcomment_idに対する総いいね数を取得する
 								$comment_id = $comment["id"];  //コメントのid
 								var_dump($comment_id);
+								$_SESSION["comment_id"] = $comment_id;
 								
-
 								$likeCount = LikeLogic::countLikeById($comment_id);
 
 								//いいねしたかどうか検索して、なければいいね出来るようにする
 								$current_member = $_SESSION["login_member"];
 								$member_id = $current_member["id"];  //ログインしているメンバーのid
 								var_dump($member_id);
+								$_SESSION["member_id"] = $member_id;
 
 								$likeResult = LikeLogic::searchLikeRelation($member_id, $comment_id);
 								//画面に表示されているスレッドのid
 								$id = $_SESSION["thread_id"];
-
-								//いいね取り消しハートを押した時の処理(ピンクハートを押した時)
-								if( isset($_POST["destroy"]) && $_POST["destroy"] ){
-									$result = LikeLogic::destroyLike($member_id, $comment_id);
-									
-								}
-								//いいね作成ハートを押した時の処理(グレーハートを押した時)
-								if( isset($_POST["create"]) && $_POST["create"] ){
-									$result = LikeLogic::createLike($member_id, $comment_id);
-									
-								}
 							?>
 							
+
 							<?php if($likeResult): ?>
 								<!-- ピンクのハート -->
 								<!-- ハートをクリックしたらポストで送信してnameがある時にdestroyメソッドを実行する -->
-								<form method="POST" name="destroy_like" action="thread_detail.php?id=<?php echo $id ?>">
+								<form method="POST" name="destroy_like" action="thread_detail2.php?id=<?php echo $id ?>">
 									<input type="hidden" name="destroy" value="いいね取り消し">
 									<a href="#" onclick="document.forms.destroy_like.submit();"><span class="fa fa-heart like-btn-unlike"></span></a>
 								</form>
 								<?php echo $likeCount ?>
 							<?php else: ?>
 								<!-- グレーのハート -->
-								<form method="POST" name="create_like" action="thread_detail.php?id=<?php echo $id ?>">
+								<form method="POST" name="create_like" action="thread_detail2.php?id=<?php echo $id ?>">
 									<input type="hidden" name="create" value="いいね作成">
 									<a href="#" onclick="document.forms.create_like.submit();"><span class="fa fa-heart like-btn"></span></a>
 								</form>
