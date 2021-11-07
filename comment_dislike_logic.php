@@ -30,7 +30,7 @@
 		$_SESSION["comment_id"] = "";
 
 		//リダイレクト
-		header("Location: thread_detail2.php?id=$id");
+		header("Location: thread_detail.php?id=$id");
 		return;
 	}else{
 		// フォームからPOSTによって要求された場合

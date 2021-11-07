@@ -50,10 +50,6 @@
 	$kind[47] = "鹿児島県";
 	$kind[48] = "沖縄県";
 
-	//性別のラジオボタン
-	$gender = array();
-	$gender[1] = "男性";
-	$gender[2] = "女性";
 
 	session_start();
 	$mode = "normal";  //デフォルトモード
@@ -68,30 +64,30 @@
 		//メソッドを呼び出す
 
 		//IDのバリデーション
-		if( !$_POST["id"] ){
-			$errmessage[] = "ID覧を入力して下さい";
+		if( isset($_POST["id"]) && $_POST["id"] ){
+			$_SESSION["id"] = htmlspecialchars($_POST["id"], ENT_QUOTES); 
+			var_dump($_SESSION["id"]);
 		}
-		$_SESSION["id"] = htmlspecialchars($_POST["id"], ENT_QUOTES);  
+		
 
 
 		//性別のバリデーション
-		if( !$_POST["gender"] ){
-			$errmessage[] = "性別を選択して下さい";
+		if( isset($_POST["gender"]) && $_POST["gender"] ){
+			$_SESSION["gender"] = htmlspecialchars($_POST["gender"], ENT_QUOTES);  
 		}
-		$_SESSION["gender"] = htmlspecialchars($_POST["gender"], ENT_QUOTES);  
+		
 
 		//都道府県のバリデーション
-		if( !$_POST["pref_name"] || $_POST["pref_name"] == 1 ){
-			$errmessage[] = "都道府県は入力必須です";
+		if( isset($_POST["pref_name"]) && $_POST["pref_name"] ){
+			$_SESSION["pref_num"]	= htmlspecialchars($_POST["pref_name"], ENT_QUOTES);
+			$_SESSION["pref_name"] = htmlspecialchars($kind[ $_POST["pref_name"] ], ENT_QUOTES);  //無害化した文字列を代入
 		}
-		$_SESSION["pref_num"]	= htmlspecialchars($_POST["pref_name"], ENT_QUOTES);
-		$_SESSION["pref_name"] = htmlspecialchars($kind[ $_POST["pref_name"] ], ENT_QUOTES);  //無害化した文字列を代入
 		
 		//フリーワードのバリデーション
-		if( !$_POST["word"] ){
-			$errmessage[] = "フリーワードを入力して下さい";
+		if( isset($_POST["word"]) && $_POST["word"] ){
+			$_SESSION["word"] = htmlspecialchars($_POST["word"], ENT_QUOTES); 
 		}
-		$_SESSION["word"] = htmlspecialchars($_POST["word"], ENT_QUOTES); 
+		
 
 		//エラーメッセージの有無でモード変数の切り替え
 		if( $errmessage ){
@@ -103,6 +99,12 @@
 		//キーワードからメンバー検索して一覧データを取得
 		$result = MemberLogic::searchMembers($_SESSION); 
 		var_dump($result);
+
+		$_SESSION["id"]               = "";
+		$_SESSION["gender"]           = "";
+		$_SESSION["pref_num"]					= "";
+		$_SESSION["pref_name"]        = "";
+		$_SESSION["word"]             = "";
 
 	}else{
 		//セッションを初期化
@@ -206,18 +208,13 @@
 					<table class="table">
 						<tr>
 							<th>ID</th>
-							<td><input type="text" class="form-control" name="id" value="<?php echo $_SESSION["id"] ?>"></td><br>
+							<td><input type="text" class="form-control" name="id" value=""></td><br>
 						</tr>
 						<tr>
 							<th>性別</th>
 							<td>
-								<?php foreach( $gender as $i => $v ){ ?>
-									<?php if( $_SESSION["gender"] == $i ){ ?>
-										<label><input type="radio" name="gender" value="<?php echo $i ?>" checked><?php echo $v ?></label><br>
-									<?php } else { ?>
-										<label><input type="radio" name="gender" value="<?php echo $i ?>" ><?php echo $v ?></label><br>
-									<?php } ?>
-								<?php } ?>
+								<input type="radio" name="gender" value="1">男性
+								<input type="radio" name="gender" value="2">女性<br>
 							</td>
 						</tr>
 						<tr>
@@ -226,9 +223,9 @@
 								<select name="pref_name" class="form-control">
 									<?php foreach( $kind as $i => $v ){ ?>
 										<?php if( $_SESSION["pref_num"] == $i ) { ?>
-											<option value="<?php echo $i ?>" selected><?php echo $v ?></option>
+											<option value="" selected><?php echo $v ?></option>
 										<?php } else { ?>
-											<option value="<?php echo $i ?>" ><?php echo $v ?></option>
+											<option value="" ><?php echo $v ?></option>
 										<?php } ?>
 									<?php } ?>
 								</select><br>
@@ -236,7 +233,7 @@
 						</tr>
 						<tr>
 							<th>フリーワード</th>
-							<td><input type="text" class="form-control" name="word" value="<?php echo $_SESSION["word"] ?>"></td>
+							<td><input type="text" class="form-control" name="word" value=""></td>
 						</tr>
 						
 					</table>
@@ -319,18 +316,13 @@
 					<table class="table">
 						<tr>
 							<th>ID</th>
-							<td><input type="text" class="form-control" name="id" value="<?php echo $_SESSION["id"] ?>"></td><br>
+							<td><input type="text" class="form-control" name="id" value=""></td><br>
 						</tr>
 						<tr>
 							<th>性別</th>
 							<td>
-								<?php foreach( $gender as $i => $v ){ ?>
-									<?php if( $_SESSION["gender"] == $i ){ ?>
-										<label><input type="radio" name="gender" value="<?php echo $i ?>" checked><?php echo $v ?></label><br>
-									<?php } else { ?>
-										<label><input type="radio" name="gender" value="<?php echo $i ?>" ><?php echo $v ?></label><br>
-									<?php } ?>
-								<?php } ?>
+								<input type="radio" name="gender" value="1">男性
+								<input type="radio" name="gender" value="2">女性<br>
 							</td>
 						</tr>
 						<tr>
@@ -339,9 +331,9 @@
 								<select name="pref_name" class="form-control">
 									<?php foreach( $kind as $i => $v ){ ?>
 										<?php if( $_SESSION["pref_num"] == $i ) { ?>
-											<option value="<?php echo $i ?>" selected><?php echo $v ?></option>
+											<option value="" selected><?php echo $v ?></option>
 										<?php } else { ?>
-											<option value="<?php echo $i ?>" ><?php echo $v ?></option>
+											<option value="" ><?php echo $v ?></option>
 										<?php } ?>
 									<?php } ?>
 								</select><br>
@@ -349,7 +341,7 @@
 						</tr>
 						<tr>
 							<th>フリーワード</th>
-							<td><input type="text" class="form-control" name="word" value="<?php echo $_SESSION["word"] ?>"></td>
+							<td><input type="text" class="form-control" name="word" value=""></td>
 						</tr>
 						
 					</table>
@@ -363,6 +355,13 @@
 				<!-- 検索ボタンが押されたら、一覧ページャーに会員のデータを表示する -->
 				<table class="table">
 					<?php foreach($result as $member): ?>
+						<?php
+							if(h($member["gender"]) == "1"){
+								$gender = "男性";
+							}else{
+								$gender = "女性";
+							}
+						?>
 						<tr>
 							<th>ID</th>
 							<th>氏名</th>

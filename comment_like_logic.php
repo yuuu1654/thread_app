@@ -26,7 +26,7 @@
 		
 		if( $likeResult ){
 			//すでにいいねのレコードがあれば何もせずにリダイレクトする
-			header("Location: thread_detail2.php?id=$id");
+			header("Location: thread_detail.php?id=$id");
 			return;
 		}else{
 			//いいね作成
@@ -37,7 +37,7 @@
 			$_SESSION["comment_id"] = "";
 
 			//リダイレクト
-			header("Location: thread_detail2.php?id=$id");
+			header("Location: thread_detail.php?id=$id");
 			return;
 		}
 	}else{

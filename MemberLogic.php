@@ -289,23 +289,62 @@
 			//SQLの実行
 			//SQLの結果を返す
 
-			$sql = "SELECT * FROM members 
-											WHERE id = :id 
-											AND gender = :gender 
-											AND pref_name = :pref_name 
-											AND name_sei = :word 
-											OR name_mei = :word 
-											OR email = :word 
-											ORDER BY id ASC";
+			// $sql = "SELECT * FROM members 
+			// 								WHERE id = :id 
+			// 								AND gender = :gender 
+			// 								AND pref_name = :pref_name 
+			// 								AND name_sei = :word 
+			// 								OR name_mei = :word 
+			// 								OR email = :word 
+			// 								ORDER BY id ASC";
+
+			$sql = "SELECT * FROM members WHERE id = :id AND gender = :gender";
+			
 											
 			try {
 				$stmt = connect()->prepare($sql);
-				$stmt->bindValue(':id', $searchData["id"], PDO::PARAM_INT);
+
+
+				if ($searchData["id"] === "") { 
+					$stmt->bindValue(":id", null, PDO::PARAM_NULL);
+				} else {
+					$stmt->bindValue(':id', $searchData["id"], PDO::PARAM_INT);
+				}
+
+				// if ($searchData["gender"] === "") { 
+				// 	$stmt->bindValue(":gender", null, PDO::PARAM_NULL);
+				// } else {
+				// 	$stmt->bindValue(':gender', $searchData["gender"], PDO::PARAM_INT);
+				// }
+
 				$stmt->bindValue(':gender', $searchData["gender"], PDO::PARAM_INT);
-				$stmt->bindValue(':pref_name', $searchData["pref_name"]);
-				$stmt->bindValue(':name_sei', $searchData["word"]);
-				$stmt->bindValue(':name_mei', $searchData["word"]);
-				$stmt->bindValue(':email', $searchData["word"]);
+
+
+
+				// if ($searchData["pref_name"] === "") { 
+				// 	$stmt->bindValue(":pref_name", null, PDO::PARAM_NULL);
+				// } else {
+				// 	$stmt->bindValue(':pref_name', $searchData["pref_name"]);
+				// }
+
+				// if ($searchData["word"] === "") { 
+				// 	$stmt->bindValue(":name_sei", null, PDO::PARAM_NULL);
+				// 	$stmt->bindValue(":name_mei", null, PDO::PARAM_NULL);
+				// 	$stmt->bindValue(":email", null, PDO::PARAM_NULL);
+
+				// } else {
+				// 	$stmt->bindValue(':name_sei', $searchData["word"]);
+				// 	$stmt->bindValue(':name_mei', $searchData["word"]);
+				// 	$stmt->bindValue(':email', $searchData["word"]);
+				// }
+
+
+
+
+				
+				
+				
+				
 				$stmt->execute();
 				//SQLの結果を返す
 				$result = $stmt->fetchAll();
