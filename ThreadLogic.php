@@ -46,7 +46,7 @@
 			//SQLの実行
 			//SQLの結果を返す
 
-			$sql = 'SELECT * FROM threads';
+			$sql = 'SELECT * FROM threads ORDER BY created_at DESC';
 
 			try {
 				$stmt = connect()->prepare($sql);

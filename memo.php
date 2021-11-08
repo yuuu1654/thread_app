@@ -74,3 +74,17 @@
 $stmt->bindValue(':category', $category, is_null($category) ? PDO::PARAM_NULL : PDO::PARAM_INT);
 $stmt->bindValue(':coler',    $coler,    is_null($coler)    ? PDO::PARAM_NULL : PDO::PARAM_INT);
 ?>
+
+<?PHP
+$sql="SELECT * FROM table WHERE 1 ";
+$data=[];
+if(!is_null($category)){
+  $sql.="AND 分類=? ";
+  $data[]=$category;
+}
+if(!is_null($color)){
+  $sql.="AND 色=? ";
+  $data[]=$color;
+}
+$stmt = $pdo->prepare($sql);
+$stmt->execute($data);

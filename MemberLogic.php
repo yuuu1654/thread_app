@@ -387,44 +387,12 @@
 				$stmt->bindValue(":name_mei", $searchData["word"], is_null($searchData["word"]) ? PDO::PARAM_NULL : PDO::PARAM_STR);
 				$stmt->bindValue(":email", $searchData["word"], is_null($searchData["word"]) ? PDO::PARAM_NULL : PDO::PARAM_STR);
 
-
-
-
-				// if ($searchData["id"] === "") { 
-				// 	$stmt->bindValue(":id", null, PDO::PARAM_NULL);
-				// } else {
-				// 	$stmt->bindValue(':id', $searchData["id"], PDO::PARAM_INT);
-				// }
-
-				// if ($searchData["gender"] === "") { 
-				// 	$stmt->bindValue(":gender", null, PDO::PARAM_NULL);
-				// } else {
-				// 	$stmt->bindValue(':gender', $searchData["gender"], PDO::PARAM_INT);
-				// }
-
+				// $stmt->bindValue(':id', $searchData["id"], PDO::PARAM_INT);
 				// $stmt->bindValue(':gender', $searchData["gender"], PDO::PARAM_INT);
-
-
-
-				// if ($searchData["pref_name"] === "") { 
-				// 	$stmt->bindValue(":pref_name", null, PDO::PARAM_NULL);
-				// } else {
-				// 	$stmt->bindValue(':pref_name', $searchData["pref_name"]);
-				// }
-
-				// if ($searchData["word"] === "") { 
-				// 	$stmt->bindValue(":name_sei", null, PDO::PARAM_NULL);
-				// 	$stmt->bindValue(":name_mei", null, PDO::PARAM_NULL);
-				// 	$stmt->bindValue(":email", null, PDO::PARAM_NULL);
-
-				// } else {
+				// $stmt->bindValue(':pref_name', $searchData["pref_name"]);
 				// 	$stmt->bindValue(':name_sei', $searchData["word"]);
 				// 	$stmt->bindValue(':name_mei', $searchData["word"]);
 				// 	$stmt->bindValue(':email', $searchData["word"]);
-				// }
-				
-				
-				
 				
 				$stmt->execute();
 				//SQLの結果を返す
@@ -445,15 +413,85 @@
 			//SQLの結果を返す
 
 			
-			$sql = "SELECT * FROM members WHERE (id = :id OR :id IS NULL) AND (gender = :gender OR :gender IS NULL)";
+			$sql = "SELECT * FROM members WHERE deleted_at IS NULL ";
 			
-											
+			$data = [];
+
 			try {
+				if( !is_null($searchData["id"]) ){
+					$sql.="AND id = ? ";
+					$data[] = $searchData["id"];
+				}
+
+				if( !is_null($searchData["gender"]) ){
+					$sql.="AND gender = ? ";
+					$data[] = $searchData["gender"];
+				}
+
+				if( !is_null($searchData["pref_name"]) ){
+					$sql.="AND pref_name = ? ";
+					$data[] = $searchData["pref_name"];
+				}
+
+				if( !is_null($searchData["word"]) ){
+					$sql.="AND name_sei = ? OR name_mei = ? OR email = ? ";
+					$data[] = $searchData["word"];
+				}
+
+				$stmt = connect()->prepare($sql);
+				$stmt->execute($data);
+				//SQLの結果を返す
+				$result = $stmt->fetchAll();
+				return $result;
+			} catch(\Exception $e) {
+				return false;
+			}
+		}
+
+
+
+		public static function searchMembers3($searchData){
+			$result = false;
+			//bindValueでデータを置き換える
+			
+			$sql = "SELECT * FROM members WHERE deleted_at IS NULL ";
+
+			try {
+
+				if( $searchData["id"] != "" ){
+					$sql .= "AND id = :id ";
+				}
+				if( $searchData["gender"] != "" ){
+					$sql .= "AND gender = :gender ";
+				}
+				if( $searchData["pref_name"] != "" ){
+					$sql .= "AND pref_name = :pref_name ";
+				}
+				if( $searchData["word"] != "" ){
+					$sql .= "AND name_sei = :name_sei OR name_mei = :name_mei OR email = :email ";
+				}
+
+				// var_dump($sql);
+				// return;
+
 				$stmt = connect()->prepare($sql);
 
-				$stmt->bindValue(":id", $searchData["id"], is_null($searchData["id"]) ? PDO::PARAM_NULL : PDO::PARAM_INT);
-				$stmt->bindValue(":gender", $searchData["gender"], is_null($searchData["gender"]) ? PDO::PARAM_NULL : PDO::PARAM_INT);
+				
 
+				if( $searchData["id"] != "" ){
+					$stmt->bindValue(':id', $searchData["id"], PDO::PARAM_INT);
+				}
+				if( $searchData["gender"] != "" ){
+					$stmt->bindValue(':gender', $searchData["gender"], PDO::PARAM_INT);
+				}
+				if( $searchData["pref_name"] != "" ){
+					$stmt->bindValue(':pref_name', $searchData["pref_name"]);
+				}
+				if( $searchData["word"] != "" ){
+					$stmt->bindValue(':name_sei', $searchData["word"]);
+					$stmt->bindValue(':name_mei', $searchData["word"]);
+					$stmt->bindValue(':email', $searchData["word"]);
+				}
 
 				$stmt->execute();
 				//SQLの結果を返す
