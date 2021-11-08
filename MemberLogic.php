@@ -254,15 +254,85 @@
 
 		/**
 		 * [全てのメンバー情報を取得]
+		 * デフォルトでは降順
 		 * @param 
 		 * @return array | bool  $allMembers | false (成功したらメンバーの配列データ、失敗したらfalseを返す)
 		 */
-		public static function getAllMembers(){
+		public static function getAllMembersDesc(){
 			//SQLの準備
 			//SQLの実行
 			//SQLの結果を返す
 
-			$sql = 'SELECT * FROM members WHERE deleted_at IS NULL';
+			$sql = 'SELECT * FROM members WHERE deleted_at IS NULL ORDER BY id DESC';
+
+			try {
+				$stmt = connect()->prepare($sql);
+				$stmt->execute();
+				//SQLの結果を返す
+				$allMembers = $stmt->fetchAll();
+				return $allMembers;
+			} catch(\Exception $e) {
+				return false;
+			}
+		}
+
+		/**
+		 * 昇順で取得する
+		 */
+		public static function getAllMembersAsc(){
+			//SQLの準備
+			//SQLの実行
+			//SQLの結果を返す
+
+			$sql = 'SELECT * FROM members WHERE deleted_at IS NULL ORDER BY id ASC';
+
+			try {
+				$stmt = connect()->prepare($sql);
+				$stmt->execute();
+				//SQLの結果を返す
+				$allMembers = $stmt->fetchAll();
+				return $allMembers;
+			} catch(\Exception $e) {
+				return false;
+			}
+		}
+
+
+
+
+		/**
+		 * [全てのメンバー情報を取得]
+		 * デフォルトでは降順
+		 * @param 
+		 * @return array | bool  $allMembers | false (成功したらメンバーの配列データ、失敗したらfalseを返す)
+		 */
+		public static function createdAtDesc(){
+			//SQLの準備
+			//SQLの実行
+			//SQLの結果を返す
+
+			$sql = 'SELECT * FROM members WHERE deleted_at IS NULL ORDER BY created_at DESC';
+
+			try {
+				$stmt = connect()->prepare($sql);
+				$stmt->execute();
+				//SQLの結果を返す
+				$allMembers = $stmt->fetchAll();
+				return $allMembers;
+			} catch(\Exception $e) {
+				return false;
+			}
+		}
+
+		/**
+		 * 昇順で取得する
+		 */
+		public static function createdAtAsc(){
+			//SQLの準備
+			//SQLの実行
+			//SQLの結果を返す
+
+			$sql = 'SELECT * FROM members WHERE deleted_at IS NULL ORDER BY created_at ASC';
 
 			try {
 				$stmt = connect()->prepare($sql);
@@ -298,18 +368,33 @@
 			// 								OR email = :word 
 			// 								ORDER BY id ASC";
 
-			$sql = "SELECT * FROM members WHERE id = :id AND gender = :gender";
+			$sql = "SELECT * FROM members 
+											WHERE (id = :id OR :id IS NULL) 
+											AND (gender = :gender OR :gender IS NULL) 
+											AND (pref_name = :pref_name OR :pref_name IS NULL) 
+											AND (name_sei = :name_sei OR :name_sei IS NULL) 
+											OR (name_mei = :name_mei OR :name_mei IS NULL) 
+											OR (email = :email OR :email IS NULL)";
 			
 											
 			try {
 				$stmt = connect()->prepare($sql);
 
+				$stmt->bindValue(":id", $searchData["id"], is_null($searchData["id"]) ? PDO::PARAM_NULL : PDO::PARAM_INT);
+				$stmt->bindValue(":gender", $searchData["gender"], is_null($searchData["gender"]) ? PDO::PARAM_NULL : PDO::PARAM_INT);
+				$stmt->bindValue(":pref_name", $searchData["pref_name"], is_null($searchData["pref_name"]) ? PDO::PARAM_NULL : PDO::PARAM_STR);
+				$stmt->bindValue(":name_sei", $searchData["word"], is_null($searchData["word"]) ? PDO::PARAM_NULL : PDO::PARAM_STR);
+				$stmt->bindValue(":name_mei", $searchData["word"], is_null($searchData["word"]) ? PDO::PARAM_NULL : PDO::PARAM_STR);
+				$stmt->bindValue(":email", $searchData["word"], is_null($searchData["word"]) ? PDO::PARAM_NULL : PDO::PARAM_STR);
 
-				if ($searchData["id"] === "") { 
-					$stmt->bindValue(":id", null, PDO::PARAM_NULL);
-				} else {
-					$stmt->bindValue(':id', $searchData["id"], PDO::PARAM_INT);
-				}
+
+
+
+				// if ($searchData["id"] === "") { 
+				// 	$stmt->bindValue(":id", null, PDO::PARAM_NULL);
+				// } else {
+				// 	$stmt->bindValue(':id', $searchData["id"], PDO::PARAM_INT);
+				// }
 
 				// if ($searchData["gender"] === "") { 
 				// 	$stmt->bindValue(":gender", null, PDO::PARAM_NULL);
@@ -317,7 +402,7 @@
 				// 	$stmt->bindValue(':gender', $searchData["gender"], PDO::PARAM_INT);
 				// }
 
-				$stmt->bindValue(':gender', $searchData["gender"], PDO::PARAM_INT);
+				// $stmt->bindValue(':gender', $searchData["gender"], PDO::PARAM_INT);
 
 
 
@@ -337,14 +422,39 @@
 				// 	$stmt->bindValue(':name_mei', $searchData["word"]);
 				// 	$stmt->bindValue(':email', $searchData["word"]);
 				// }
-
-
-
-
 				
 				
 				
 				
+				$stmt->execute();
+				//SQLの結果を返す
+				$result = $stmt->fetchAll();
+				return $result;
+			} catch(\Exception $e) {
+				return false;
+			}
+		}
+
+
+
+
+		public static function searchMembers2($searchData){
+			$result = false;
+			//SQLの準備
+			//SQLの実行
+			//SQLの結果を返す
+
+			
+			$sql = "SELECT * FROM members WHERE (id = :id OR :id IS NULL) AND (gender = :gender OR :gender IS NULL)";
+			
+											
+			try {
+				$stmt = connect()->prepare($sql);
+
+				$stmt->bindValue(":id", $searchData["id"], is_null($searchData["id"]) ? PDO::PARAM_NULL : PDO::PARAM_INT);
+				$stmt->bindValue(":gender", $searchData["gender"], is_null($searchData["gender"]) ? PDO::PARAM_NULL : PDO::PARAM_INT);
+
+
 				$stmt->execute();
 				//SQLの結果を返す
 				$result = $stmt->fetchAll();

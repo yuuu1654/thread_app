@@ -78,10 +78,13 @@
 		
 
 		//都道府県のバリデーション
-		if( isset($_POST["pref_name"]) && $_POST["pref_name"] ){
+		if( isset($_POST["pref_name"]) && $_POST["pref_name"] && $_POST["pref_name"] != 1 ){
+			
 			$_SESSION["pref_num"]	= htmlspecialchars($_POST["pref_name"], ENT_QUOTES);
 			$_SESSION["pref_name"] = htmlspecialchars($kind[ $_POST["pref_name"] ], ENT_QUOTES);  //無害化した文字列を代入
+			var_dump($_SESSION["pref_name"]);
 		}
+
 		
 		//フリーワードのバリデーション
 		if( isset($_POST["word"]) && $_POST["word"] ){
@@ -114,9 +117,7 @@
 		$_SESSION["pref_name"]        = "";
 		$_SESSION["word"]             = "";
 		
-		//デフォルトでは全てのメンバーを表示する
-		$allMembers = MemberLogic::getAllMembers();
-		
+		$allMembers = MemberLogic::getAllMembersDesc();
 	}
 ?>
 
@@ -223,9 +224,9 @@
 								<select name="pref_name" class="form-control">
 									<?php foreach( $kind as $i => $v ){ ?>
 										<?php if( $_SESSION["pref_num"] == $i ) { ?>
-											<option value="" selected><?php echo $v ?></option>
+											<option value="<?php echo $i ?>" selected><?php echo $v ?></option>
 										<?php } else { ?>
-											<option value="" ><?php echo $v ?></option>
+											<option value="<?php echo $i ?>" ><?php echo $v ?></option>
 										<?php } ?>
 									<?php } ?>
 								</select><br>
@@ -245,13 +246,53 @@
 			</div>
 			<div class="container">
 				<!-- デフォルトではメンバー一覧を表示する -->
+				<?php
+					//idの昇順かどうかを判別して切り替える
+					if( isset($_POST["id_sort"]) && $_POST["id_sort"] ){
+						if( $_SESSION["asc_id"] != 15 ){
+							$_SESSION["asc_id"] = "";
+							$allMembers = MemberLogic::getAllMembersAsc(); //昇順にする
+							$_SESSION["asc_id"] = $allMembers[0]["id"];
+							//var_dump($_SESSION["asc_id"]);  //15
+						}else{
+							$_SESSION["asc_id"] = "";
+							$allMembers = MemberLogic::getAllMembersDesc(); //降順にする
+							$_SESSION["asc_id"] = $allMembers[0]["id"];
+							//var_dump($_SESSION["asc_id"]);  //37
+						}
+					}
+					//created_atの昇順かどうかを判別して切り替える
+					if( isset($_POST["created_at_sort"]) && $_POST["created_at_sort"] ){
+						if( $_SESSION["asc_created_at"] != "2020-10-25 13:34:21" ){
+							$_SESSION["asc_created_at"] = "";
+							$allMembers = MemberLogic::createdAtAsc(); //昇順にする
+							$_SESSION["asc_created_at"] = $allMembers[0]["created_at"];
+							//var_dump($_SESSION["asc_created_at"]);  //15
+						}else{
+							$_SESSION["asc_created_at"] = "";
+							$allMembers = MemberLogic::createdAtDesc(); //降順にする
+							$_SESSION["asc_created_at"] = $allMembers[0]["created_at"];
+							//var_dump($_SESSION["asc_created_at"]);  //37
+						}
+					}
+				?>
 				<table class="table">
 					<tr>
-						<th>ID</th>
+						<th>
+							<form method="POST" name="id_sort" action="">
+								<input type="hidden" name="id_sort" value="sort">
+								<a href="#" onclick="document.forms.id_sort.submit();"><span class="sort">ID▼</span></a>
+							</form>
+						</th>
 						<th>氏名</th>
 						<th>性別</th>
 						<th>住所</th>
-						<th>登録日時</th>
+						<th>
+							<form method="POST" name="created_at_sort" action="">
+								<input type="hidden" name="created_at_sort" value="sort">
+								<a href="#" onclick="document.forms.created_at_sort.submit();"><span class="sort">登録日時▼</span></a>
+							</form>
+						</th>
 						<th>編集</th>
 						<th>詳細</th>
 					</tr>
@@ -331,9 +372,9 @@
 								<select name="pref_name" class="form-control">
 									<?php foreach( $kind as $i => $v ){ ?>
 										<?php if( $_SESSION["pref_num"] == $i ) { ?>
-											<option value="" selected><?php echo $v ?></option>
+											<option value="<?php echo $i ?>" selected><?php echo $v ?></option>
 										<?php } else { ?>
-											<option value="" ><?php echo $v ?></option>
+											<option value="<?php echo $i ?>" ><?php echo $v ?></option>
 										<?php } ?>
 									<?php } ?>
 								</select><br>
@@ -353,6 +394,39 @@
 			</div>
 			<div class="container">
 				<!-- 検索ボタンが押されたら、一覧ページャーに会員のデータを表示する -->
+				<?php
+					//デフォルトでは全てのメンバーを表示する
+					//$allMembers = MemberLogic::getAllMembersDesc();
+
+					//idの昇順かどうかを判別して切り替える
+					if( isset($_POST["id_sort"]) && $_POST["id_sort"] ){
+						if( $_SESSION["asc_id"] != 15 ){
+							$_SESSION["asc_id"] = "";
+							$allMembers = MemberLogic::getAllMembersAsc(); //昇順にする
+							$_SESSION["asc_id"] = $allMembers[0]["id"];
+							var_dump($_SESSION["asc_id"]);  //15
+						}else{
+							$_SESSION["asc_id"] = "";
+							$allMembers = MemberLogic::getAllMembersDesc(); //降順にする
+							$_SESSION["asc_id"] = $allMembers[0]["id"];
+							var_dump($_SESSION["asc_id"]);  //37
+						}
+					}
+					//created_atの昇順かどうかを判別して切り替える
+					if( isset($_POST["created_at_sort"]) && $_POST["created_at_sort"] ){
+						if( $_SESSION["asc_created_at"] != "2020-10-25 13:34:21" ){
+							$_SESSION["asc_created_at"] = "";
+							$allMembers = MemberLogic::createdAtAsc(); //昇順にする
+							$_SESSION["asc_created_at"] = $allMembers[0]["created_at"];
+							var_dump($_SESSION["asc_created_at"]);  //15
+						}else{
+							$_SESSION["asc_created_at"] = "";
+							$allMembers = MemberLogic::createdAtDesc(); //降順にする
+							$_SESSION["asc_created_at"] = $allMembers[0]["created_at"];
+							var_dump($_SESSION["asc_created_at"]);  //37
+						}
+					}
+				?>
 				<table class="table">
 					<?php foreach($result as $member): ?>
 						<?php
@@ -363,11 +437,21 @@
 							}
 						?>
 						<tr>
-							<th>ID</th>
+							<th>
+								<form method="POST" name="id_sort" action="">
+									<input type="hidden" name="id_sort" value="sort">
+									<a href="#" onclick="document.forms.id_sort.submit();"><span class="sort">ID▼</span></a>
+								</form>
+							</th>
 							<th>氏名</th>
 							<th>性別</th>
 							<th>住所</th>
-							<th>登録日時</th>
+							<th>
+								<form method="POST" name="created_at_sort" action="">
+									<input type="hidden" name="created_at_sort" value="sort">
+									<a href="#" onclick="document.forms.created_at_sort.submit();"><span class="sort">登録日時▼</span></a>
+								</form>
+							</th>
 							<th>編集</th>
 							<th>詳細</th>
 						</tr>

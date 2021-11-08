@@ -45,11 +45,11 @@
           <?php echo $value['answer'] ?>
         </td>
         <td>
-         　<?php echo $value['option_name'] ?>
+        <?php echo $value['option_name'] ?>
         </td>
       </tr>
       <?php endforeach ?>
- </table>
+</table>
 
  /* SQL */
 		$sql = SELECT * FROM hogetable WHERE name like :name;
@@ -60,3 +60,17 @@
 		$name = '%'.$name.'%';
 		$stmt->bindParam(':name', $name, PDO::PARAM_STR);
 		$stmt->execute();
+
+
+
+<?php
+		$stmt = $pdo->prepare('
+		SELECT * FROM table 
+		WHERE (`分類` = :category OR :category IS NULL)
+			AND (`色` = :coler OR :coler IS NULL)
+	');
+
+// PDO::PARAM_INT 部分は、実際の型に合わせる
+$stmt->bindValue(':category', $category, is_null($category) ? PDO::PARAM_NULL : PDO::PARAM_INT);
+$stmt->bindValue(':coler',    $coler,    is_null($coler)    ? PDO::PARAM_NULL : PDO::PARAM_INT);
+?>
