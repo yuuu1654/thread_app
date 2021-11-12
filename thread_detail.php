@@ -224,17 +224,7 @@
 				</div>
 			</nav>
 		<?php } ?>
-		<?php if( $page == 2 ){ ?>
-			<nav>
-				<div class="nav-logo">
-					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page - 1); ?>">前へ></a>
-				</div>
-				<div class="nav-menus">
-					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page +1 ); ?>">次へ></a>
-				</div>
-			</nav>
-		<?php } ?>
-		<?php if( $page == 3 ){ ?>
+		<?php if( $page != 1 && $page != $max_page ){ ?>
 			<nav>
 				<div class="nav-logo">
 					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page - 1); ?>">前へ></a>
@@ -370,17 +360,7 @@
 				</div>
 			</nav>
 		<?php } ?>
-		<?php if( $page == 2 ){ ?>
-			<nav>
-				<div class="nav-logo">
-					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page - 1); ?>">前へ></a>
-				</div>
-				<div class="nav-menus">
-					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page +1 ); ?>">次へ></a>
-				</div>
-			</nav>
-		<?php } ?>
-		<?php if( $page == 3 ){ ?>
+		<?php if( $page != 1 && $page != $max_page ){ ?>
 			<nav>
 				<div class="nav-logo">
 					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page - 1); ?>">前へ></a>
