@@ -405,51 +405,6 @@
 
 
 
-
-		public static function searchMembers2($searchData){
-			$result = false;
-			//SQLの準備
-			//SQLの実行
-			//SQLの結果を返す
-
-			
-			$sql = "SELECT * FROM members WHERE deleted_at IS NULL ";
-			
-			$data = [];
-
-			try {
-				if( !is_null($searchData["id"]) ){
-					$sql.="AND id = ? ";
-					$data[] = $searchData["id"];
-				}
-
-				if( !is_null($searchData["gender"]) ){
-					$sql.="AND gender = ? ";
-					$data[] = $searchData["gender"];
-				}
-
-				if( !is_null($searchData["pref_name"]) ){
-					$sql.="AND pref_name = ? ";
-					$data[] = $searchData["pref_name"];
-				}
-
-				if( !is_null($searchData["word"]) ){
-					$sql.="AND name_sei = ? OR name_mei = ? OR email = ? ";
-					$data[] = $searchData["word"];
-				}
-
-				$stmt = connect()->prepare($sql);
-				$stmt->execute($data);
-				//SQLの結果を返す
-				$result = $stmt->fetchAll();
-				return $result;
-			} catch(\Exception $e) {
-				return false;
-			}
-		}
-
-
-
 		public static function searchMembers3($searchData){
 			$result = false;
 			//bindValueでデータを置き換える
@@ -457,7 +412,6 @@
 			$sql = "SELECT * FROM members WHERE deleted_at IS NULL ";
 
 			try {
-
 				if( $searchData["id"] != "" ){
 					$sql .= "AND id = :id ";
 				}
@@ -500,6 +454,18 @@
 			} catch(\Exception $e) {
 				return false;
 			}
+		}
+
+
+		/**
+		 * 取得したメンバーのデータを降順・昇順にソートし直す関数
+		 */
+		public static function sortByKey($key_name, $sort_order, $array) {
+			foreach ($array as $key => $value) {
+					$standard_key_array[$key] = $value[$key_name];
+			}
+			array_multisort($standard_key_array, $sort_order, $array);
+			return $array;
 		}
 	}
 ?>

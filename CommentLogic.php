@@ -37,6 +37,32 @@
 
 
 		/**
+		 * [コメントの重複を検索する]
+		 * @param array $commentData
+		 * @return bool $result
+		 */
+		public static function searchDupComment($commentData){
+			$result = false;
+
+			//フォームに入力されたmailがすでに登録されていないかチェック
+			$sql = "SELECT * FROM comments WHERE comment = :comment";
+			$stmt = connect()->prepare($sql);
+			$stmt->bindValue(':comment', $commentData["comment"]);
+			$stmt->execute();
+			$comment = $stmt->fetch();
+
+			if ($comment['comment'] === $commentData["comment"]) {
+				//$msg = '同じメールアドレスが存在します。';
+				return $result;  //処理を止める
+			}else{
+				$result = true;
+				return $result;
+			}
+		}
+
+
+
+		/**
 		 * [thread_idを指定して、総コメント数を取得]
 		 * @param string $thread_id
 		 * @return array | bool  $thread | false (成功したらメンバーの配列データ、失敗したらfalseを返す)

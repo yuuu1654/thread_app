@@ -53,6 +53,7 @@
 
 	session_start();
 	$mode = "normal";  //デフォルトモード
+
 	$errmessage = array();  //エラーメッセージ用の配列を初期化
 	require_once "../MemberLogic.php";  //会員登録の処理を行うクラスの読み込み
 	require_once "../functions.php";    //XSS・csrf&２重登録防止のセキュリティクラスの読み込み
@@ -94,9 +95,14 @@
 			$mode = "search";
 		}
 
+		
+
 		//キーワードからメンバー検索して一覧データを取得
 		$result = MemberLogic::searchMembers3($_SESSION); 
-		//var_dump($result);
+		//var_dump($searchMembers);
+
+		$searchMembers = MemberLogic::sortByKey('id', SORT_DESC, $result);
+		//var_dump($searchMembers);
 
 		$_SESSION["id"]               = "";
 		$_SESSION["gender"]           = "";
@@ -242,7 +248,7 @@
 			<div class="container">
 				<!-- デフォルトではメンバー一覧を表示する -->
 				<?php
-					//idの昇順かどうかを判別して切り替える/デフォルトは降順
+					//idの昇順かどうかを判別して切り替える/デフォルトは降順(ノーマルモード)
 					if( isset($_POST["id_sort"]) && $_POST["id_sort"] ){
 						//一覧の一番下のメンバーのidを取得
 						$value = end($allMembers);
@@ -392,59 +398,70 @@
 			<div class="container">
 				<!-- 検索ボタンが押されたら、一覧ページャーに会員のデータを表示する -->
 				<?php
-					//idの昇順かどうかを判別して切り替える/デフォルトは降順
-					if( isset($_POST["id_sort"]) && $_POST["id_sort"] ){
+					//idの昇順かどうかを判別して切り替える/デフォルトは降順(検索モード)
+					if( isset($_POST["id_sort2"]) && $_POST["id_sort2"] ){
+						$mode = "search";
+						//$searchMembers = MemberLogic::sortByKey('id', SORT_DESC, $result);
+						var_dump($searchMembers);
+
 						//一覧の一番下のメンバーのidを取得
-						$value = end($allMembers);
-						//var_dump($value["id"]);  //
-						if( $_SESSION["asc_id"] != $value["id"] ){
-							$_SESSION["asc_id"] = "";
-							$allMembers = MemberLogic::getAllMembersAsc(); //昇順にする
-							$_SESSION["asc_id"] = $allMembers[0]["id"];
+						$value = end($searchMembers);
+						var_dump($value["id"]);  //19
+
+						if( $_SESSION["asc_id2"] != $value["id"] ){
+							$_SESSION["asc_id2"] = "";
+							//昇順にする
+							$searchMembers = MemberLogic::sortByKey('id', SORT_ASC, $searchMembers);
+							$_SESSION["asc_id2"] = $searchMembers[0]["id"];  //19
 						}else{
-							$_SESSION["asc_id"] = "";
-							$allMembers = MemberLogic::getAllMembersDesc(); //降順にする
-							$_SESSION["asc_id"] = $allMembers[0]["id"];
+							$_SESSION["asc_id2"] = "";
+							//降順にする
+							$searchMembers = MemberLogic::sortByKey('id', SORT_DESC, $searchMembers);
+							$_SESSION["asc_id2"] = $searchMembers[0]["id"];  //37
 						}
 					}
 					//created_atの昇順かどうかを判別して切り替える
-					if( isset($_POST["created_at_sort"]) && $_POST["created_at_sort"] ){
+					if( isset($_POST["created_at_sort2"]) && $_POST["created_at_sort2"] ){
+						
+
 						//一覧の一番下のメンバーのcreated_atを取得
-						$value = end($allMembers);
+						$value = end($searchMembers);
 						//var_dump($value["created_at"]);  
 
-						if( $_SESSION["asc_created_at"] != $value["created_at"] ){
-							$_SESSION["asc_created_at"] = "";
-							$allMembers = MemberLogic::createdAtAsc(); //昇順にする
-							$_SESSION["asc_created_at"] = $allMembers[0]["created_at"];
+						if( $_SESSION["asc_created_at2"] != $value["created_at"] ){
+							$_SESSION["asc_created_at2"] = "";
+							//$allMembers = MemberLogic::createdAtAsc(); //昇順にする
+							$searchMembers = MemberLogic::sortByKey('id', SORT_ASC, $searchMembers);
+							$_SESSION["asc_created_at2"] = $searchMembers[0]["created_at"];
+
 						}else{
-							$_SESSION["asc_created_at"] = "";
-							$allMembers = MemberLogic::createdAtDesc(); //降順にする
-							$_SESSION["asc_created_at"] = $allMembers[0]["created_at"];
+							$_SESSION["asc_created_at2"] = "";
+							//$allMembers = MemberLogic::createdAtDesc(); //降順にする
+							$_SESSION["asc_created_at2"] = $searchMembers[0]["created_at"];
 						}
 					}
 				?>
 				<table class="table">
 					<tr>
 						<th>
-							<form method="POST" name="id_sort" action="">
-								<input type="hidden" name="id_sort" value="sort">
-								<a href="#" onclick="document.forms.id_sort.submit();"><span class="sort">ID▼</span></a>
+							<form method="POST" name="id_sort2" action="">
+								<input type="hidden" name="id_sort2" value="sort2">
+								<a href="#" onclick="document.forms.id_sort2.submit();"><span class="sort2">ID▼</span></a>
 							</form>
 						</th>
 						<th>氏名</th>
 						<th>性別</th>
 						<th>住所</th>
 						<th>
-							<form method="POST" name="created_at_sort" action="">
-								<input type="hidden" name="created_at_sort" value="sort">
-								<a href="#" onclick="document.forms.created_at_sort.submit();"><span class="sort">登録日時▼</span></a>
+							<form method="POST" name="created_at_sort2" action="">
+								<input type="hidden" name="created_at_sort2" value="sort2">
+								<a href="#" onclick="document.forms.created_at_sort2.submit();"><span class="sort2">登録日時▼</span></a>
 							</form>
 						</th>
 						<th>編集</th>
 						<th>詳細</th>
 					</tr>
-					<?php foreach($result as $member): ?>
+					<?php foreach($searchMembers as $member): ?>
 						<?php
 							if(h($member["gender"]) == "1"){
 								$gender = "男性";

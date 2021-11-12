@@ -8,23 +8,24 @@
 	require_once "LikeLogic.php";
 
 	//スレッドのid
-	var_dump($_SESSION["thread_id"]);
 	$id = $_SESSION["thread_id"];
-	var_dump($id);
-
-	$member_id = $_SESSION["member_id"];
-	var_dump($member_id);
 	
-
-	$comment_id = $_SESSION["comment_id"];
-	var_dump($comment_id);
-
 
 	//リダイレクトしてきたらいいね作成を行ってセッションを初期化して再度スレッド詳細ページにリダイレクトする
 	if($_SERVER["REQUEST_METHOD"] != "POST"){
-		$likeResult = LikeLogic::searchLikeRelation($member_id, $comment_id);
+		$member_id = $_SESSION["member_id"];
+		var_dump($member_id);
 		
+		$comment_id = $_SESSION["comment_id"];
+		var_dump($comment_id);
+
+		$likeResult = LikeLogic::searchLikeRelation($member_id, $comment_id);
+			
 		if( $likeResult ){
+			//セッションを初期化
+			$_SESSION["member_id"] = "";
+			$_SESSION["comment_id"] = "";
+
 			//すでにいいねのレコードがあれば何もせずにリダイレクトする
 			header("Location: thread_detail.php?id=$id");
 			return;

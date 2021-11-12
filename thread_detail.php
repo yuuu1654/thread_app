@@ -19,13 +19,10 @@
 		$_SESSION["member_id"] = $login_member["id"];
 	}
 
-
 	$id = $_GET["id"];
 	$_SESSION["thread_id"] = $id;  //スレッドのidをセッションに保存(コメント作成に利用)
 
 	$threadDetail = ThreadLogic::getThreadById($id);  //idからスレッドの詳細を検索
-	//var_dump($threadDetail);
-
 
 	//コメントするボタンが押されたらバリデーションにかけて、OKならDBにコメントを登録する
 	if( isset($_POST["create_comment"]) && $_POST["create_comment"] ){
@@ -40,8 +37,12 @@
 		if( $errmessage ){
 			//エラーのみを表示して、コメントのDB登録はしない
 		}else{
-			//コメントを登録
-			CommentLogic::createComment($_SESSION);
+			//コメントが重複していないかチェック
+			$resultDupComment = CommentLogic::searchDupComment($_SESSION);
+			if( $resultDupComment ){
+				//コメントを登録
+				CommentLogic::createComment($_SESSION);
+			}
 			$_SESSION["comment"] = "";
 		}
 	}else{  //GETリクエストの時の処理
@@ -49,7 +50,38 @@
 		// $_SESSION["member_id"] = "";
 		$_SESSION["comment_id"] = "";
 	}
-	
+
+
+	$thread_id = $threadDetail["id"];  //表示しているスレッドのid
+	$comments = CommentLogic::getCommentsById2($thread_id);  //コメントのデータ
+
+	$max = 5; // 1ページの記事の表示数
+	$comments_num = count($comments);  //トータルデータ件数
+
+	$max_page = ceil($comments_num / $max);
+	$max_page = (int)$max_page;
+	var_dump($max_page);
+
+	// if (!isset($_GET['page'])) {
+	// 	$page = 1;
+	// } else {
+	// 	$page = $_GET['page'];
+	// }
+
+	if( isset($_GET["page"]) && $_GET["page"] > 0 && $_GET["page"] <= $max_page ){
+		$page = $_GET["page"];
+	}else{
+		$page = "1";
+	}
+
+	$page = (int)$page;
+	var_dump($page);
+
+	$start = ($page - 1) * $max; // 配列の何番目から取得すればよいか
+
+	// array_sliceは、配列の何番目($start)から何番目(MAX)まで切り取る関数
+	$disp_comments = array_slice($comments, $start, $max, true);
+
 
 ?>
 
@@ -174,19 +206,60 @@
 			<p><?php echo $commentCount ?>コメント　<?php echo h($threadDetail["created_at"]) ?></p>
 		</div>
 
-		<nav>
-			<div class="nav-logo">
-				<!-- 前へリンク -->
-				<a class="link" href="#">前へ></a>
-			</div>
-			<div class="nav-menus">
-				<!-- 次へリンク -->
-				<a href="#">次へ></a>
-			</div>
-		</nav>
+		
 
+
+		<!-- ページ切り替えリンクの表示条件 -->
+		<?php
+			var_dump($max_page);
+			var_dump($page);
+		?>
+		<?php if( $page == 1 ){ ?>
+			<nav>
+				<div class="nav-logo">
+					<a href="#" style="pointer-events: none; color: #344853;">前へ></a>
+				</div>
+				<div class="nav-menus">
+					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page + 1); ?>">次へ></a>
+				</div>
+			</nav>
+		<?php } ?>
+		<?php if( $page == 2 ){ ?>
+			<nav>
+				<div class="nav-logo">
+					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page - 1); ?>">前へ></a>
+				</div>
+				<div class="nav-menus">
+					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page +1 ); ?>">次へ></a>
+				</div>
+			</nav>
+		<?php } ?>
+		<?php if( $page == 3 ){ ?>
+			<nav>
+				<div class="nav-logo">
+					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page - 1); ?>">前へ></a>
+				</div>
+				<div class="nav-menus">
+					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page +1 ); ?>">次へ></a>
+				</div>
+			</nav>
+		<?php } ?>
+		<?php if( $page == $max_page ){ ?>
+			<nav>
+				<div class="nav-logo">
+					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page - 1); ?>">前へ></a>
+				</div>
+				<div class="nav-menus">
+					<a href="#" style="pointer-events: none; color: #344853;">次へ></a>
+				</div>
+			</nav>
+		<?php } ?>
+		
+
+
+
+		<!-- スレッド表示 -->
 		<div class="container thread">
-			<!-- スレッド表示 -->
 			<?php
 				//スレッドの投稿者のメンバー詳細を検索
 				$member_id = $threadDetail["member_id"];
@@ -195,28 +268,13 @@
 			投稿者：<?php echo h($memberDetail["name_sei"]) ?><?php echo h($memberDetail["name_mei"]) ?>
 			　　　　　　　　　　<?php echo h($threadDetail["created_at"]) ?><br><br>
 			<p cols=40 rows=5><?php echo h($threadDetail["content"]) ?></p>
-
-
 			ログインID:<?php var_dump($_SESSION["member_id"]); ?>
 		</div>
 
 
 
-
-
-
-
-
-
-
+		<!-- コメント表示 -->
 		<div class="container comment">
-			<!-- コメント表示 -->
-			<?php
-				//thread_idが共通のコメントを全てコメントidの昇順で表示する
-				//$comments = CommentLogic::getCommentsById($thread_id);
-				$comments = CommentLogic::getCommentsById2($thread_id);
-			?>
-			
 			<table class="table">
 				<?php
 					//いいね取り消しハートを押した時の処理(ピンクハートを押した時)
@@ -224,6 +282,9 @@
 						$comment_id = $_POST["destroy"];
 						$_SESSION["comment_id"] = $comment_id;
 						header("Location: comment_dislike_logic.php");
+
+						//セッションを初期化
+						//$_SESSION["comment_id"] = "";
 					}
 					//いいね作成ハートを押した時の処理(グレーハートを押した時)
 					if( isset($_POST["create"]) && $_POST["create"] ){
@@ -235,12 +296,21 @@
 						$comment_id = $_POST["create"];
 						$_SESSION["comment_id"] = $comment_id;
 						header("Location: comment_like_logic.php");
+
+						//セッションを初期化
+						//$_SESSION["comment_id"] = "";
 					}
 				?>
-				<?php foreach($comments as $comment): ?>	
+
+
+
+				<?php foreach($disp_comments as $comment): ?>	
 					<tr>
 						<td>
 							<?php echo h($comment["id"]) ?>.
+							<?php
+								//$_SESSION[""]
+							?>
 							<?php 
 								$id = $comment["member_id"];
 								//$idを引数にしてメンバーを検索して、そのメンバーの名前を表示する
@@ -251,41 +321,36 @@
 							<?php echo h($comment["comment"]) ?><br>
 
 
-
 							<?php
 								//指定したcomment_idに対する総いいね数を取得する
 								$comment_id = $comment["id"];  //コメントのid
-								var_dump($comment_id);
-								
 								$likeCount = LikeLogic::countLikeById($comment_id);
 
 								//いいねしたかどうか検索して、なければいいね出来るようにする
 								$member_id = $_SESSION["member_id"]; //ログインしているメンバーのid
-								var_dump($member_id);
-
 								$likeResult = LikeLogic::searchLikeRelation($member_id, $comment_id);
+
 								//画面に表示されているスレッドのid
 								$id = $_SESSION["thread_id"];
 							?>
-							
+						
 
 							<?php if($likeResult): ?>
 								<!-- ピンクのハート -->
 								<!-- ハートをクリックしたらポストで送信してnameがある時にdestroyメソッドを実行する -->
-								<form method="POST" name="destroy_like" action="thread_detail.php?id=<?php echo $id ?>">
-									<input type="hidden" name="destroy" value="<?php echo $comment["id"] ?>">
+								<form method="POST" name="destroy_like" action="">
+									<input type="hidden" name="destroy" value="<?php echo $comment_id ?>">
 									<a href="#" onclick="document.forms.destroy_like.submit();"><span class="fa fa-heart like-btn-unlike"></span></a>
 								</form>
 								<?php echo $likeCount ?>
 							<?php else: ?>
 								<!-- グレーのハート -->
-								<form method="POST" name="create_like" action="thread_detail.php?id=<?php echo $id ?>">
-									<input type="hidden" name="create" value="<?php echo $comment["id"] ?>">
+								<form method="POST" name="create_like" action="">
+									<input type="hidden" name="create" value="<?php echo $comment_id ?>">
 									<a href="#" onclick="document.forms.create_like.submit();"><span class="fa fa-heart like-btn"></span></a>
 								</form>
 								<?php echo $likeCount ?>
 							<?php endif; ?>
-
 
 
 						</td>
@@ -295,29 +360,50 @@
 		</div>
 
 
-
-
-
-
-
-
-
-
-		<nav>
-			<div class="nav-logo">
-				<!-- 前へリンク -->
-				<a class="link" href="#">前へ></a>
-			</div>
-			<div class="nav-menus">
-				<!-- 次へリンク -->
-				<a href="#">次へ></a>
-			</div>
-		</nav>
+		<?php if( $page == 1 ){ ?>
+			<nav>
+				<div class="nav-logo">
+					<a href="#" style="pointer-events: none; color: #344853;">前へ></a>
+				</div>
+				<div class="nav-menus">
+					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page + 1); ?>">次へ></a>
+				</div>
+			</nav>
+		<?php } ?>
+		<?php if( $page == 2 ){ ?>
+			<nav>
+				<div class="nav-logo">
+					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page - 1); ?>">前へ></a>
+				</div>
+				<div class="nav-menus">
+					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page +1 ); ?>">次へ></a>
+				</div>
+			</nav>
+		<?php } ?>
+		<?php if( $page == 3 ){ ?>
+			<nav>
+				<div class="nav-logo">
+					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page - 1); ?>">前へ></a>
+				</div>
+				<div class="nav-menus">
+					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page +1 ); ?>">次へ></a>
+				</div>
+			</nav>
+		<?php } ?>
+		<?php if( $page == $max_page ){ ?>
+			<nav>
+				<div class="nav-logo">
+					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page - 1); ?>">前へ></a>
+				</div>
+				<div class="nav-menus">
+					<a href="#" style="pointer-events: none; color: #344853;">次へ></a>
+				</div>
+			</nav>
+		<?php } ?>
 	</main>
 
 
 	<footer>
-		
 		<?php 
 			//ログインしているかどうかチェックする
 			$loginResult = MemberLogic::checkLogin();
