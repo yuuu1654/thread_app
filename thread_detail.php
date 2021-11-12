@@ -208,7 +208,17 @@
 			var_dump($max_page);
 			var_dump($page);
 		?>
-		<?php if( $page == 1 ){ ?>
+		<?php if( $page == 1 && $max_page == 1 ){ ?>
+			<nav>
+				<div class="nav-logo">
+					<a href="#" style="pointer-events: none; color: #344853;">前へ></a>
+				</div>
+				<div class="nav-menus">
+					<a href="#" style="pointer-events: none; color: #344853;">次へ></a>
+				</div>
+			</nav>
+		<?php } ?>
+		<?php if( $page == 1 && $max_page != 1 ){ ?>
 			<nav>
 				<div class="nav-logo">
 					<a href="#" style="pointer-events: none; color: #344853;">前へ></a>
@@ -228,7 +238,7 @@
 				</div>
 			</nav>
 		<?php } ?>
-		<?php if( $page == $max_page ){ ?>
+		<?php if( $page == $max_page && $page != 1 ){ ?>
 			<nav>
 				<div class="nav-logo">
 					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page - 1); ?>">前へ></a>
@@ -345,8 +355,17 @@
 			</table>
 		</div>
 
-
-		<?php if( $page == 1 ){ ?>
+		<?php if( $page == 1 && $max_page == 1 ){ ?>
+			<nav>
+				<div class="nav-logo">
+					<a href="#" style="pointer-events: none; color: #344853;">前へ></a>
+				</div>
+				<div class="nav-menus">
+					<a href="#" style="pointer-events: none; color: #344853;">次へ></a>
+				</div>
+			</nav>
+		<?php } ?>
+		<?php if( $page == 1 && $max_page != 1 ){ ?>
 			<nav>
 				<div class="nav-logo">
 					<a href="#" style="pointer-events: none; color: #344853;">前へ></a>
@@ -366,7 +385,7 @@
 				</div>
 			</nav>
 		<?php } ?>
-		<?php if( $page == $max_page ){ ?>
+		<?php if( $page == $max_page && $page != 1 ){ ?>
 			<nav>
 				<div class="nav-logo">
 					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page - 1); ?>">前へ></a>

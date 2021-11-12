@@ -72,7 +72,6 @@
 		//性別のバリデーション
 		if( isset($_POST["gender"]) && $_POST["gender"] ){
 			$_SESSION["gender"] = htmlspecialchars($_POST["gender"], ENT_QUOTES);  
-			var_dump($_SESSION["gender"]);
 		}
 		//都道府県のバリデーション
 		if( isset($_POST["pref_name"]) && $_POST["pref_name"] && $_POST["pref_name"] != 1 ){
@@ -102,7 +101,27 @@
 		//var_dump($searchMembers);
 
 		$searchMembers = MemberLogic::sortByKey('id', SORT_DESC, $result);
-		//var_dump($searchMembers);
+
+		$max = 10; // 1ページの記事の表示数
+		$searchMembers_num = count($searchMembers);  //トータルデータ件数
+		var_dump($searchMembers_num);
+
+		$max_page2 = ceil($searchMembers_num / $max);
+		$max_page2 = (int)$max_page2;
+		var_dump($max_page2);
+
+		if( isset($_GET["page2"]) && $_GET["page2"] > 0 && $_GET["page2"] <= $max_page2 ){
+			$page2 = $_GET["page2"];
+		}else{
+			$page2 = "1";
+		}
+
+		$page2 = (int)$page2;
+		var_dump($page2);
+		$start = ($page2 - 1) * $max; // 配列の何番目から取得すればよいか
+		// array_sliceは、配列の何番目($start)から何番目(MAX)まで切り取る関数
+		$disp_searchMembers = array_slice($searchMembers, $start, $max, true);
+		
 
 		$_SESSION["id"]               = "";
 		$_SESSION["gender"]           = "";
@@ -111,38 +130,40 @@
 		$_SESSION["word"]             = "";
 
 	}else{
-		//セッションを初期化
-		$_SESSION["id"]               = "";
-		$_SESSION["gender"]           = "";
-		$_SESSION["pref_num"]					= "";
-		$_SESSION["pref_name"]        = "";
-		$_SESSION["word"]             = "";
 		
-		//デフォルトは全てのメンバー表示
-		$allMembers = MemberLogic::getAllMembersDesc();
-
-		$max = 10; // 1ページの記事の表示数
-		$allMembers_num = count($allMembers);  //トータルデータ件数
-		var_dump($allMembers_num);
-
-		$max_page = ceil($allMembers_num / $max);
-		$max_page = (int)$max_page;
-		var_dump($max_page);
-
-		if( isset($_GET["page"]) && $_GET["page"] > 0 && $_GET["page"] <= $max_page ){
-			$page = $_GET["page"];
-		}else{
-			$page = "1";
-		}
-
-		$page = (int)$page;
-		var_dump($page);
-
-		$start = ($page - 1) * $max; // 配列の何番目から取得すればよいか
-
-		// array_sliceは、配列の何番目($start)から何番目(MAX)まで切り取る関数
-		$disp_allMembers = array_slice($allMembers, $start, $max, true);
 	}
+
+	//セッションを初期化
+	$_SESSION["id"]               = "";
+	$_SESSION["gender"]           = "";
+	$_SESSION["pref_num"]					= "";
+	$_SESSION["pref_name"]        = "";
+	$_SESSION["word"]             = "";
+	
+	//デフォルトは全てのメンバー表示
+	$allMembers = MemberLogic::getAllMembersDesc();
+
+	$max = 10; // 1ページの記事の表示数
+	$allMembers_num = count($allMembers);  //トータルデータ件数
+	var_dump($allMembers_num);
+
+	$max_page = ceil($allMembers_num / $max);
+	$max_page = (int)$max_page;
+	var_dump($max_page);
+
+	if( isset($_GET["page"]) && $_GET["page"] > 0 && $_GET["page"] <= $max_page ){
+		$page = $_GET["page"];
+	}else{
+		$page = "1";
+	}
+
+	$page = (int)$page;
+	var_dump($page);
+
+	$start = ($page - 1) * $max; // 配列の何番目から取得すればよいか
+
+	// array_sliceは、配列の何番目($start)から何番目(MAX)まで切り取る関数
+	$disp_allMembers = array_slice($allMembers, $start, $max, true);
 ?>
 
 
@@ -352,12 +373,16 @@
 
 			<div class="container">
 				<!-- デフォルトページネーションのリンク実装 -->
-				<!-- ページ切り替えリンクの表示条件 -->
 				<?php
 					//var_dump($max_page);
 					//var_dump($page);
 				?>
-				<?php if( $page == 1 ){ ?>
+				<?php if( $page == 1 && $max_page == 1 ){ ?>
+					<nav>
+						<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page ?></a>
+					</nav>
+				<?php } ?>
+				<?php if( $page == 1 && $max_page != 1 ){ ?>
 					<nav>
 						<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page ?></a>
 						　<a href="member.php?page=<?php echo ($page + 1) ?>" ><?php echo ($page + 1) ?></a>
@@ -387,11 +412,49 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	<?php }else if( $mode == "search" ){ ?>
+
+		<?php
+			
+		?>
+
 		<!-- 検索モードの処理 -->
 		<header>
 			<div class="header-logo">
-				<h1>会員一覧</h1>
+				<h1>会員検索</h1>
 			</div>
 			<div class="header-menus">
 				<!-- 会員一覧ページボタン -->
@@ -462,24 +525,23 @@
 				<?php
 					//idの昇順かどうかを判別して切り替える/デフォルトは降順(検索モード)
 					if( isset($_POST["id_sort2"]) && $_POST["id_sort2"] ){
-						$mode = "search";
-						//$searchMembers = MemberLogic::sortByKey('id', SORT_DESC, $result);
-						var_dump($searchMembers);
 
 						//一覧の一番下のメンバーのidを取得
-						$value = end($searchMembers);
+						$value = end($disp_searchMembers);
 						var_dump($value["id"]);  //19
 
 						if( $_SESSION["asc_id2"] != $value["id"] ){
+
 							$_SESSION["asc_id2"] = "";
-							//昇順にする
-							$searchMembers = MemberLogic::sortByKey('id', SORT_ASC, $searchMembers);
-							$_SESSION["asc_id2"] = $searchMembers[0]["id"];  //19
+							$disp_searchMembers = MemberLogic::sortByKey('id', SORT_ASC, $disp_searchMembers);  //昇順にする
+							$_SESSION["asc_id2"] = $disp_searchMembers[0]["id"];  //19
+
 						}else{
+
 							$_SESSION["asc_id2"] = "";
-							//降順にする
-							$searchMembers = MemberLogic::sortByKey('id', SORT_DESC, $searchMembers);
-							$_SESSION["asc_id2"] = $searchMembers[0]["id"];  //37
+							$disp_searchMembers = MemberLogic::sortByKey('id', SORT_DESC, $disp_searchMembers);  //降順にする
+							$_SESSION["asc_id2"] = $disp_searchMembers[0]["id"];  //37
+
 						}
 					}
 					//created_atの昇順かどうかを判別して切り替える
@@ -487,19 +549,18 @@
 						
 
 						//一覧の一番下のメンバーのcreated_atを取得
-						$value = end($searchMembers);
-						//var_dump($value["created_at"]);  
+						$value = end($disp_searchMembers);
 
 						if( $_SESSION["asc_created_at2"] != $value["created_at"] ){
+
 							$_SESSION["asc_created_at2"] = "";
-							//$allMembers = MemberLogic::createdAtAsc(); //昇順にする
-							$searchMembers = MemberLogic::sortByKey('id', SORT_ASC, $searchMembers);
-							$_SESSION["asc_created_at2"] = $searchMembers[0]["created_at"];
+							$disp_searchMembers = MemberLogic::sortByKey('id', SORT_ASC, $disp_searchMembers);  //昇順にする
+							$_SESSION["asc_created_at2"] = $disp_searchMembers[0]["created_at"];
 
 						}else{
 							$_SESSION["asc_created_at2"] = "";
-							//$allMembers = MemberLogic::createdAtDesc(); //降順にする
-							$_SESSION["asc_created_at2"] = $searchMembers[0]["created_at"];
+							$disp_searchMembers = MemberLogic::sortByKey('id', SORT_DESC, $disp_searchMembers); //降順にする
+							$_SESSION["asc_created_at2"] = $disp_searchMembers[0]["created_at"];
 						}
 					}
 				?>
@@ -523,7 +584,7 @@
 						<th>編集</th>
 						<th>詳細</th>
 					</tr>
-					<?php foreach($searchMembers as $member): ?>
+					<?php foreach($disp_searchMembers as $member): ?>
 						<?php
 							if(h($member["gender"]) == "1"){
 								$gender = "男性";
@@ -542,6 +603,41 @@
 						</tr>
 					<?php endforeach; ?>
 				</table>
+			</div>
+			<div class="container">
+				<!-- デフォルトページネーションのリンク実装 -->
+				<?php
+					//var_dump($max_page2);
+					//var_dump($page2);
+				?>
+				<?php if( $page2 == 1 && $max_page2 == 1 ){ ?>
+					<nav>
+						<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page2 ?></a>
+					</nav>
+				<?php } ?>
+				<?php if( $page2 == 1 && $max_page2 != 1 ){ ?>
+					<nav>
+						<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page2 ?></a>
+						　<a href="member.php?page=<?php echo ($page2 + 1) ?>" ><?php echo ($page2 + 1) ?></a>
+						　　<a href="member.php?page=<?php echo ($page2 + 1) ?>">次へ></a>
+					</nav>
+				<?php } ?>
+				<?php if( $page2 != 1 && $page2 != $max_page2 ){ ?>
+					<nav>
+					<a href="member.php?page=<?php echo ($page2 - 1) ?>">前へ></a>
+					　　<a href="member.php?page=<?php echo ($page2 - 1) ?>" ><?php echo ($page2 - 1) ?></a>
+					　　　<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page2 ?></a>
+					　　　　<a href="member.php?page=<?php echo ($page2 + 1) ?>" ><?php echo ($page2 + 1) ?></a>
+					　　　　　　<a href="member.php?page=<?php echo ($page2 + 1) ?>">次へ></a>
+					</nav>
+				<?php } ?>
+				<?php if( $page2 == $max_page2 ){ ?>
+					<nav>
+					<a href="member.php?page=<?php echo ($page2 - 1) ?>">前へ></a>
+					　　<a href="member.php?page=<?php echo ($page2 - 1) ?>" ><?php echo ($page2 - 1) ?></a>
+					　　<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page2 ?></a>
+					</nav>
+				<?php } ?>
 			</div>
 		</main>
 	<?php } ?>
