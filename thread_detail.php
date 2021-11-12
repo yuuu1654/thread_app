@@ -62,12 +62,6 @@
 	$max_page = (int)$max_page;
 	var_dump($max_page);
 
-	// if (!isset($_GET['page'])) {
-	// 	$page = 1;
-	// } else {
-	// 	$page = $_GET['page'];
-	// }
-
 	if( isset($_GET["page"]) && $_GET["page"] > 0 && $_GET["page"] <= $max_page ){
 		$page = $_GET["page"];
 	}else{
@@ -271,6 +265,7 @@
 					if( isset($_POST["destroy"]) && $_POST["destroy"] ){
 						$comment_id = $_POST["destroy"];
 						$_SESSION["comment_id"] = $comment_id;
+						$_SESSION["page"] = $page;  //ページ情報
 						header("Location: comment_dislike_logic.php");
 
 						//セッションを初期化
@@ -285,6 +280,7 @@
 						}
 						$comment_id = $_POST["create"];
 						$_SESSION["comment_id"] = $comment_id;
+						$_SESSION["page"] = $page;  //ページ情報
 						header("Location: comment_like_logic.php");
 
 						//セッションを初期化

@@ -118,7 +118,30 @@
 		$_SESSION["pref_name"]        = "";
 		$_SESSION["word"]             = "";
 		
+		//デフォルトは全てのメンバー表示
 		$allMembers = MemberLogic::getAllMembersDesc();
+
+		$max = 10; // 1ページの記事の表示数
+		$allMembers_num = count($allMembers);  //トータルデータ件数
+		var_dump($allMembers_num);
+
+		$max_page = ceil($allMembers_num / $max);
+		$max_page = (int)$max_page;
+		var_dump($max_page);
+
+		if( isset($_GET["page"]) && $_GET["page"] > 0 && $_GET["page"] <= $max_page ){
+			$page = $_GET["page"];
+		}else{
+			$page = "1";
+		}
+
+		$page = (int)$page;
+		var_dump($page);
+
+		$start = ($page - 1) * $max; // 配列の何番目から取得すればよいか
+
+		// array_sliceは、配列の何番目($start)から何番目(MAX)まで切り取る関数
+		$disp_allMembers = array_slice($allMembers, $start, $max, true);
 	}
 ?>
 
@@ -251,31 +274,38 @@
 					//idの昇順かどうかを判別して切り替える/デフォルトは降順(ノーマルモード)
 					if( isset($_POST["id_sort"]) && $_POST["id_sort"] ){
 						//一覧の一番下のメンバーのidを取得
-						$value = end($allMembers);
-						//var_dump($value["id"]);  //15
+						$value = end($disp_allMembers);
+						var_dump($value["id"]);  //15
 						if( $_SESSION["asc_id"] != $value["id"] ){
+
 							$_SESSION["asc_id"] = "";
-							$allMembers = MemberLogic::getAllMembersAsc(); //昇順にする
-							$_SESSION["asc_id"] = $allMembers[0]["id"];
+							$disp_allMembers = MemberLogic::sortByKey('id', SORT_ASC, $disp_allMembers);  //昇順にする
+							$_SESSION["asc_id"] = $disp_allMembers[0]["id"];
+
 						}else{
+
 							$_SESSION["asc_id"] = "";
-							$allMembers = MemberLogic::getAllMembersDesc(); //降順にする
-							$_SESSION["asc_id"] = $allMembers[0]["id"];
+							$disp_allMembers = MemberLogic::sortByKey('id', SORT_DESC, $disp_allMembers);  //降順にする
+							$_SESSION["asc_id"] = $disp_allMembers[0]["id"];
 						}
 					}
 					//created_atの昇順かどうかを判別して切り替える
 					if( isset($_POST["created_at_sort"]) && $_POST["created_at_sort"] ){
 						//一覧の一番下のメンバーのcreated_atを取得
-						$value = end($allMembers);
+						$value = end($disp_allMembers);
 						//var_dump($value["created_at"]);  
 						if( $_SESSION["asc_created_at"] != $value["created_at"] ){
+
 							$_SESSION["asc_created_at"] = "";
-							$allMembers = MemberLogic::createdAtAsc(); //昇順にする
-							$_SESSION["asc_created_at"] = $allMembers[0]["created_at"];
+							$disp_allMembers = MemberLogic::sortByKey('created_at', SORT_ASC, $disp_allMembers);  //昇順にする
+							$_SESSION["asc_created_at"] = $disp_allMembers[0]["created_at"];
+
 						}else{
+
 							$_SESSION["asc_created_at"] = "";
-							$allMembers = MemberLogic::createdAtDesc(); //降順にする
-							$_SESSION["asc_created_at"] = $allMembers[0]["created_at"];
+							$disp_allMembers = MemberLogic::sortByKey('created_at', SORT_DESC, $disp_allMembers); //降順にする
+							$_SESSION["asc_created_at"] = $disp_allMembers[0]["created_at"];
+
 						}
 					}
 				?>
@@ -299,7 +329,7 @@
 						<th>編集</th>
 						<th>詳細</th>
 					</tr>
-					<?php foreach($allMembers as $member): ?>	
+					<?php foreach($disp_allMembers as $member): ?>	
 						<?php
 							if(h($member["gender"]) == "1"){
 								$gender = "男性";
@@ -318,6 +348,38 @@
 						</tr>
 					<?php endforeach; ?>
 				</table>
+			</div>
+
+			<div class="container">
+				<!-- デフォルトページネーションのリンク実装 -->
+				<!-- ページ切り替えリンクの表示条件 -->
+				<?php
+					//var_dump($max_page);
+					//var_dump($page);
+				?>
+				<?php if( $page == 1 ){ ?>
+					<nav>
+						<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page ?></a>
+						　<a href="member.php?page=<?php echo ($page + 1) ?>" ><?php echo ($page + 1) ?></a>
+						　　<a href="member.php?page=<?php echo ($page + 1) ?>">次へ></a>
+					</nav>
+				<?php } ?>
+				<?php if( $page != 1 && $page != $max_page ){ ?>
+					<nav>
+					<a href="member.php?page=<?php echo ($page - 1) ?>">前へ></a>
+					　　<a href="member.php?page=<?php echo ($page - 1) ?>" ><?php echo ($page - 1) ?></a>
+					　　　<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page ?></a>
+					　　　　<a href="member.php?page=<?php echo ($page + 1) ?>" ><?php echo ($page + 1) ?></a>
+					　　　　　　<a href="member.php?page=<?php echo ($page + 1) ?>">次へ></a>
+					</nav>
+				<?php } ?>
+				<?php if( $page == $max_page ){ ?>
+					<nav>
+					<a href="member.php?page=<?php echo ($page - 1) ?>">前へ></a>
+					　　<a href="member.php?page=<?php echo ($page - 1) ?>" ><?php echo ($page - 1) ?></a>
+					　　<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page ?></a>
+					</nav>
+				<?php } ?>
 			</div>
 		</main>
 	

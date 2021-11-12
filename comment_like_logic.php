@@ -19,12 +19,16 @@
 		$comment_id = $_SESSION["comment_id"];
 		var_dump($comment_id);
 
+		$page = $_SESSION["page"];  //ページ情報
+		var_dump($page);
+
 		$likeResult = LikeLogic::searchLikeRelation($member_id, $comment_id);
 			
 		if( $likeResult ){
 			//セッションを初期化
 			$_SESSION["member_id"] = "";
 			$_SESSION["comment_id"] = "";
+			$_SESSION["page"] = "";
 
 			//すでにいいねのレコードがあれば何もせずにリダイレクトする
 			header("Location: thread_detail.php?id=$id");
@@ -36,9 +40,10 @@
 			//セッションを初期化
 			$_SESSION["member_id"] = "";
 			$_SESSION["comment_id"] = "";
+			$_SESSION["page"] = "";
 
 			//リダイレクト
-			header("Location: thread_detail.php?id=$id");
+			header("Location: thread_detail.php?id=$id&page=$page");
 			return;
 		}
 	}else{

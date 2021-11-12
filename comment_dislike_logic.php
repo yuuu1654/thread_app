@@ -19,15 +19,19 @@
 		$comment_id = $_SESSION["comment_id"];
 		var_dump($comment_id);
 
+		$page = $_SESSION["page"];  //ページ情報
+		var_dump($page);
+
 		//いいね取り消し
 		LikeLogic::destroyLike($member_id, $comment_id);
 		
 		//セッションを初期化
 		$_SESSION["member_id"] = "";
 		$_SESSION["comment_id"] = "";
+		$_SESSION["page"] = "";
 
 		//リダイレクト
-		header("Location: thread_detail.php?id=$id");
+		header("Location: thread_detail.php?id=$id&page=$page");
 		return;
 	}else{
 		// フォームからPOSTによって要求された場合

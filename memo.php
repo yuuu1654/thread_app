@@ -127,20 +127,20 @@ for($i = 1; $i <= $max_page; $i++){ // 最大ページ数分リンクを作成
   $start = $max * ($page - 1); //スタートするページを取得
   $view_page = array_slice($contents, $start, $max, true); //表示するページを取得
 
- ?>
+?>
 
- <!DOCTYPE html>
- <html lang="ja" dir="ltr">
-   <head>
-     <meta charset="utf-8">
-     <title>ページング</title>
-   </head>
-   <body>
-     <!-- コンテンツを表示 -->
-     <?php
-     foreach ($view_page as $value) {
-       echo $value . '<br />';
-     }
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>ページング</title>
+  </head>
+  <body>
+    <!-- コンテンツを表示 -->
+    <?php
+    foreach ($view_page as $value) {
+      echo $value . '<br />';
+    }
       ?>
       <!-- ページ移動 -->
     <?php  if ($page > 1): ?>
@@ -150,11 +150,11 @@ for($i = 1; $i <= $max_page; $i++){ // 最大ページ数分リンクを作成
       <a href="index.php?page=<?php echo ($page+1); ?>">次のページへ</a>
     <?php endif; ?>
 
-   </body>
- </html>
+  </body>
+</html>
 
 
- <?php if( $page = 1 ): ?>
+<?php if( $page = 1 ): ?>
   <nav>
     <div class="nav-logo">
       <a href="#" style="pointer-events: none; color: #344853;">前へ></a>
@@ -184,3 +184,74 @@ for($i = 1; $i <= $max_page; $i++){ // 最大ページ数分リンクを作成
     </div>
   </nav>
 <?php endif; ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<?php
+define('MAX','3');
+$books = array(
+          array('book_kind' => 'ライトノベル', 'book_name' => 'ライトノベルの本'),
+          array('book_kind' => '歴史', 'book_name' => '歴史の本'),
+          array('book_kind' => '料理', 'book_name' => '料理の本'),
+          array('book_kind' => '啓発本', 'book_name' => '啓発の本'),
+          array('book_kind' => 'コミック', 'book_name' => 'コミックの本'),
+          array('book_kind' => '推理小説', 'book_name' => '推理小説の本'),
+          array('book_kind' => 'フォトブック', 'book_name' => 'フォトブックの本'),
+            );
+            
+$books_num = count($books);
+$max_page = ceil($books_num / MAX);
+ 
+if(!isset($_GET['page_id'])){
+    $now = 1;
+}else{
+    $now = $_GET['page_id'];
+}
+ 
+$start_no = ($now - 1) * MAX;
+ 
+$disp_data = array_slice($books, $start_no, MAX, true);
+ 
+foreach($disp_data as $val){
+    echo $val['book_kind']. '　'.$val['book_name']. '<br />';
+}
+ 
+echo '全件数'. $books_num. '件'. '　'; // 全データ数の表示です。
+ 
+
+
+
+
+
+if($now > 1){ // リンクをつけるかの判定
+    //echo '<a href='/paging.php?page_id='.($now - 1).'')>前へ</a>'. '　';
+} else {
+    echo '前へ'. '　';
+}
+ 
+for($i = 1; $i <= $max_page; $i++){
+    if ($i == $now) {
+        echo $now. '　'; 
+    } else {
+        //echo '<a href='/test.php?page_id='. $i. '')>'. $i. '</a>'. '　';
+    }
+}
+ 
+if($now < $max_page){ // リンクをつけるかの判定
+    //echo '<a href='/paging.php?page_id='.($now + 1).'')>次へ</a>'. '　';
+} else {
+    echo '次へ';
+}
+ 
+?>
