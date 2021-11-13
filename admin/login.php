@@ -48,6 +48,10 @@
 		if( isset($_SESSION["login_member"]) && $_SESSION["login_member"] ){
 			$name = $_SESSION["login_member"]["name_sei"].$_SESSION["login_member"]["name_mei"];
 			$_SESSION["name"] = $name;
+		}else{
+			$_SESSION["msg"] = "会員登録してログインしてください！";
+			header("Location: ../login.php");
+			return;
 		}
 
 

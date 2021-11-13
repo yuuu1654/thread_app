@@ -31,7 +31,7 @@
 			$_SESSION["page"] = "";
 
 			//すでにいいねのレコードがあれば何もせずにリダイレクトする
-			header("Location: thread_detail.php?id=$id");
+			header("Location: thread_detail.php?id=$id&page=$page");
 			return;
 		}else{
 			//いいね作成

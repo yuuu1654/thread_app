@@ -219,24 +219,24 @@
 					<a href="#" style="pointer-events: none; color: #344853;">前へ></a>
 				</div>
 				<div class="nav-menus">
-					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page + 1); ?>">次へ></a>
+					<a href="thread_detail2.php?id=<?php echo $id; ?>&page=<?php echo ($page + 1); ?>">次へ></a>
 				</div>
 			</nav>
 		<?php } ?>
 		<?php if( $page != 1 && $page != $max_page ){ ?>
 			<nav>
 				<div class="nav-logo">
-					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page - 1); ?>">前へ></a>
+					<a href="thread_detail2.php?id=<?php echo $id; ?>&page=<?php echo ($page - 1); ?>">前へ></a>
 				</div>
 				<div class="nav-menus">
-					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page +1 ); ?>">次へ></a>
+					<a href="thread_detail2.php?id=<?php echo $id; ?>&page=<?php echo ($page +1 ); ?>">次へ></a>
 				</div>
 			</nav>
 		<?php } ?>
 		<?php if( $page == $max_page && $page != 1 ){ ?>
 			<nav>
 				<div class="nav-logo">
-					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page - 1); ?>">前へ></a>
+					<a href="thread_detail2.php?id=<?php echo $id; ?>&page=<?php echo ($page - 1); ?>">前へ></a>
 				</div>
 				<div class="nav-menus">
 					<a href="#" style="pointer-events: none; color: #344853;">次へ></a>
@@ -294,48 +294,190 @@
 
 
 
-				<?php foreach($disp_comments as $comment): ?>	
-					<tr>
-						<td>
-							<?php echo h($comment["id"]) ?>.
-							<?php 
-								//$idを引数にしてメンバーを検索 & そのメンバーの名前を表示
-								$id = $comment["member_id"];
-								$memberDetail = MemberLogic::getMemberById($id);
-							?>
-							<?php echo h($memberDetail["name_sei"]) ?><?php echo h($memberDetail["name_mei"]) ?>
-							　　　<?php echo h($comment["created_at"]) ?><br><br>
-							<?php echo h($comment["comment"]) ?><br>
-							<?php
-								//コメントのいいね数を取得
-								$comment_id = $comment["id"];
-								$likeCount = LikeLogic::countLikeById($comment_id);
-								//いいねしたかどうかを検索
-								$member_id = $_SESSION["member_id"]; //ログインしているメンバーのid
-								$likeResult = LikeLogic::searchLikeRelation($member_id, $comment_id);
-								//画面に表示されているスレッドのid
-								$id = $_SESSION["thread_id"];
-							?>
-							<?php if($likeResult){ ?>
-								<!-- ピンクのハート -->
-								<a href="thread_detail.php?id=<?php echo $_SESSION["thread_id"] ?>&page=<?php echo $page ?>&destroy=<?php echo $comment_id ?>"><span class="fa fa-heart like-btn-unlike"></span></a>
-								<?php echo $likeCount ?>
-							<?php }else{ ?>
-								<!-- グレーのハート -->
-								<a href="thread_detail.php?id=<?php echo $_SESSION["thread_id"] ?>&page=<?php echo $page ?>&create=<?php echo $comment_id ?>"><span class="fa fa-heart like-btn"></span></a>
-								<?php echo $likeCount ?>
-							<?php } ?>
-						</td>
-					</tr>
-				<?php endforeach; ?>
+				<tr>
+					<td>
+						<?php echo h($disp_comments[0]["id"]) ?>.
+						<?php 
+							// var_dump($_SESSION["thread_id"]);
+							// var_dump($page);
+							// var_dump($disp_comments[0]["id"]);
+							//$idを引数にしてメンバーを検索 & そのメンバーの名前を表示
+							$id = $disp_comments[0]["member_id"];
+							$memberDetail = MemberLogic::getMemberById($id);
+						?>
+						<?php echo h($memberDetail["name_sei"]) ?><?php echo h($memberDetail["name_mei"]) ?>
+						　　　<?php echo h($disp_comments[0]["created_at"]) ?><br><br>
+						<?php echo h($disp_comments[0]["comment"]) ?><br>
+						<?php
+							//コメントのいいね数を取得
+							$comment_id = $disp_comments[0]["id"];
+							$likeCount = LikeLogic::countLikeById($comment_id);
+							//いいねしたかどうかを検索
+							$member_id = $_SESSION["member_id"]; //ログインしているメンバーのid
+							$likeResult = LikeLogic::searchLikeRelation($member_id, $comment_id);
+							//画面に表示されているスレッドのid
+							$id = $_SESSION["thread_id"];
+						?>
+						<?php if($likeResult){ ?>
+							<!-- ピンクのハート -->
+							<a href="thread_detail2.php?id=<?php echo $_SESSION["thread_id"] ?>&page=<?php echo $page ?>&destroy=<?php echo $disp_comments[0]["id"] ?>"><span class="fa fa-heart like-btn-unlike"></span></a>
+							<?php echo $likeCount ?>
+						<?php }else{ ?>
+							<!-- グレーのハート -->
+							<a href="thread_detail2.php?id=<?php echo $_SESSION["thread_id"] ?>&page=<?php echo $page ?>&create=<?php echo $disp_comments[0]["id"] ?>"><span class="fa fa-heart like-btn"></span></a>
+							<?php echo $likeCount ?>
+						<?php } ?>
+					</td>
+				</tr>
+
+
+
+
+				<tr>
+					<td>
+						<?php echo h($disp_comments[1]["id"]) ?>.
+						<?php 
+							//$idを引数にしてメンバーを検索 & そのメンバーの名前を表示
+							$id = $disp_comments[1]["member_id"];
+							$memberDetail = MemberLogic::getMemberById($id);
+						?>
+						<?php echo h($memberDetail["name_sei"]) ?><?php echo h($memberDetail["name_mei"]) ?>
+						　　　<?php echo h($disp_comments[1]["created_at"]) ?><br><br>
+						<?php echo h($disp_comments[1]["comment"]) ?><br>
+						<?php
+							//コメントのいいね数を取得
+							$comment_id = $disp_comments[1]["id"];
+							$likeCount = LikeLogic::countLikeById($comment_id);
+							//いいねしたかどうかを検索
+							$member_id = $_SESSION["member_id"]; //ログインしているメンバーのid
+							$likeResult = LikeLogic::searchLikeRelation($member_id, $comment_id);
+							//画面に表示されているスレッドのid
+							$id = $_SESSION["thread_id"];
+						?>
+						<?php if($likeResult){ ?>
+							<!-- ピンクのハート -->
+							<a href="thread_detail2.php?id=<?php echo $_SESSION["thread_id"] ?>&page=<?php echo $page ?>&destroy=<?php echo $disp_comments[1]["id"] ?>"><span class="fa fa-heart like-btn-unlike"></span></a>
+							<?php echo $likeCount ?>
+						<?php }else{ ?>
+							<!-- グレーのハート -->
+							<a href="thread_detail2.php?id=<?php echo $_SESSION["thread_id"] ?>&page=<?php echo $page ?>&create=<?php echo $disp_comments[1]["id"] ?>"><span class="fa fa-heart like-btn"></span></a>
+							<?php echo $likeCount ?>
+						<?php } ?>
+					</td>
+				</tr>
+
+
+
+
+
+				<tr>
+					<td>
+						<?php echo h($disp_comments[2]["id"]) ?>.
+						<?php 
+							//$idを引数にしてメンバーを検索 & そのメンバーの名前を表示
+							$id = $disp_comments[2]["member_id"];
+							$memberDetail = MemberLogic::getMemberById($id);
+						?>
+						<?php echo h($memberDetail["name_sei"]) ?><?php echo h($memberDetail["name_mei"]) ?>
+						　　　<?php echo h($disp_comments[2]["created_at"]) ?><br><br>
+						<?php echo h($disp_comments[2]["comment"]) ?><br>
+						<?php
+							//コメントのいいね数を取得
+							$comment_id = $disp_comments[2]["id"];
+							$likeCount = LikeLogic::countLikeById($comment_id);
+							//いいねしたかどうかを検索
+							$member_id = $_SESSION["member_id"]; //ログインしているメンバーのid
+							$likeResult = LikeLogic::searchLikeRelation($member_id, $comment_id);
+							//画面に表示されているスレッドのid
+							$id = $_SESSION["thread_id"];
+						?>
+						<?php if($likeResult){ ?>
+							<!-- ピンクのハート -->
+							<a href="thread_detail2.php?id=<?php echo $_SESSION["thread_id"] ?>&page=<?php echo $page ?>&destroy=<?php echo $disp_comments[2]["id"] ?>"><span class="fa fa-heart like-btn-unlike"></span></a>
+							<?php echo $likeCount ?>
+						<?php }else{ ?>
+							<!-- グレーのハート -->
+							<a href="thread_detail2.php?id=<?php echo $_SESSION["thread_id"] ?>&page=<?php echo $page ?>&create=<?php echo $disp_comments[2]["id"] ?>"><span class="fa fa-heart like-btn"></span></a>
+							<?php echo $likeCount ?>
+						<?php } ?>
+					</td>
+				</tr>
+
+
+
+
+
+				<tr>
+					<td>
+						<?php echo h($disp_comments[3]["id"]) ?>.
+						<?php 
+							//$idを引数にしてメンバーを検索 & そのメンバーの名前を表示
+							$id = $disp_comments[3]["member_id"];
+							$memberDetail = MemberLogic::getMemberById($id);
+						?>
+						<?php echo h($memberDetail["name_sei"]) ?><?php echo h($memberDetail["name_mei"]) ?>
+						　　　<?php echo h($disp_comments[3]["created_at"]) ?><br><br>
+						<?php echo h($disp_comments[3]["comment"]) ?><br>
+						<?php
+							//コメントのいいね数を取得
+							$comment_id = $disp_comments[3]["id"];
+							$likeCount = LikeLogic::countLikeById($comment_id);
+							//いいねしたかどうかを検索
+							$member_id = $_SESSION["member_id"]; //ログインしているメンバーのid
+							$likeResult = LikeLogic::searchLikeRelation($member_id, $comment_id);
+							//画面に表示されているスレッドのid
+							$id = $_SESSION["thread_id"];
+						?>
+						<?php if($likeResult){ ?>
+							<!-- ピンクのハート -->
+							<a href="thread_detail2.php?id=<?php echo $_SESSION["thread_id"] ?>&page=<?php echo $page ?>&destroy=<?php echo $disp_comments[3]["id"] ?>"><span class="fa fa-heart like-btn-unlike"></span></a>
+							<?php echo $likeCount ?>
+						<?php }else{ ?>
+							<!-- グレーのハート -->
+							<a href="thread_detail2.php?id=<?php echo $_SESSION["thread_id"] ?>&page=<?php echo $page ?>&create=<?php echo $disp_comments[3]["id"] ?>"><span class="fa fa-heart like-btn"></span></a>
+							<?php echo $likeCount ?>
+						<?php } ?>
+					</td>
+				</tr>
+
+
+
+
+
+				<tr>
+					<td>
+						<?php echo h($disp_comments[4]["id"]) ?>.
+						<?php 
+							//$idを引数にしてメンバーを検索 & そのメンバーの名前を表示
+							$id = $disp_comments[4]["member_id"];
+							$memberDetail = MemberLogic::getMemberById($id);
+						?>
+						<?php echo h($memberDetail["name_sei"]) ?><?php echo h($memberDetail["name_mei"]) ?>
+						　　　<?php echo h($disp_comments[4]["created_at"]) ?><br><br>
+						<?php echo h($disp_comments[4]["comment"]) ?><br>
+						<?php
+							//コメントのいいね数を取得
+							$comment_id = $disp_comments[4]["id"];
+							$likeCount = LikeLogic::countLikeById($comment_id);
+							//いいねしたかどうかを検索
+							$member_id = $_SESSION["member_id"]; //ログインしているメンバーのid
+							$likeResult = LikeLogic::searchLikeRelation($member_id, $comment_id);
+							//画面に表示されているスレッドのid
+							$id = $_SESSION["thread_id"];
+						?>
+						<?php if($likeResult){ ?>
+							<!-- ピンクのハート -->
+							<a href="thread_detail2.php?id=<?php echo $_SESSION["thread_id"] ?>&page=<?php echo $page ?>&destroy=<?php echo $disp_comments[4]["id"] ?>"><span class="fa fa-heart like-btn-unlike"></span></a>
+							<?php echo $likeCount ?>
+						<?php }else{ ?>
+							<!-- グレーのハート -->
+							<a href="thread_detail2.php?id=<?php echo $_SESSION["thread_id"] ?>&page=<?php echo $page ?>&create=<?php echo $disp_comments[4]["id"] ?>"><span class="fa fa-heart like-btn"></span></a>
+							<?php echo $likeCount ?>
+						<?php } ?>
+					</td>
+				</tr>
 			</table>
 		</div>
-
-
-
-
-
-
 
 
 
@@ -369,24 +511,24 @@
 					<a href="#" style="pointer-events: none; color: #344853;">前へ></a>
 				</div>
 				<div class="nav-menus">
-					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page + 1); ?>">次へ></a>
+					<a href="thread_detail2.php?id=<?php echo $id; ?>&page=<?php echo ($page + 1); ?>">次へ></a>
 				</div>
 			</nav>
 		<?php } ?>
 		<?php if( $page != 1 && $page != $max_page ){ ?>
 			<nav>
 				<div class="nav-logo">
-					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page - 1); ?>">前へ></a>
+					<a href="thread_detail2.php?id=<?php echo $id; ?>&page=<?php echo ($page - 1); ?>">前へ></a>
 				</div>
 				<div class="nav-menus">
-					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page +1 ); ?>">次へ></a>
+					<a href="thread_detail2.php?id=<?php echo $id; ?>&page=<?php echo ($page +1 ); ?>">次へ></a>
 				</div>
 			</nav>
 		<?php } ?>
 		<?php if( $page == $max_page && $page != 1 ){ ?>
 			<nav>
 				<div class="nav-logo">
-					<a href="thread_detail.php?id=<?php echo $id; ?>&page=<?php echo ($page - 1); ?>">前へ></a>
+					<a href="thread_detail2.php?id=<?php echo $id; ?>&page=<?php echo ($page - 1); ?>">前へ></a>
 				</div>
 				<div class="nav-menus">
 					<a href="#" style="pointer-events: none; color: #344853;">次へ></a>
