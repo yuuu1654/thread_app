@@ -262,7 +262,6 @@
 			投稿者：<?php echo h($memberDetail["name_sei"]) ?><?php echo h($memberDetail["name_mei"]) ?>
 			　　　　　　　　　　<?php echo h($threadDetail["created_at"]) ?><br><br>
 			<p cols=40 rows=5><?php echo h($threadDetail["content"]) ?></p>
-			ログインID:<?php var_dump($_SESSION["member_id"]); ?>
 		</div>
 
 

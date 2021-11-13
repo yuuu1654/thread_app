@@ -4,7 +4,7 @@
 	$errmessage = array();  //エラーメッセージ用の配列を初期化
 	require_once "../MemberLogic.php";  //会員登録の処理を行うクラスの読み込み
 	require_once "../functions.php";    //XSS・csrf&２重登録防止のセキュリティクラスの読み込み
-
+	require_once "AdministerLogic.php";
 	
 
 
@@ -15,20 +15,38 @@
 		 * トップ画面に遷移
 		 */
 
-		//ログインIDのバリデーション
 		
-		if ( !$_POST["email"] ){
-			$errmessage[] = "メールアドレスは入力必須です";
-		}
-		$_SESSION["email"] = htmlspecialchars($_POST["email"], ENT_QUOTES);  //無害化した文字列を入力
+		//ログインIDのバリデーション
+		if ( !$_POST["login_id"] ){
+			$errmessage[] = "ログインIDは入力必須です";
+		}else if( mb_strlen($_POST["login_id"]) > 10 || mb_strlen($_POST["login_id"]) < 7 ){
+			$errmessage[] = "ログインIDは半角英数字7～10文字以内";
+		}else if( !preg_match("/^[a-zA-Z0-9]+$/", $_POST["login_id"]) ){  //正規表現(半角英数字)
+			$errmessage[] = "ログインIDは半角英数字7～10文字以内で入力してください";
+		}  
+		$_SESSION["login_id"] = htmlspecialchars($_POST["login_id"], ENT_QUOTES);  //無害化した文字列を入力
 
 
 		
 		//パスワードのバリデーション
 		if( !$_POST["password"] ){
 			$errmessage[] = "パスワードは入力必須です";
-		}
+		}else if( mb_strlen($_POST["password"]) > 20 || mb_strlen($_POST["password"]) < 8 ){
+			$errmessage[] = "パスワードは半角英数字8～20文字以内";
+		}else if( !preg_match("/^[a-zA-Z0-9]+$/", $_POST["password"]) ){  //正規表現(半角英数字)
+			$errmessage[] = "パスワードは半角英数字8～20文字以内で入力してください";
+		}  
 		$_SESSION["password"] = htmlspecialchars($_POST["password"], ENT_QUOTES);  //無害化した文字列を代入
+		//$_SESSION["password_1"] = htmlspecialchars($_POST["password"], ENT_QUOTES);  //無害化した文字列を代入
+
+
+
+		//ログインしているメンバーの名前をセッションに格納
+		$name = $_SESSION["login_member"]["name_sei"].$_SESSION["login_member"]["name_mei"];
+		var_dump($name);
+		$_SESSION["name"] = $name;
+
+
 
 
 		//エラーメッセージの有無でモード変数の切り替え
@@ -37,40 +55,55 @@
 		}else{
 			$mode = "top";
 
-			//ログイン成功時の処理
-			$result = MemberLogic::login($_POST["email"], $_POST["password"]);
-			$login_member = $_SESSION["login_member"];
+			$hasCreate = AdministerLogic::createAdminister($_SESSION);  //管理者登録
 
-			//ログインに失敗したらモードを切り替える
-			if( !$result ){ 
-				$mode = "input";
-				//ログイン失敗時のエラーメッセージがあれば表示する
-				$err = array();
-				$err[] = $_SESSION["msg"];
-				if( $err ){
-					echo '<div class="alert alert-danger" role="alert">';
-					echo implode("<br>", $err);
-					echo "</div>";
+			//管理者登録が成功、もしくはすでに登録ずみの場合の処理
+			if( $hasCreate ){
+				//管理者ログイン成功時の処理
+				$result = AdministerLogic::login($_POST["login_id"], $_POST["password"]);
+				$login_admin = $_SESSION["login_admin"];
+
+				//ログインに失敗したらモードを切り替える
+				if( !$result ){ 
+					$mode = "input";
+					//ログイン失敗時のエラーメッセージがあれば表示する
+					$err = array();
+					$err[] = $_SESSION["msg"];
+					if( $err ){
+						echo '<div class="alert alert-danger" role="alert">';
+						echo implode("<br>", $err);
+						echo "</div>";
+					}
 				}
 			}
-			//$login_member = $_SESSION["login_member"];
+			
 		}
 	
 
 	//トップ画面からログアウトボタンが押されたらログアウトしてinputモードに切り替える
 	}else if( isset($_POST["logout"]) && $_POST["logout"] ){
 
-		MemberLogic::logout();  //MemberLogicのlogoutメソッドを呼び出す
+		AdministerLogic::logout();  //管理者logoutメソッドを呼び出す
+
+		$_SESSION["login_id"]               = "";
+		$_SESSION["password"]               = "";
+		$_SESSION["name"]                   = "";
+		
 		$mode = "input";
 
 	}else{  //GETリクエストの時の処理
 
 		//ログインしているか判定して、している場合はトップモードに切り替える
-		$result = MemberLogic::checkLogin();
-		if ( $result ){
+		$hasLogin = AdministerLogic::checkLogin();
+		if ( $hasLogin ){
 			$mode = "top";
-			$login_member = $_SESSION["login_member"];
+			$login_admin = $_SESSION["login_admin"];
 		}
+
+		$_SESSION["login_id"]               = "";
+		$_SESSION["password"]               = "";
+		$_SESSION["name"]                   = "";
+		
 	}
 ?>
 
@@ -147,10 +180,10 @@
 				<form action="" method="post">
 					<!-- メールアドレスのみ初期値を表示する -->
 					<p>
-						メールアドレス（ID）<input type="email"　class="form-control" name="email" value=""><br>
+						ログインID　　　　<input type="text"　class="form-control" name="login_id" value="<?php echo $_SESSION["login_id"] ?>"><br>
 					</p>
 					<p>
-						パスワード　　　　　<input type="password"　class="form-control" name="password" value=""><br>
+						パスワード　　　　<input type="password"　class="form-control" name="password" value=""><br>
 					</p>
 					<div class="button">
 						<input type="submit" class="btn btn-primary btn-lg" name="login" value="ログイン">
@@ -175,7 +208,7 @@
 					<h2>掲示板管理画面メインメニュー</h2>
 				</div>
 				<div class="header-menus">
-					<h3 class="logo">ようこそ<?php echo h($login_member["name_sei"]) ?><?php echo h($login_member["name_mei"]) ?>さん</h3>
+					<h3 class="logo">ようこそ<?php echo h($login_admin["name"]) ?>さん</h3>
 					<!-- ログアウトボタン -->
 					<form action="" class="logo" method="POST">
 						<input type="submit" name="logout" class="btn btn-secondary btn-lg" name="logout" value="ログアウト">
