@@ -5,6 +5,10 @@
 	require_once "../MemberLogic.php";  //会員登録の処理を行うクラスの読み込み
 	require_once "../functions.php";    //XSS・csrf&２重登録防止のセキュリティクラスの読み込み
 	require_once "AdministerLogic.php";
+
+
+
+	var_dump($_SESSION["login_admin"]);
 	
 
 
@@ -40,11 +44,11 @@
 		//$_SESSION["password_1"] = htmlspecialchars($_POST["password"], ENT_QUOTES);  //無害化した文字列を代入
 
 
-
 		//ログインしているメンバーの名前をセッションに格納
-		$name = $_SESSION["login_member"]["name_sei"].$_SESSION["login_member"]["name_mei"];
-		var_dump($name);
-		$_SESSION["name"] = $name;
+		if( isset($_SESSION["login_member"]) && $_SESSION["login_member"] ){
+			$name = $_SESSION["login_member"]["name_sei"].$_SESSION["login_member"]["name_mei"];
+			$_SESSION["name"] = $name;
+		}
 
 
 
@@ -93,9 +97,17 @@
 
 	}else{  //GETリクエストの時の処理
 
-		//ログインしているか判定して、している場合はトップモードに切り替える
-		$hasLogin = AdministerLogic::checkLogin();
-		if ( $hasLogin ){
+		//ログインしているか判定して、していなかったらlogout.phpに遷移する
+		$hasLogin = MemberLogic::checkLogin();
+		if ( !$hasLogin ){
+			$_SESSION["msg"] = "会員登録してログインしてください！";
+			header("Location: ../login.php");
+			return;
+		}
+
+		//管理者ログインしているか判定して、している場合はトップモードに切り替える
+		$hasAdminLogin = AdministerLogic::checkLogin();
+		if ( $hasAdminLogin ){
 			$mode = "top";
 			$login_admin = $_SESSION["login_admin"];
 		}

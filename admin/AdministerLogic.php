@@ -145,9 +145,11 @@
 		 */
 		public static function logout(){
 			//セッション変数をすべて解除する
-			$_SESSION["login_admin"] = array();  
+			// $_SESSION["login_admin"] = array();  
 
-			session_destroy();
+			// session_destroy();
+
+			$_SESSION["login_admin"] = "";
 		}
 
 	}
