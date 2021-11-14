@@ -165,7 +165,7 @@
 	}else if( isset($_POST["update"]) && $_POST["update"] ){
 		//$mode = "";
 		$hasUpdated = MemberLogic::updateMember($_SESSION, $id);  //MemberLogicの編集メソッドを呼び出す
-		header("Location: member.php");  //会員一覧ページに遷移する
+		header("Location: member.php?update=done");  //会員一覧ページに遷移する
 		
 
 		/**

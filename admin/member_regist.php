@@ -186,7 +186,7 @@
 		if( $errmessage ){
 			$mode = "confirm";
 		}else{
-			header("Location: member.php");  //会員一覧ページに遷移する
+			header("Location: member.php?signup=done");  //会員一覧ページに遷移する
 		}
 
 

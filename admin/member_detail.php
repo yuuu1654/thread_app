@@ -15,7 +15,7 @@
 	if( isset($_POST["delete"]) && $_POST["delete"] ){
 		//削除ボタンを押したら、DBからその会員をソフトデリートして会員一覧ページに戻る
 		MemberLogic::memberWithdrawal($id);
-		header("Location: member.php");
+		header("Location: member.php?delete=done");
 		return;
 	}
 ?>

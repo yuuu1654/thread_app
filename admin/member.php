@@ -96,7 +96,22 @@
 		//デフォルトは全てのメンバー表示
 		$allMembers = MemberLogic::getAllMembersDesc();
 
-		if ($_SESSION["allMembers"] != ""){
+		if( isset($_GET["signup"]) && $_GET["signup"] ){
+			$allMembers = MemberLogic::getAllMembersDesc();  //再度検索し直す
+			$_SESSION["allMembers"] = $allMembers;
+		}
+
+		if( isset($_GET["update"]) && $_GET["update"] ){
+			$allMembers = MemberLogic::getAllMembersDesc();  //再度検索し直す
+			$_SESSION["allMembers"] = $allMembers;
+		}
+
+		if( isset($_GET["delete"]) && $_GET["delete"] ){
+			$allMembers = MemberLogic::getAllMembersDesc();  //再度検索し直す
+			$_SESSION["allMembers"] = $allMembers;
+		}
+
+		if ($_SESSION["allMembers"] != ""){                //セッションにメンバーのデータを格納
 			$allMembers = $_SESSION["allMembers"];
 		}
 	}
@@ -199,7 +214,7 @@
 		<div class="container">
 			<!-- 会員登録ボタン -->
 			<div class="button">
-				<input type="submit" class="btn btn-primary btn-lg" onclick="location.href='../member_regist.php'" value="会員登録">
+				<input type="submit" class="btn btn-primary btn-lg" onclick="location.href='member_regist.php'" value="会員登録">
 			</div>
 		</div>
 		
@@ -251,7 +266,7 @@
 					//一覧の一番下のメンバーのidを取得
 					$value = end($disp_allMembers);
 
-					if( $_SESSION["asc_id"] != $value["id"] ){
+					if( isset($_SESSION["asc_id"]) && $_SESSION["asc_id"] != $value["id"] ){
 
 						$_SESSION["asc_id"] = "";
 						$disp_allMembers = MemberLogic::sortByKey('id', SORT_ASC, $disp_allMembers);  //昇順にする
@@ -270,7 +285,7 @@
 					//一覧の一番下のメンバーのcreated_atを取得
 					$value = end($disp_allMembers);
 					
-					if( $_SESSION["asc_created_at"] != $value["created_at"] ){
+					if( isset($_SESSION["asc_created_at"]) && $_SESSION["asc_created_at"] != $value["created_at"] ){
 
 						$_SESSION["asc_created_at"] = "";
 						$disp_allMembers = MemberLogic::sortByKey('created_at', SORT_ASC, $disp_allMembers);  //昇順にする
