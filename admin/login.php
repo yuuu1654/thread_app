@@ -8,7 +8,7 @@
 
 
 
-	var_dump($_SESSION["login_admin"]);
+	//var_dump($_SESSION["login_admin"]);
 	
 
 
