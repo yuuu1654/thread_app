@@ -44,15 +44,15 @@
 		//$_SESSION["password_1"] = htmlspecialchars($_POST["password"], ENT_QUOTES);  //無害化した文字列を代入
 
 
-		//ログインしているメンバーの名前をセッションに格納
-		if( isset($_SESSION["login_member"]) && $_SESSION["login_member"] ){
-			$name = $_SESSION["login_member"]["name_sei"].$_SESSION["login_member"]["name_mei"];
-			$_SESSION["name"] = $name;
-		}else{
-			$_SESSION["msg"] = "会員登録してログインしてください！";
-			header("Location: ../login.php");
-			return;
-		}
+		// //ログインしているメンバーの名前をセッションに格納
+		// if( isset($_SESSION["login_member"]) && $_SESSION["login_member"] ){
+		// 	$name = $_SESSION["login_member"]["name_sei"].$_SESSION["login_member"]["name_mei"];
+		// 	$_SESSION["name"] = $name;
+		// }else{
+		// 	$_SESSION["msg"] = "会員登録してログインしてください！";
+		// 	header("Location: ../login.php");
+		// 	return;
+		// }
 
 
 
@@ -63,28 +63,45 @@
 		}else{
 			$mode = "top";
 
-			$hasCreate = AdministerLogic::createAdminister($_SESSION);  //管理者登録
+			//$hasCreate = AdministerLogic::createAdminister($_SESSION);  //管理者登録
 
-			//管理者登録が成功、もしくはすでに登録ずみの場合の処理
-			if( $hasCreate ){
-				//管理者ログイン成功時の処理
-				$result = AdministerLogic::login($_POST["login_id"], $_POST["password"]);
-				$login_admin = $_SESSION["login_admin"];
+			// //管理者登録が成功、もしくはすでに登録ずみの場合の処理
+			// if( $hasCreate ){
+			// 	//管理者ログイン成功時の処理
+			// 	$result = AdministerLogic::login($_POST["login_id"], $_POST["password"]);
+			// 	$login_admin = $_SESSION["login_admin"];
 
-				//ログインに失敗したらモードを切り替える
-				if( !$result ){ 
-					$mode = "input";
-					//ログイン失敗時のエラーメッセージがあれば表示する
-					$err = array();
-					$err[] = $_SESSION["msg"];
-					if( $err ){
-						echo '<div class="alert alert-danger" role="alert">';
-						echo implode("<br>", $err);
-						echo "</div>";
-					}
+			// 	//ログインに失敗したらモードを切り替える
+			// 	if( !$result ){ 
+			// 		$mode = "input";
+			// 		//ログイン失敗時のエラーメッセージがあれば表示する
+			// 		$err = array();
+			// 		$err[] = $_SESSION["msg"];
+			// 		if( $err ){
+			// 			echo '<div class="alert alert-danger" role="alert">';
+			// 			echo implode("<br>", $err);
+			// 			echo "</div>";
+			// 		}
+			// 	}
+			// }
+
+
+			//管理者ログイン成功時の処理
+			$result = AdministerLogic::login($_POST["login_id"], $_POST["password"]);
+			$login_admin = $_SESSION["login_admin"];
+
+			//ログインに失敗したらモードを切り替える
+			if( !$result ){ 
+				$mode = "input";
+				//ログイン失敗時のエラーメッセージがあれば表示する
+				$err = array();
+				$err[] = $_SESSION["msg"];
+				if( $err ){
+					echo '<div class="alert alert-danger" role="alert">';
+					echo implode("<br>", $err);
+					echo "</div>";
 				}
 			}
-			
 		}
 	
 
@@ -95,19 +112,19 @@
 
 		$_SESSION["login_id"]               = "";
 		$_SESSION["password"]               = "";
-		$_SESSION["name"]                   = "";
+		//$_SESSION["name"]                   = "";
 		
 		$mode = "input";
 
 	}else{  //GETリクエストの時の処理
 
-		//ログインしているか判定して、していなかったらlogout.phpに遷移する
-		$hasLogin = MemberLogic::checkLogin();
-		if ( !$hasLogin ){
-			$_SESSION["msg"] = "会員登録してログインしてください！";
-			header("Location: ../login.php");
-			return;
-		}
+		// //ログインしているか判定して、していなかったらlogout.phpに遷移する
+		// $hasLogin = MemberLogic::checkLogin();
+		// if ( !$hasLogin ){
+		// 	$_SESSION["msg"] = "会員登録してログインしてください！";
+		// 	header("Location: ../login.php");
+		// 	return;
+		// }
 
 		//管理者ログインしているか判定して、している場合はトップモードに切り替える
 		$hasAdminLogin = AdministerLogic::checkLogin();
@@ -118,7 +135,7 @@
 
 		$_SESSION["login_id"]               = "";
 		$_SESSION["password"]               = "";
-		$_SESSION["name"]                   = "";
+		//$_SESSION["name"]                   = "";
 		
 	}
 ?>
