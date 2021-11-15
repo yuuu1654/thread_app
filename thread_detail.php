@@ -26,33 +26,6 @@
 
 
 
-	//コメントするボタンが押されたらバリデーションにかけて、OKならDBにコメントを登録する
-	if( isset($_POST["create_comment"]) && $_POST["create_comment"] ){
-		if( !$_POST["comment"] ){
-			$errmessage[] = "コメントを入力して下さい";
-		}else if( mb_strlen($_POST["comment"]) > 500 ){
-			$errmessage[] = "コメントは500文字以内で入力してください";
-		}
-		$_SESSION["comment"] = htmlspecialchars($_POST["comment"], ENT_QUOTES);  //無害化した文字列を代入
-		
-
-		if( $errmessage ){
-			//エラーのみを表示して、コメントのDB登録はしない
-		}else{
-			//コメントが重複していないかチェック
-			$resultDupComment = CommentLogic::searchDupComment($_SESSION);
-			if( $resultDupComment ){
-				//コメントを登録
-				CommentLogic::createComment($_SESSION);
-			}
-			$_SESSION["comment"] = "";
-		}
-	}else{  //GETリクエスト
-		
-		$_SESSION["comment_id"] = "";
-	}
-
-
 	$thread_id = $threadDetail["id"];  //表示しているスレッドのid
 	$comments = CommentLogic::getCommentsById2($thread_id);  //コメントのデータ
 
@@ -76,6 +49,40 @@
 
 	// array_sliceは、配列の何番目($start)から何番目(MAX)まで切り取る関数
 	$disp_comments = array_slice($comments, $start, $max, true);
+
+	
+	//コメントするボタンが押されたらバリデーションにかけて、OKならDBにコメントを登録する
+	if( isset($_POST["create_comment"]) && $_POST["create_comment"] ){
+		if( !$_POST["comment"] ){
+			$errmessage[] = "コメントを入力して下さい";
+		}else if( mb_strlen($_POST["comment"]) > 500 ){
+			$errmessage[] = "コメントは500文字以内で入力してください";
+		}
+		$_SESSION["comment"] = htmlspecialchars($_POST["comment"], ENT_QUOTES);  //無害化した文字列を代入
+		
+
+		if( $errmessage ){
+			//エラーのみを表示して、コメントのDB登録はしない
+		}else{
+			// //コメントが重複していないかチェック
+			// $resultDupComment = CommentLogic::searchDupComment($_SESSION);
+			// if( $resultDupComment ){
+			// 	//コメントを登録
+			// 	CommentLogic::createComment($_SESSION);
+			// }
+
+			//コメントを登録
+			CommentLogic::createComment($_SESSION);
+			$_SESSION["comment"] = "";
+			//リダイレクト
+			header("Location: thread_detail.php?id=$id&page=$page");
+			return;
+		}
+	}else{  //GETリクエスト
+		
+		$_SESSION["comment_id"] = "";
+	}
+
 
 
 ?>
@@ -256,6 +263,7 @@
 			?>
 			投稿者：<?php echo h($memberDetail["name_sei"]) ?><?php echo h($memberDetail["name_mei"]) ?>
 			　　　　　　　　　　<?php echo h($threadDetail["created_at"]) ?><br><br>
+			ログインID: <?php var_dump($login_member["id"]); ?>
 			<p cols=40 rows=5><?php echo h($threadDetail["content"]) ?></p>
 		</div>
 
