@@ -330,7 +330,7 @@
 					?>
 					<tr>
 						<td><?php echo h($member["id"]) ?></td>
-						<td><?php echo h($member["name_sei"]) ?><?php echo h($member["name_mei"]) ?></td>
+						<td><a href="member_detail.php?id=<?php echo h($member["id"]) ?>"><?php echo h($member["name_sei"]) ?><?php echo h($member["name_mei"]) ?></a></td>
 						<td><?php echo $gender ?></td>
 						<td><?php echo h($member["pref_name"]) ?><?php echo h($member["address"]) ?></td>
 						<td><?php echo h($member["created_at"]) ?></td>

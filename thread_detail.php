@@ -6,8 +6,6 @@
 	require_once "CommentLogic.php";  //コメント登録の処理を行うクラスの読み込み
 	require_once "functions.php";    //XSS・csrf&２重登録防止のセキュリティクラスの読み込み
 	require_once "LikeLogic.php";
-
-	
 	
 
 
@@ -18,6 +16,9 @@
 		//コメントのmember_idがログインしているメンバーのidになるようにする
 		$_SESSION["member_id"] = $login_member["id"];
 	}
+
+
+
 
 	$id = $_GET["id"];
 	$_SESSION["thread_id"] = $id;  //スレッドのidをセッションに保存(コメント作成に利用)
@@ -51,6 +52,9 @@
 	$disp_comments = array_slice($comments, $start, $max, true);
 
 	
+
+
+
 	//コメントするボタンが押されたらバリデーションにかけて、OKならDBにコメントを登録する
 	if( isset($_POST["create_comment"]) && $_POST["create_comment"] ){
 		if( !$_POST["comment"] ){
