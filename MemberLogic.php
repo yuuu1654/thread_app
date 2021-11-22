@@ -415,9 +415,17 @@
 				if( $searchData["id"] != "" ){
 					$sql .= "AND id = :id ";
 				}
-				if( $searchData["gender"] != "" ){
-					$sql .= "AND gender = :gender ";
+
+				if( $searchData["gender1"] != "" && $searchData["gender2"] != "" ){
+					$sql .= "AND gender = :gender1 OR gender = :gender2 ";
 				}
+				if( $searchData["gender1"] != "" && $searchData["gender2"] == "" ){
+					$sql .= "AND gender = :gender1 ";
+				}
+				if( $searchData["gender1"] == "" && $searchData["gender2"] != "" ){
+					$sql .= "AND gender = :gender2 ";
+				}
+
 				if( $searchData["pref_name"] != "" ){
 					$sql .= "AND pref_name = :pref_name ";
 				}
@@ -435,8 +443,11 @@
 				if( $searchData["id"] != "" ){
 					$stmt->bindValue(':id', $searchData["id"], PDO::PARAM_INT);
 				}
-				if( $searchData["gender"] != "" ){
-					$stmt->bindValue(':gender', $searchData["gender"], PDO::PARAM_INT);
+				if( $searchData["gender1"] != "" ){
+					$stmt->bindValue(':gender1', $searchData["gender1"], PDO::PARAM_INT);
+				}
+				if( $searchData["gender2"] != "" ){
+					$stmt->bindValue(':gender2', $searchData["gender2"], PDO::PARAM_INT);
 				}
 				if( $searchData["pref_name"] != "" ){
 					$stmt->bindValue(':pref_name', $searchData["pref_name"]);
@@ -450,6 +461,7 @@
 				$stmt->execute();
 				//SQLの結果を返す
 				$result = $stmt->fetchAll();
+
 				return $result;
 			} catch(\Exception $e) {
 				return false;

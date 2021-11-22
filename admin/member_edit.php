@@ -270,6 +270,7 @@
 			<form action="" method="POST">
 				<?php if( isset($_POST["back"]) && $_POST["back"] ){ ?>
 					<!-- 前に戻るボタンを押された時 -->
+					ID　　<?php echo $memberDetail["id"] ?><br><br>
 					<!-- 氏名 -->
 					氏名  姓<input type="text" class="form-control" name="name_sei" value="<?php echo $_SESSION["name_sei"] ?>">
 								名<input type="text" class="form-control" name="name_mei" value="<?php echo $_SESSION["name_mei"] ?>"><br>
@@ -305,6 +306,7 @@
 					</div>
 				<?php }else{ ?>
 					<!-- それ以外の時はデフォルトのメンバー詳細の性別を表示する -->
+					ID　　<?php echo $memberDetail["id"] ?><br><br>
 					氏名  姓<input type="text" class="form-control" name="name_sei" value="<?php echo $memberDetail["name_sei"] ?>">
 								名<input type="text" class="form-control" name="name_mei" value="<?php echo $memberDetail["name_mei"] ?>"><br>
 					<!-- 性別 -->

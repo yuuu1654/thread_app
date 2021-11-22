@@ -255,3 +255,46 @@ if($now < $max_page){ // リンクをつけるかの判定
 }
  
 ?>
+
+<?php if( $max_page == 2 ){ ?>
+<?php }else{ ?>
+<?php } ?>
+
+
+
+
+<?php if( !count($disp_allMembers) ){ ?>
+  <nav>
+    <?php echo "検索結果に該当する会員が見つかりませんでした" ?>
+  </nav>
+<?php } ?>
+<?php if( $page == 1 && $max_page == 1 ){ ?>
+  <nav>
+    <a href="#" style="pointer-events: none; color: white; background-color: gray;"><?php echo $page ?></a>
+    　<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page + 1 ?></a>
+    　　<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page + 2 ?></a>
+  </nav>
+<?php } ?>
+<?php if( $page == 1 && $max_page != 1 ){ ?>
+  <nav>
+    <a href="#" style="pointer-events: none; color: #344853;"><?php echo $page ?></a>
+    　<a href="member.php?page=<?php echo ($page + 1) ?>" ><?php echo ($page + 1) ?></a>
+    　　<a href="member.php?page=<?php echo ($page + 1) ?>">次へ></a>
+  </nav>
+<?php } ?>
+<?php if( $page != 1 && $page != $max_page ){ ?>
+  <nav>
+  <a href="member.php?page=<?php echo ($page - 1) ?>">前へ></a>
+  　　<a href="member.php?page=<?php echo ($page - 1) ?>" ><?php echo ($page - 1) ?></a>
+  　　　<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page ?></a>
+  　　　　<a href="member.php?page=<?php echo ($page + 1) ?>" ><?php echo ($page + 1) ?></a>
+  　　　　　　<a href="member.php?page=<?php echo ($page + 1) ?>">次へ></a>
+  </nav>
+<?php } ?>
+<?php if( $page == $max_page && $page != 1 ){ ?>
+  <nav>
+  <a href="member.php?page=<?php echo ($page - 1) ?>">前へ></a>
+  　　<a href="member.php?page=<?php echo ($page - 1) ?>" ><?php echo ($page - 1) ?></a>
+  　　<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page ?></a>
+  </nav>
+<?php } ?>

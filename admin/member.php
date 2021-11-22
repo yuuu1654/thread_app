@@ -67,16 +67,27 @@
 	
 
 	if( isset($_POST["search"]) && $_POST["search"] ){
+
+		// $page = "1";
+		// var_dump($page);
+
 		$_SESSION["allMembers"]       = "";
 
 		//IDのバリデーション
 		if( isset($_POST["id"]) && $_POST["id"] ){
 			$_SESSION["id"] = htmlspecialchars($_POST["id"], ENT_QUOTES); 
 		}
+
+
 		//性別のバリデーション
-		if( isset($_POST["gender"]) && $_POST["gender"] ){
-			$_SESSION["gender"] = htmlspecialchars($_POST["gender"], ENT_QUOTES);  
+		if( isset($_POST["gender1"]) && $_POST["gender1"] ){
+			$_SESSION["gender1"] = htmlspecialchars($_POST["gender1"], ENT_QUOTES);  
 		}
+		if( isset($_POST["gender2"]) && $_POST["gender2"] ){
+			$_SESSION["gender2"] = htmlspecialchars($_POST["gender2"], ENT_QUOTES);  
+		}
+
+
 		//都道府県のバリデーション
 		if( isset($_POST["pref_name"]) && $_POST["pref_name"] && $_POST["pref_name"] != 1 ){
 			
@@ -138,10 +149,13 @@
 
 	// array_sliceは、配列の何番目($start)から何番目(MAX)まで切り取る関数
 	$disp_allMembers = array_slice($allMembers, $start, $max, true);
+
+	//var_dump($disp_allMembers);
 	
 
 	$_SESSION["id"]               = "";
-	$_SESSION["gender"]           = "";
+	$_SESSION["gender1"]          = "";
+	$_SESSION["gender2"]          = "";
 	$_SESSION["pref_num"]					= "";
 	$_SESSION["pref_name"]        = "";
 	$_SESSION["word"]             = "";
@@ -229,8 +243,8 @@
 					<tr>
 						<th>性別</th>
 						<td>
-							<input type="radio" name="gender" value="1">男性
-							<input type="radio" name="gender" value="2">女性<br>
+							<input type="checkbox" name="gender1" value="1">男性
+							<input type="checkbox" name="gender2" value="2">女性<br>
 						</td>
 					</tr>
 					<tr>
@@ -347,34 +361,66 @@
 				//var_dump($max_page);
 				//var_dump($page);
 			?>
-			<?php if( $page == 1 && $max_page == 1 ){ ?>
+			<?php if( count($disp_allMembers) == 0 ){ ?>
 				<nav>
-					<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page ?></a>
+					<?php echo "検索結果に該当する会員が見つかりませんでした" ?>
 				</nav>
 			<?php } ?>
-			<?php if( $page == 1 && $max_page != 1 ){ ?>
+			<?php if( $page == 1 && $max_page == 1 && count($disp_allMembers) != 0 ){ ?>
 				<nav>
-					<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page ?></a>
-					　<a href="member.php?page=<?php echo ($page + 1) ?>" ><?php echo ($page + 1) ?></a>
-					　　<a href="member.php?page=<?php echo ($page + 1) ?>">次へ></a>
+					<a href="#" style="pointer-events: none; color: white; background-color: gray;"><?php echo $page ?></a>
+					　<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page + 1 ?></a>
+					　　<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page + 2 ?></a>
 				</nav>
 			<?php } ?>
-			<?php if( $page != 1 && $page != $max_page ){ ?>
-				<nav>
-				<a href="member.php?page=<?php echo ($page - 1) ?>">前へ></a>
-				　　<a href="member.php?page=<?php echo ($page - 1) ?>" ><?php echo ($page - 1) ?></a>
-				　　　<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page ?></a>
-				　　　　<a href="member.php?page=<?php echo ($page + 1) ?>" ><?php echo ($page + 1) ?></a>
-				　　　　　　<a href="member.php?page=<?php echo ($page + 1) ?>">次へ></a>
-				</nav>
+			<?php if( $page == 1 && $max_page != 1 && count($disp_allMembers) != 0 ){ ?>
+				
+
+				<?php if( $max_page == 2 ){ ?>
+					<nav>
+						<a href="#" style="pointer-events: none; color: white; background-color: gray;"><?php echo $page ?></a>
+						　<a href="member.php?page=<?php echo ($page + 1) ?>"><?php echo $page + 1 ?></a>
+						　　<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page + 2 ?></a>
+						　　　<a href="member.php?page=<?php echo ($page + 1) ?>">次へ></a>
+					</nav>
+				<?php }else{ ?>
+					<nav>
+						<a href="#" style="pointer-events: none; color: white; background-color: gray;"><?php echo $page ?></a>
+						　<a href="member.php?page=<?php echo ($page + 1) ?>"><?php echo $page + 1 ?></a>
+						　　<a href="member.php?page=<?php echo ($page + 2) ?>"><?php echo $page + 2 ?></a>
+						　　　<a href="member.php?page=<?php echo ($page + 1) ?>">次へ></a>
+					</nav>
+				<?php } ?>
 			<?php } ?>
-			<?php if( $page == $max_page && $page != 1 ){ ?>
+			<?php if( $page != 1 && $page != $max_page && count($disp_allMembers) != 0 ){ //ページが中間地点の場合 ?>
 				<nav>
-				<a href="member.php?page=<?php echo ($page - 1) ?>">前へ></a>
-				　　<a href="member.php?page=<?php echo ($page - 1) ?>" ><?php echo ($page - 1) ?></a>
-				　　<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page ?></a>
+					<a href="member.php?page=<?php echo ($page - 1) ?>">前へ></a>
+					　　<a href="member.php?page=<?php echo ($page - 1) ?>"><?php echo ($page - 1) ?></a>
+					　　　<a href="#" style="pointer-events: none; color: white; background-color: gray;"><?php echo $page ?></a>
+					　　　　<a href="member.php?page=<?php echo ($page + 1) ?>"><?php echo ($page + 1) ?></a>
+					　　　　　　<a href="member.php?page=<?php echo ($page + 1) ?>">次へ></a>
 				</nav>
+
+
+				
 			<?php } ?>
+			<?php if( $page == $max_page && $page != 1 && count($disp_allMembers) != 0 ){ //ページが最終ページの時 ?>
+				<?php if( $max_page == 2 ){ ?>
+					<nav>
+						<a href="member.php?page=<?php echo ($page - 1) ?>">前へ></a>
+						　<a href="member.php?page=<?php echo ($page - 1) ?>"><?php echo $page - 1 ?></a>
+						　　<a href="#" style="pointer-events: none; color: white; background-color: gray;"><?php echo $page ?></a>
+						　　　<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page + 1 ?></a>
+					</nav>
+				<?php }else{ ?>
+					<nav>
+						<a href="member.php?page=<?php echo ($page - 1) ?>">前へ></a>
+						　<a href="member.php?page=<?php echo ($page - 2) ?>"><?php echo $page - 2 ?></a>
+						　　<a href="member.php?page=<?php echo ($page - 1) ?>"><?php echo ($page - 1) ?></a>
+						　　　<a href="#" style="pointer-events: none; color: white; background-color: gray;"><?php echo $page ?></a>
+					</nav>
+				<?php } ?>
+			<?php } ?><br><br>
 		</div>
 	</main>
 </body>
