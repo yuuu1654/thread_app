@@ -89,8 +89,10 @@
 
 
 		//性別のバリデーション
-		if( !$_POST["gender"] ){
+		if( !isset($_POST["gender"]) || !$_POST["gender"] ){
 			$errmessage[] = "性別は入力必須です";
+		}else if( $_POST["gender"] <= 0 || $_POST["gender"] >= 3 ){
+			$errmessage[] = "不正な入力です";
 		}
 		$_SESSION["gender"] = htmlspecialchars($_POST["gender"], ENT_QUOTES);  //無害化した文字列を代入
 
@@ -98,6 +100,8 @@
 		//都道府県のバリデーション
 		if( !$_POST["pref_name"] || $_POST["pref_name"] == 1 ){
 			$errmessage[] = "都道府県は入力必須です";
+		}else if( $_POST["pref_name"] <= 0 || $_POST["pref_name"] >= 49 ){
+			$errmessage[] = "不正な入力です";
 		}
 		$_SESSION["pref_num"]	= htmlspecialchars($_POST["pref_name"], ENT_QUOTES);
 		$_SESSION["pref_name"] = htmlspecialchars($kind[ $_POST["pref_name"] ], ENT_QUOTES);  //無害化した文字列を代入

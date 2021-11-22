@@ -91,16 +91,20 @@
 
 
 		//性別のバリデーション
-		if( !$_POST["gender"] ){
+		if( !isset($_POST["gender"]) || !$_POST["gender"] ){
 			$errmessage[] = "性別は入力必須です";
+		}else if( $_POST["gender"] <= 0 || $_POST["gender"] >= 3 ){
+			$errmessage[] = "不正な入力です";
 		}
 		$_SESSION["gender"] = htmlspecialchars($_POST["gender"], ENT_QUOTES);  //無害化した文字列を代入
-		var_dump($_SESSION["gender"]);
+		
 
 		
 		//都道府県のバリデーション
 		if( !$_POST["pref_name"] || $_POST["pref_name"] == 1 ){
 			$errmessage[] = "都道府県は入力必須です";
+		}else if( $_POST["pref_name"] <= 0 || $_POST["pref_name"] >= 49 ){
+			$errmessage[] = "不正な入力です";
 		}
 		$_SESSION["pref_num"]	= htmlspecialchars($_POST["pref_name"], ENT_QUOTES);
 		$_SESSION["pref_name"] = htmlspecialchars($kind[ $_POST["pref_name"] ], ENT_QUOTES);  //無害化した文字列を代入
@@ -115,34 +119,34 @@
 
 
 		//パスワードのバリデーション
-		/**
-		 * 半角英数字8~20のリファクタリング実装
-		 */
 		if( !$_POST["password"] ){
-			$errmessage[] = "パスワードは入力必須です";
-		}else if( mb_strlen($_POST["password"]) > 20 || mb_strlen($_POST["password"]) < 8 ){
-			$errmessage[] = "パスワードは半角英数字8～20文字以内で入力してください";
-		}else if( !preg_match("/^[a-zA-Z0-9]+$/", $_POST["password"]) ){  //正規表現(半角英数字)
-			$errmessage[] = "パスワードは半角英数字8～20文字以内で入力してください";
-		}  
-		$_SESSION["password"] = htmlspecialchars($_POST["password"], ENT_QUOTES);  //無害化した文字列を代入
+			$_SESSION["password"] = $memberDetail["password"]; //デフォルトのパスワードを代入
+		}else{
+			if( mb_strlen($_POST["password"]) > 20 || mb_strlen($_POST["password"]) < 8 ){
+				$errmessage[] = "パスワードは半角英数字8～20文字以内で入力してください";
+			}else if( !preg_match("/^[a-zA-Z0-9]+$/", $_POST["password"]) ){
+				$errmessage[] = "パスワードは半角英数字8～20文字以内で入力してください";
+			}
+			$_SESSION["password"] = htmlspecialchars($_POST["password"], ENT_QUOTES);  //無害化した文字列を代入
+		}
 
 
 		//パスワード確認のバリデーション
 		if( !$_POST["password_confirmation"] ){
-			$errmessage[] = "パスワード確認は入力必須です";
-		}else if( mb_strlen($_POST["password_confirmation"]) > 20 || mb_strlen($_POST["password_confirmation"]) < 8 ){
-			$errmessage[] = "パスワード確認は半角英数字8～20文字以内で入力してください";
-		}else if( $_POST["password_confirmation"] !== $_POST["password"] ){ //データ型も比較
-			$errmessage[] = "入力した文字がパスワードと一致しません";
+			$_SESSION["password_confirmation"] = $memberDetail["password"]; //デフォルトのパスワードを代入
+		}else{
+			if( mb_strlen($_POST["password_confirmation"]) > 20 || mb_strlen($_POST["password_confirmation"]) < 8 ){
+				$errmessage[] = "パスワード確認は半角英数字8～20文字以内で入力してください";
+			}else if( !preg_match("/^[a-zA-Z0-9]+$/", $_POST["password"]) ){
+				$errmessage[] = "パスワード確認は半角英数字8～20文字以内で入力してください";
+			}else if( $_POST["password_confirmation"] !== $_POST["password"] ){
+				$errmessage[] = "入力した文字がパスワードと一致しません";
+			}
+			$_SESSION["password_confirmation"] = htmlspecialchars($_POST["password_confirmation"], ENT_QUOTES);  //無害化した文字列を代入
 		}
-		$_SESSION["password_confirmation"] = htmlspecialchars($_POST["password_confirmation"], ENT_QUOTES);  //無害化した文字列を代入
 
 
 		//メールアドレスのバリデーション
-		/**
-		 * 重複するメールアドレスの登録を防ぐバリデーション未実装
-		 */
 		if ( !$_POST["email"] ){
 			$errmessage[] = "メールアドレスは入力必須です";
 		}else if( mb_strlen($_POST["email"]) > 200 ){
@@ -151,6 +155,17 @@
 			$errmessage[] = "不正なメールアドレスです";
 		}
 		$_SESSION["email"] = htmlspecialchars($_POST["email"], ENT_QUOTES);  //無害化した文字列を入力
+
+		if( $_POST["email"] != $memberDetail["email"] ){
+			$result = MemberLogic::searchDupEmail($_SESSION);  //メールアドレスの重複をチェック
+
+			if ( !$result ){
+				$errmessage[] = "すでに登録されているメールアドレスです";
+			}
+		}
+		//var_dump($result);
+
+		
 
 		
 		//エラーメッセージの有無でモード変数の切り替え
@@ -268,7 +283,7 @@
 				}
 			?>
 			<form action="" method="POST">
-				<?php if( isset($_POST["back"]) && $_POST["back"] ){ ?>
+				<?php if( isset($_POST["back"]) && $_POST["back"] || $errmessage ){ ?>
 					<!-- 前に戻るボタンを押された時 -->
 					ID　　<?php echo $memberDetail["id"] ?><br><br>
 					<!-- 氏名 -->
@@ -296,9 +311,9 @@
 					</select><br>
 					　　　それ以降の住所<input type="text" class="form-control" name="address" value="<?php echo $_SESSION["address"] ?>"><br>
 					<!-- パスワード -->
-					パスワード　　　　<input type="password" class="form-control" name="password" value="<?php echo $_SESSION["password"] ?>"><br>
+					パスワード　　　　<input type="password" class="form-control" name="password" value="<?php //echo $_SESSION["password"] ?>"><br>
 					<!-- パスワード確認 -->
-					パスワード確認　　<input type="password" class="form-control" name="password_confirmation" value="<?php echo $_SESSION["password"] ?>"><br>
+					パスワード確認　　<input type="password" class="form-control" name="password_confirmation" value="<?php //echo $_SESSION["password"] ?>"><br>
 					<!-- メールアドレス -->
 					メールアドレス　　<input type="email" class="form-control" name="email" value="<?php echo $_SESSION["email"] ?>"><br><br>
 					<div class="button">
@@ -331,9 +346,9 @@
 					</select><br>
 					　　　それ以降の住所<input type="text" class="form-control" name="address" value="<?php echo $memberDetail["address"] ?>"><br>
 					<!-- パスワード -->
-					パスワード　　　　<input type="password" class="form-control" name="password" value="<?php echo $memberDetail["password"] ?>"><br>
+					パスワード　　　　<input type="password" class="form-control" name="password" value="<?php //echo $memberDetail["password"] ?>"><br>
 					<!-- パスワード確認 -->
-					パスワード確認　　<input type="password" class="form-control" name="password_confirmation" value="<?php echo $memberDetail["password"] ?>"><br>
+					パスワード確認　　<input type="password" class="form-control" name="password_confirmation" value="<?php //echo $memberDetail["password"] ?>"><br>
 					<!-- メールアドレス -->
 					メールアドレス　　<input type="email" class="form-control" name="email" value="<?php echo $memberDetail["email"] ?>"><br><br>
 					<div class="button">
