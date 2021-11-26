@@ -131,17 +131,20 @@
 
 	//idの昇順かどうかを判別して切り替える/デフォルトは降順(ノーマルモード)
 	if( isset($_POST["id_sort"]) && $_POST["id_sort"] ){
-		//一覧の一番下のメンバーのidを取得
-		$value = end($allMembers);
+		
+		$lastMember = end($allMembers);  //全メンバー配列の最後の要素
+		var_dump($lastMember);
+		var_dump($_SESSION["asc_id"]);
 
-		if( isset($_SESSION["asc_id"]) && $_SESSION["asc_id"] != $value["id"] ){
-			//セッションを初期化
+		if( isset($_SESSION["asc_id"]) && $_SESSION["asc_id"] > $lastMember["id"] ){
+			
 			$_SESSION["asc_id"] =       "";
 			$_SESSION["allMembers"] =   "";
 
 			$allMembers = MemberLogic::sortByKey('id', SORT_ASC, $allMembers);  //昇順にする
-			$_SESSION["allMembers"] = $allMembers;  //sortしたメンバーをセッションに格納
-			$_SESSION["asc_id"] = $allMembers[0]["id"];
+			$_SESSION["allMembers"] = $allMembers;                              //sortしたメンバーをセッションに格納
+			$_SESSION["asc_id"] = $allMembers[0]["id"];              //全メンバー配列の最初の要素のidをセッションに格納
+
 		}else{
 
 			$_SESSION["asc_id"] =       "";
@@ -155,9 +158,9 @@
 	//created_atの昇順かどうかを判別して切り替える
 	if( isset($_POST["created_at_sort"]) && $_POST["created_at_sort"] ){
 		//一覧の一番下のメンバーのcreated_atを取得
-		$value = end($allMembers);
+		$lastMember = end($allMembers);
 		
-		if( isset($_SESSION["asc_created_at"]) && $_SESSION["asc_created_at"] != $value["created_at"] ){
+		if( isset($_SESSION["asc_created_at"]) && $_SESSION["asc_created_at"] > $lastMember["created_at"] ){
 
 			$_SESSION["asc_created_at"] = "";
 			$_SESSION["allMembers"] =     "";
