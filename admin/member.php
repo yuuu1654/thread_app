@@ -129,6 +129,59 @@
 
 
 
+	//idの昇順かどうかを判別して切り替える/デフォルトは降順(ノーマルモード)
+	if( isset($_POST["id_sort"]) && $_POST["id_sort"] ){
+		//一覧の一番下のメンバーのidを取得
+		$value = end($allMembers);
+
+		if( isset($_SESSION["asc_id"]) && $_SESSION["asc_id"] != $value["id"] ){
+			//セッションを初期化
+			$_SESSION["asc_id"] =       "";
+			$_SESSION["allMembers"] =   "";
+
+			$allMembers = MemberLogic::sortByKey('id', SORT_ASC, $allMembers);  //昇順にする
+			$_SESSION["allMembers"] = $allMembers;  //sortしたメンバーをセッションに格納
+			$_SESSION["asc_id"] = $allMembers[0]["id"];
+		}else{
+
+			$_SESSION["asc_id"] =       "";
+			$_SESSION["allMembers"] =   "";
+
+			$allMembers = MemberLogic::sortByKey('id', SORT_DESC, $allMembers);  //降順にする
+			$_SESSION["allMembers"] = $allMembers;  //sortしたメンバーをセッションに格納
+			$_SESSION["asc_id"] = $allMembers[0]["id"];
+		}
+	}
+	//created_atの昇順かどうかを判別して切り替える
+	if( isset($_POST["created_at_sort"]) && $_POST["created_at_sort"] ){
+		//一覧の一番下のメンバーのcreated_atを取得
+		$value = end($allMembers);
+		
+		if( isset($_SESSION["asc_created_at"]) && $_SESSION["asc_created_at"] != $value["created_at"] ){
+
+			$_SESSION["asc_created_at"] = "";
+			$_SESSION["allMembers"] =     "";
+
+			$allMembers = MemberLogic::sortByKey('created_at', SORT_ASC, $allMembers);  //昇順にする
+			$_SESSION["allMembers"] = $allMembers;  //sortしたメンバーをセッションに格納
+
+			$_SESSION["asc_created_at"] = $allMembers[0]["created_at"];
+
+		}else{
+
+			$_SESSION["asc_created_at"] = "";
+			$_SESSION["allMembers"] =     "";
+
+			$allMembers = MemberLogic::sortByKey('created_at', SORT_DESC, $allMembers); //降順にする
+			$_SESSION["allMembers"] = $allMembers;  //sortしたメンバーをセッションに格納
+
+			$_SESSION["asc_created_at"] = $allMembers[0]["created_at"];
+
+		}
+	}
+
+
+
 	$max = 10; // 1ページの記事の表示数
 	$allMembers_num = count($allMembers);  //トータルデータ件数
 	var_dump($allMembers_num);
@@ -275,44 +328,7 @@
 		</div>
 		<div class="container">
 			<?php
-				//idの昇順かどうかを判別して切り替える/デフォルトは降順(ノーマルモード)
-				if( isset($_POST["id_sort"]) && $_POST["id_sort"] ){
-					//一覧の一番下のメンバーのidを取得
-					$value = end($disp_allMembers);
-
-					if( isset($_SESSION["asc_id"]) && $_SESSION["asc_id"] != $value["id"] ){
-
-						$_SESSION["asc_id"] = "";
-						$disp_allMembers = MemberLogic::sortByKey('id', SORT_ASC, $disp_allMembers);  //昇順にする
-						$_SESSION["asc_id"] = $disp_allMembers[0]["id"];
-
-					}else{
-
-						$_SESSION["asc_id"] = "";
-						$disp_allMembers = MemberLogic::sortByKey('id', SORT_DESC, $disp_allMembers);  //降順にする
-						$_SESSION["asc_id"] = $disp_allMembers[0]["id"];
-
-					}
-				}
-				//created_atの昇順かどうかを判別して切り替える
-				if( isset($_POST["created_at_sort"]) && $_POST["created_at_sort"] ){
-					//一覧の一番下のメンバーのcreated_atを取得
-					$value = end($disp_allMembers);
-					
-					if( isset($_SESSION["asc_created_at"]) && $_SESSION["asc_created_at"] != $value["created_at"] ){
-
-						$_SESSION["asc_created_at"] = "";
-						$disp_allMembers = MemberLogic::sortByKey('created_at', SORT_ASC, $disp_allMembers);  //昇順にする
-						$_SESSION["asc_created_at"] = $disp_allMembers[0]["created_at"];
-
-					}else{
-
-						$_SESSION["asc_created_at"] = "";
-						$disp_allMembers = MemberLogic::sortByKey('created_at', SORT_DESC, $disp_allMembers); //降順にする
-						$_SESSION["asc_created_at"] = $disp_allMembers[0]["created_at"];
-
-					}
-				}
+				
 			?>
 			<table class="table">
 				<tr>
