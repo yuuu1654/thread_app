@@ -67,9 +67,6 @@
 	if( isset($_POST["back"]) && $_POST["back"] ){
 		//何もしない
 	}else if( isset($_POST["confirm"]) && $_POST["confirm"] ){
-		/**
-		 * 確認画面
-		 */
 		
 
 		//氏名(姓)のバリデーション
@@ -96,8 +93,9 @@
 		}else if( $_POST["gender"] <= 0 || $_POST["gender"] >= 3 ){
 			$errmessage[] = "不正な入力です";
 		}
-		$_SESSION["gender"] = htmlspecialchars($_POST["gender"], ENT_QUOTES);  //無害化した文字列を代入
-		
+		if( isset($_POST["gender"]) && $_POST["gender"] ){
+			$_SESSION["gender"] = htmlspecialchars($_POST["gender"], ENT_QUOTES);  //無害化した文字列を代入
+		}
 
 		
 		//都道府県のバリデーション
@@ -109,7 +107,6 @@
 		$_SESSION["pref_num"]	= htmlspecialchars($_POST["pref_name"], ENT_QUOTES);
 		$_SESSION["pref_name"] = htmlspecialchars($kind[ $_POST["pref_name"] ], ENT_QUOTES);  //無害化した文字列を代入
 		
-
 
 		//住所(それ以降の住所)のバリデーション (任意)
 		if( mb_strlen($_POST["address"]) > 100 ){
@@ -157,16 +154,11 @@
 		$_SESSION["email"] = htmlspecialchars($_POST["email"], ENT_QUOTES);  //無害化した文字列を入力
 
 		if( $_POST["email"] != $memberDetail["email"] ){
-			$result = MemberLogic::searchDupEmail($_SESSION);  //メールアドレスの重複をチェック
-
+			$result = MemberLogic::searchDupEmail($_SESSION);  //以前とは違うメールアドレスにする時、メールアドレスの重複をチェック
 			if ( !$result ){
 				$errmessage[] = "すでに登録されているメールアドレスです";
 			}
 		}
-		//var_dump($result);
-
-		
-
 		
 		//エラーメッセージの有無でモード変数の切り替え
 		if( $errmessage ){

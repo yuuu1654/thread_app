@@ -133,8 +133,8 @@
 	if( isset($_POST["id_sort"]) && $_POST["id_sort"] ){
 		
 		$lastMember = end($allMembers);  //全メンバー配列の最後の要素
-		var_dump($lastMember);
-		var_dump($_SESSION["asc_id"]);
+		//var_dump($lastMember);
+		//var_dump($_SESSION["asc_id"]);
 
 		if( isset($_SESSION["asc_id"]) && $_SESSION["asc_id"] > $lastMember["id"] ){
 			

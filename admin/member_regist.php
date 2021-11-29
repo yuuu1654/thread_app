@@ -94,7 +94,9 @@
 		}else if( $_POST["gender"] <= 0 || $_POST["gender"] >= 3 ){
 			$errmessage[] = "不正な入力です";
 		}
-		$_SESSION["gender"] = htmlspecialchars($_POST["gender"], ENT_QUOTES);  //無害化した文字列を代入
+		if( isset($_POST["gender"]) && $_POST["gender"] ){
+			$_SESSION["gender"] = htmlspecialchars($_POST["gender"], ENT_QUOTES);  //無害化した文字列を代入
+		}
 
 		
 		//都道府県のバリデーション
@@ -116,9 +118,6 @@
 
 
 		//パスワードのバリデーション
-		/**
-		 * 半角英数字8~20のリファクタリング実装
-		 */
 		if( !$_POST["password"] ){
 			$errmessage[] = "パスワードは入力必須です";
 		}else if( mb_strlen($_POST["password"]) > 20 || mb_strlen($_POST["password"]) < 8 ){
@@ -257,20 +256,11 @@
 			margin: 20px 0 20px 0;  
 			padding: 10px 40px 10px 40px;
 		}
-		
 	</style>
 </head>
 <body>
 	<?php if( $mode == "input"){ ?>
 		<!-- 入力フォーム画面 -->
-		<?php
-			if( $errmessage ){
-				echo '<div class="alert alert-danger" role="alert">';
-				echo implode("<br>", $errmessage);
-				echo "</div>";
-			}
-		?>
-
 		<header>
 			<div class="header-logo">
 				<h1>会員登録</h1>
@@ -283,6 +273,13 @@
 			</div>
 		</header>
 		<main>
+			<?php
+				if( $errmessage ){
+					echo '<div class="alert alert-danger" role="alert">';
+					echo implode("<br>", $errmessage);
+					echo "</div>";
+				}
+			?>
 			<form action="" method="POST">
 				ID　　登録後に自動採番<br><br>
 				<!-- 氏名 -->
@@ -336,7 +333,7 @@
 				<h1>会員登録</h1>
 			</div>
 			<div class="header-menus">
-				<!-- 会員一覧ページボタン -->
+				<!-- 戻るボタン -->
 				<form action="" method="post">
 					<div class="button">
 						<input type="submit" class="btn btn-secondary btn-lg" name="back" value="前に戻る">
