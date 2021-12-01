@@ -298,3 +298,21 @@ if($now < $max_page){ // リンクをつけるかの判定
   　　<a href="#" style="pointer-events: none; color: #344853;"><?php echo $page ?></a>
   </nav>
 <?php } ?>
+
+
+
+
+
+<!-- サンプルコード -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>PHPで簡単なテンプレートエンジンを作る！</title>
+</head>
+<body>
+テンプレート変数の値1：_%string1%_<br/>
+テンプレート変数の値2：_%string2%_<br/>
+</body>
+</html>
+
