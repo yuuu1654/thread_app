@@ -51,49 +51,95 @@
 </head>
 <body>
 	<!-- 会員登録確認画面 -->
-	<?php
-		if($_SESSION["gender"] == 1){
-			$gender = "男性";
-		}else{
-			$gender = "女性";
-		}
-	?>
-
-	<header>
-		<div class="header-logo">
-			<h1>会員登録</h1>
-		</div>
-		<div class="header-menus">
-			<!-- 戻るボタン -->
-			<form action="" method="post">
-				<div class="button">
-					<input type="submit" class="btn btn-secondary btn-lg" name="back" value="前に戻る">
-				</div>
-			</form>
-		</div>
-	</header>
-	<main>
+	<?php if( $_SESSION["form"] == 1 ){ ?>
 		<?php
-			if( $errmessage ){
-				echo '<div class="alert alert-danger" role="alert">';
-				echo implode("<br>", $errmessage);
-				echo "</div>";
+			if($_SESSION["gender"] == 1){
+				$gender = "男性";
+			}else{
+				$gender = "女性";
 			}
 		?>
-		<form action="" method="post">
-			ID　　　　　　　登録後に自動採番<br>
-			氏名　　　　　　<?php echo $_SESSION["name_sei"] ?>　<?php echo $_SESSION["name_mei"] ?><br>
-			性別　　　　　　<?php echo $gender ?><br>
-			住所　　　　　　<?php echo $_SESSION["pref_name"] ?><?php echo $_SESSION["address"] ?><br>
-			パスワード　　　セキュリティのため非表示<br>
-			メールアドレス　<?php echo $_SESSION["email"] ?><br>
-			<input type="hidden" name="csrf_token" value="<?php echo h(setToken()); ?>">
-			<div class="button">
-				<input type="submit" class="btn btn-primary btn-lg" name="members" value="登録完了"><br>
+		<header>
+			<div class="header-logo">
+				<h1>会員登録</h1>
 			</div>
-			<!-- <button type="button" onclick="history.back()">戻る</button> -->
-		</form>
-	</main>
+			<div class="header-menus">
+				<!-- 戻るボタン -->
+				<form action="" method="post">
+					<div class="button">
+						<input type="submit" class="btn btn-secondary btn-lg" name="back" value="前に戻る">
+					</div>
+				</form>
+			</div>
+		</header>
+		<main>
+			<?php
+				if( $errmessage ){
+					echo '<div class="alert alert-danger" role="alert">';
+					echo implode("<br>", $errmessage);
+					echo "</div>";
+				}
+			?>
+			<form action="" method="post">
+				ID　　　　　　　登録後に自動採番<br>
+				氏名　　　　　　<?php echo $_SESSION["name_sei"] ?>　<?php echo $_SESSION["name_mei"] ?><br>
+				性別　　　　　　<?php echo $gender ?><br>
+				住所　　　　　　<?php echo $_SESSION["pref_name"] ?><?php echo $_SESSION["address"] ?><br>
+				パスワード　　　セキュリティのため非表示<br>
+				メールアドレス　<?php echo $_SESSION["email"] ?><br>
+				<input type="hidden" name="csrf_token" value="<?php echo h(setToken()); ?>">
+				<div class="button">
+					<input type="submit" class="btn btn-primary btn-lg" name="members" value="登録完了"><br>
+				</div>
+				<!-- <button type="button" onclick="history.back()">戻る</button> -->
+			</form>
+		</main>
+	<?php }else{ ?>
+		<!-- 会員編集確認画面 -->
+		<?php
+			if($_SESSION["gender"] == 1){
+				$gender = "男性";
+			}else{
+				$gender = "女性";
+			}
+		?>
+		<header>
+			<div class="header-logo">
+				<h1>会員編集</h1>
+			</div>
+			<div class="header-menus">
+				<!-- 会員一覧ページボタン -->
+				<form action="" method="post">
+					<div class="button">
+						<input type="submit" class="btn btn-secondary btn-lg" name="back" value="前に戻る">
+					</div>
+				</form>
+			</div>
+		</header>
+		<main>
+			<?php
+				if( $errmessage ){
+					echo '<div class="alert alert-danger" role="alert">';
+					echo implode("<br>", $errmessage);
+					echo "</div>";
+				}
+			?>
+			<form action="" method="post">
+				ID　　　　　　　<?php echo $memberDetail["id"] ?><br>
+				氏名　　　　　　<?php echo $_SESSION["name_sei"] ?>　<?php echo $_SESSION["name_mei"] ?><br>
+				性別　　　　　　<?php echo $gender ?><br>
+				住所　　　　　　<?php echo $_SESSION["pref_name"] ?><?php echo $_SESSION["address"] ?><br>
+				パスワード　　　セキュリティのため非表示<br>
+				メールアドレス　<?php echo $_SESSION["email"] ?><br>
+				<input type="hidden" name="csrf_token" value="<?php echo h(setToken()); ?>">
+				<div class="button">
+					<input type="submit" class="btn btn-primary btn-lg" name="update" value="編集完了"><br>
+				</div>
+			</form>
+		</main>
+	<?php } ?>
+
+	
 </body>
 </html>
 
