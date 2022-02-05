@@ -25,6 +25,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>トップページ</title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Cherry+Swash:700 rel="stylesheet">
 	<style>
 		body{
 			background-color: #CCFFFF;
@@ -87,21 +88,18 @@
 	</header>
 	<?php
 		//エラーメッセージがあれば表示する
-		if( $login_err ){
-			echo '<div class="alert alert-danger" role="alert">';
-			echo implode("<br>", $login_err);
-			echo "</div>";
-		}
+		// if( isset($login_err) && $login_err ){
+		// 	echo '<div class="alert alert-danger" role="alert">';
+		// 	echo implode("<br>", $login_err);
+		// 	echo "</div>";
+		// }
 		//var_dump($login_err);
 	?>
 
-	<?php if (isset($login_err)) : ?>
-    <p><?php echo $login_err; ?></p>
-	<?php endif; ?>
-
 	<main>
 		<div class="container">
-			<h1>⭕️⭕️掲示板</h1>
+			<h1>〜ニッチなアイデアや悩みを気軽にシェアしよう〜</h1><br><br>
+			<h1 style="font-weight: bold; font-size: 120px; color: #9999FF; font-family: 'Cherry Swash', cursive;">32channel</h1>
 		</div>
 	</main>
 </body>

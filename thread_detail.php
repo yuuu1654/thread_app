@@ -35,7 +35,7 @@
 
 	$max_page = ceil($comments_num / $max);
 	$max_page = (int)$max_page;
-	var_dump($max_page);
+	//var_dump($max_page);
 
 	if( isset($_GET["page"]) && $_GET["page"] > 0 && $_GET["page"] <= $max_page ){
 		$page = $_GET["page"];
@@ -44,7 +44,7 @@
 	}
 
 	$page = (int)$page;
-	var_dump($page);
+	//var_dump($page);
 
 	$start = ($page - 1) * $max; // 配列の何番目から取得すればよいか
 
@@ -163,6 +163,16 @@
 			max-width: 400px;
 			margin: 0px auto;
 		}
+		form {
+			width: 50%;
+			margin: 10% auto;
+			min-width: 9rem;
+			background: darken(#f9f9f9, 10%);
+		}
+		textarea{
+			border-radius: 0.3rem;
+  		background: darken(#f9f9f9, 10%);
+		}
 
 		.like-btn{
 			color: #8899a6;
@@ -171,7 +181,8 @@
 			color: #ff2581;
 		}
 		footer{
-			padding-top: 150px;
+			margin-top: 0;
+			padding-top: 100px;
 			padding-bottom: 30px;
 			background-color: #CCFFFF;
 		}
@@ -211,8 +222,8 @@
 
 		<!-- ページ切り替えリンク&表示条件 -->
 		<?php
-			var_dump($max_page);
-			var_dump($page);
+			//var_dump($max_page);
+			//var_dump($page);
 		?>
 		<?php if( $page == 1 && $max_page == 1 ){ ?>
 			<nav>
@@ -267,7 +278,7 @@
 			?>
 			投稿者：<?php echo h($memberDetail["name_sei"]) ?><?php echo h($memberDetail["name_mei"]) ?>
 			　　　　　　　　　　<?php echo h($threadDetail["created_at"]) ?><br><br>
-			ログインID: <?php var_dump($login_member["id"]); ?>
+			ログインID: <?php echo h($login_member["id"]); ?>
 			<p cols=40 rows=5><?php echo h($threadDetail["content"]) ?></p>
 		</div>
 
@@ -362,8 +373,8 @@
 
 		<!-- ページ切り替えリンク&表示条件 -->
 		<?php
-			var_dump($max_page);
-			var_dump($page);
+			//var_dump($max_page);
+			// var_dump($page);
 		?>
 		<?php if( $page == 1 && $max_page == 1 ){ ?>
 			<nav>
@@ -416,7 +427,7 @@
 		<!-- ログインしていたらフォームからコメントを投稿できるようにする -->
 		<?php if($loginResult): ?>
 			<form action="" method="post">
-				<textarea class="form-control" name="comment" id="" cols="40" rows="8" value="<?php echo $_SESSION["comment"] ?>"></textarea><br>
+				<textarea class="form-control" placeholder="Comment" name="comment" id="" cols="40" rows="8" value="<?php echo $_SESSION["comment"] ?>"></textarea><br>
 				<div class="button">
 					<input type="submit" class="btn btn-primary btn-lg" name="create_comment" value="コメントする"><br>
 				</div>

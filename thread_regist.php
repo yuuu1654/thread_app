@@ -102,6 +102,7 @@
 			padding: 10px;
 			max-width: 600px;
 			margin: 0px auto;
+			background-color: #CCFFFF;
 		}
 		div.button{
 			text-align: center;
@@ -139,8 +140,8 @@
 		<h1>スレッド作成フォーム</h1>
 		<form action="" method="POST">
 			<!-- スレッドタイトル・コメント欄作成 -->
-			スレッドタイトル　<input type="text" class="form-control" name="title" value="<?php echo $_SESSION["title"] ?>"><br>
-			コメント　　　　　<textarea class="form-control" name="content" value=""><?php echo $_SESSION["content"] ?></textarea>
+			スレッドタイトル　<input type="text" class="form-control"　placeholder="Title" name="title" value="<?php echo $_SESSION["title"] ?>"><br>
+			コメント　　　　　<textarea class="form-control" placeholder="Content" cols="40" rows="8" name="content" value=""><?php echo $_SESSION["content"] ?></textarea>
 			
 			
 			<div class="button">

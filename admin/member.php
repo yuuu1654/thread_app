@@ -122,7 +122,7 @@
 			$_SESSION["allMembers"] = $allMembers;
 		}
 
-		if ($_SESSION["allMembers"] != ""){                //セッションにメンバーのデータを格納
+		if (isset($_SESSION["allMembers"]) && $_SESSION["allMembers"] != ""){     //セッションにメンバーのデータを格納
 			$allMembers = $_SESSION["allMembers"];
 		}
 	}
@@ -187,11 +187,11 @@
 
 	$max = 10; // 1ページの記事の表示数
 	$allMembers_num = count($allMembers);  //トータルデータ件数
-	var_dump($allMembers_num);
+	//var_dump($allMembers_num);
 
 	$max_page = ceil($allMembers_num / $max);
 	$max_page = (int)$max_page;
-	var_dump($max_page);
+	//var_dump($max_page);
 
 	if( isset($_GET["page"]) && $_GET["page"] > 0 && $_GET["page"] <= $max_page ){
 		$page = $_GET["page"];
@@ -200,7 +200,7 @@
 	}
 
 	$page = (int)$page;
-	var_dump($page);
+	//var_dump($page);
 	$start = ($page - 1) * $max; // 配列の何番目から取得すればよいか
 
 	// array_sliceは、配列の何番目($start)から何番目(MAX)まで切り取る関数
@@ -228,7 +228,7 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 	<style>
 		body{
-
+			background-color: #CCFFFF;
 		}
 		header{
 			height: 80px;
@@ -252,6 +252,7 @@
 			padding: 50px 10px 10px 10px;
 			max-width: 600px;
 			margin: 0px auto;
+			
 		}
 		.table{
 			text-align: center;
@@ -276,7 +277,7 @@
 		<div class="header-menus">
 			<!-- 会員一覧ページボタン -->
 			<div class="button">
-				<input type="submit" class="btn btn-secondary btn-lg" onclick="location.href='login.php'" value="トップへ戻る">
+				<input type="submit" class="btn btn-secondary btn-lg" onclick="location.href='../top.php'" value="トップへ戻る">
 			</div>
 		</div>
 	</header>
