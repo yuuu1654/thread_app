@@ -278,7 +278,12 @@
 			?>
 			投稿者：<?php echo h($memberDetail["name_sei"]) ?><?php echo h($memberDetail["name_mei"]) ?>
 			　　　　　　　　　　<?php echo h($threadDetail["created_at"]) ?><br><br>
-			ログインID: <?php echo h($login_member["id"]); ?>
+			<?php 
+				if( isset($login_member) && $login_member ){
+					echo h("ログインID: ".$login_member["id"]);
+				}
+			?>
+			<br><br>
 			<p cols=40 rows=5><?php echo h($threadDetail["content"]) ?></p>
 		</div>
 
