@@ -29,6 +29,7 @@
 			padding: 10px;
 			max-width: 600px;
 			margin: 0px auto;
+			background-color: #CCFFFF;
 		}
 	</style>
 </head>
@@ -43,7 +44,7 @@
 	<h1>ログイン</h1><br>
 	<?php
 		//エラーメッセージがあれば表示する
-		if( $errmessage["msg"] ){
+		if( isset($errmessage["msg"]) && $errmessage["msg"] ){
 			$err[] = $errmessage["msg"];
 			echo '<div class="alert alert-danger" role="alert">';
 			echo implode("<br>", $err);
