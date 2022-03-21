@@ -58,7 +58,7 @@
 			$stmt->execute();
 			$member = $stmt->fetch();
 
-			if ($member['email'] === $memberData["email"]) {
+			if (isset($member['email']) && $member['email'] === $memberData["email"]) {
 				//$msg = '同じメールアドレスが存在します。';
 				return $result;  //処理を止める
 			}else{

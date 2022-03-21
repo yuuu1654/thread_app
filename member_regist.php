@@ -77,7 +77,10 @@
 		}else if( mb_strlen($_POST["name_sei"]) > 20 ){
 			$errmessage[] = "氏名(姓)は20文字以内で入力してください";
 		}
-		$_SESSION["name_sei"] = htmlspecialchars($_POST["name_sei"], ENT_QUOTES);  //無害化した文字列を代入
+		if(isset($_POST["name_sei"])){
+			$_SESSION["name_sei"] = htmlspecialchars($_POST["name_sei"], ENT_QUOTES);  //無害化した文字列を代入
+		}
+		
 
 
 		//氏名(名)のバリデーション
@@ -86,7 +89,9 @@
 		}else if( mb_strlen($_POST["name_mei"]) > 20 ){
 			$errmessage[] = "氏名(名)は20文字以内で入力してください";
 		}
-		$_SESSION["name_mei"] = htmlspecialchars($_POST["name_mei"], ENT_QUOTES);  //無害化した文字列を代入
+		if(isset($_POST["name_mei"])){
+			$_SESSION["name_mei"] = htmlspecialchars($_POST["name_mei"], ENT_QUOTES);  //無害化した文字列を代入
+		}
 
 
 		//性別のバリデーション
@@ -95,7 +100,9 @@
 		}else if( $_POST["gender"] <= 0 || $_POST["gender"] >= 3 ){
 			$errmessage[] = "不正な入力です";
 		}
-		$_SESSION["gender"] = htmlspecialchars($_POST["gender"], ENT_QUOTES);  //無害化した文字列を代入
+		if(isset($_POST["gender"])){
+			$_SESSION["gender"] = htmlspecialchars($_POST["gender"], ENT_QUOTES);  //無害化した文字列を代入
+		}
 
 		
 		//都道府県のバリデーション
@@ -104,17 +111,20 @@
 		}else if( $_POST["pref_name"] <= 0 || $_POST["pref_name"] >= 49 ){
 			$errmessage[] = "不正な入力です";
 		}
-		$_SESSION["pref_num"]	= htmlspecialchars($_POST["pref_name"], ENT_QUOTES);
-		$_SESSION["pref_name"] = htmlspecialchars($kind[ $_POST["pref_name"] ], ENT_QUOTES);  //無害化した文字列を代入
-		
-
+		if(isset($_POST["pref_name"])){
+			$_SESSION["pref_num"]	= htmlspecialchars($_POST["pref_name"], ENT_QUOTES);
+			$_SESSION["pref_name"] = htmlspecialchars($kind[ $_POST["pref_name"] ], ENT_QUOTES);  //無害化した文字列を代入
+		}
 
 
 		//住所(それ以降の住所)のバリデーション (任意)
 		if( mb_strlen($_POST["address"]) > 100 ){
 			$errmessage[] = "住所(それ以降の住所)は100文字以内で入力してください";
 		}
-		$_SESSION["address"] = htmlspecialchars($_POST["address"], ENT_QUOTES);  //無害化した文字列を代入
+		if(isset($_POST["address"])){
+			$_SESSION["address"] = htmlspecialchars($_POST["address"], ENT_QUOTES);  //無害化した文字列を代入
+		}
+		
 
 
 		//パスワードのバリデーション
@@ -128,11 +138,11 @@
 		}else if( !preg_match("/^[a-zA-Z0-9]+$/", $_POST["password"]) ){  //正規表現(半角英数字)
 			$errmessage[] = "パスワードは半角英数字8～20文字以内で入力してください";
 		}  
-		$_SESSION["password"] = htmlspecialchars($_POST["password"], ENT_QUOTES);  //無害化した文字列を代入
-		//$_SESSION["password_1"] = htmlspecialchars($_POST["password"], ENT_QUOTES);  //無害化した文字列を代入
+		if(isset($_POST["password"])){
+			$_SESSION["password"] = htmlspecialchars($_POST["password"], ENT_QUOTES);  //無害化した文字列を代入
+		}
 
-
-
+		
 		//パスワード確認のバリデーション
 		if( !$_POST["password_confirmation"] ){
 			$errmessage[] = "パスワード確認は入力必須です";
@@ -141,8 +151,9 @@
 		}else if( $_POST["password_confirmation"] !== $_POST["password"] ){ //データ型も比較
 			$errmessage[] = "入力した文字がパスワードと一致しません";
 		}
-		$_SESSION["password_confirmation"] = htmlspecialchars($_POST["password_confirmation"], ENT_QUOTES);  //無害化した文字列を代入
-		//$_SESSION["password_confirmation_1"] = htmlspecialchars($_POST["password_confirmation"], ENT_QUOTES);  //無害化した文字列を代入
+		if(isset($_POST["password_confirmation"])){
+			$_SESSION["password_confirmation"] = htmlspecialchars($_POST["password_confirmation"], ENT_QUOTES);  //無害化した文字列を代入
+		}
 
 
 		//メールアドレスのバリデーション
@@ -153,7 +164,10 @@
 		}else if( !filter_var($_POST["email"], FILTER_VALIDATE_EMAIL) ){  //メールアドレス形式の文字列かどうかのチェック
 			$errmessage[] = "不正なメールアドレスです";
 		}
-		$_SESSION["email"] = htmlspecialchars($_POST["email"], ENT_QUOTES);  //無害化した文字列を入力
+		if(isset($_POST["email"])){
+			$_SESSION["email"] = htmlspecialchars($_POST["email"], ENT_QUOTES);  //無害化した文字列を入力
+		}
+		
 
 
 		$result = MemberLogic::searchDupEmail($_SESSION);
@@ -223,6 +237,7 @@
 			padding: 10px;
 			max-width: 600px;
 			margin: 0px auto;
+			background-color: #CCFFFF;
 		}
 		div.button{
 			text-align: center;
@@ -305,7 +320,7 @@
 					echo implode("<br>", $errmessage);
 					echo "</div>";
 				}
-				if($_SESSION["gender"] == 1){
+				if(isset($_SESSION["gender"]) && $_SESSION["gender"] == 1){
 					$gender = "男性";
 				}else{
 					$gender = "女性";
