@@ -19,7 +19,7 @@
 		 */
 		if ( count($errmessage) > 0 ){
 			//メールアドレスの検索または、パスワードの照会に失敗してエラーがあった場合はログイン画面に戻す(MemberLogic.php)
-			$_SESSION = $errmessage;  //セッションにエラーメッセージを保存
+			$_SESSION = $errmessage;  
 			$_SESSION["input_email"] = $_POST["email"];
 			header("Location: login.php");
 			return;
@@ -34,13 +34,11 @@
 			header("Location: login.php");
 			return;
 		}
-		//echo "ログイン成功です";
-		$login_member = $_SESSION["login_member"];  //セッションにあるログインユーザーのデータを変数に格納
-		//var_dump($login_member);  //デバッグ用
+		$login_member = $_SESSION["login_member"];  
 
-	}else{  //GETリクエストだった場合の処理
+	}else{  //GETリクエスト
 
-		//ログインしているか判定して、していなかったらlogout.phpに遷移する
+		//ログインしているか判定し、していなかったらlogout.phpに遷移する
 		$result = MemberLogic::checkLogin();
 		if ( !$result ){
 			$_SESSION["login_err"] = "会員登録してログインしてください！";

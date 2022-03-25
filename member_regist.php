@@ -195,7 +195,7 @@
 		 * 完了画面がうまく表示されない為、一旦コメントアウトしました。
 		 */
 		// //トークンを受け取る
-		// $token = filter_input(INPUT_POST, "csrf_token");
+		// $token = filter_input(INPUT_POST, "csrf_token", FILTER_SANITIZE_NUMBER_INT);
 		// //トークンがない、もしくは一致しない場合に処理を中止
 		// if ( !isset($_SESSION["csrf_token"]) || $token !== $_SESSION["csrf_token"]){
 		// 	exit("不正なリクエスト");
@@ -335,7 +335,10 @@
 				住所　　　　　　<?php echo $_SESSION["pref_name"] ?><?php echo $_SESSION["address"] ?><br>
 				パスワード　　　セキュリティのため非表示<br>
 				メールアドレス　<?php echo $_SESSION["email"] ?><br><br>
+
+				<!-- CSRF対策用のワンタイムトークン -->
 				<input type="hidden" name="csrf_token" value="<?php echo h(setToken()); ?>">
+
 				<div class="button">
 					<input type="submit" class="btn btn-primary btn-lg" name="signup_done" value="登録完了"><br>
 					<input type="submit" class="btn btn-secondary btn-lg" name="back" value="前に戻る">
