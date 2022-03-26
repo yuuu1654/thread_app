@@ -113,7 +113,7 @@
 				<?php 
 					if( isset($_POST["word"]) && $_POST["word"] ){
 						$word = $_POST["word"];
-						//ThreadLogicのsearchThreadsメソッドであいまい検索をかけて結果を取得する
+						//あいまい検索をかけて結果を取得
 						$result = ThreadLogic::searchThreads($word);  
 					}
 				?>
